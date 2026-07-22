@@ -1,0 +1,127 @@
+﻿
+@{
+    ViewData["Title"] = "Exportar Cartera";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Exportar Cartera</div>
+    <div class="panel-body">
+
+        <form id="form_credito">
+
+            <div class="row">
+
+                <div class="col-md-3" id="agencias">
+                    <div class="form-group">
+                        <label for="Id_Agencia"> Agencia</label>
+                        <div id="id_agencia"></div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="Id_Cartera">Carteras</label>
+                        <div id="id_cartera"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                       <div class="col-md-3">
+                           <button type="button" class="btn btn-default" id="Cargar">Cargar Datos</button>
+                        </div>
+                          <div class="col-md-3">
+                            <button type="button" class="btn btn-default" id="CargarPDF"> Generar PDF</button>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-default" id="CargarEXCEL"> Generar EXCEL</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+        <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">Datos de Cartera</div>
+            <div class="panel-body">
+                <div id="listapagos"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        ListaCarteras();
+        Cargar_Agencias();
+        Vista_Listado_Carteras();
+        Reporte_Carteras_PDF();
+        CargarExcel();
+    });
+    function ListaCarteras() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol == "Administrador") {
+            $("#Id_Agencia").change(function () {
+                var id_agencia = $("#Id_Agencia").val();
+                $.get("@Url.Action("Carteras", "Componentes")?id_agencia="+id_agencia, function (agencias) {
+                    $("#id_cartera").html(agencias);
+                });
+            });
+
+        } else {
+            $("#agencias").css("display", "none");
+            Cargar_Carteras_Agencia();
+        }
+    }
+    function Cargar_Agencias() {
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia").html(agencias);
+            ListaCarteras();
+        });
+    }
+    function Cargar_Carteras_Agencia() {
+        $.get("@Url.Action("Carteras", "Componentes")",function (agencias) {
+            $("#id_cartera").html(agencias);
+        });
+    }
+
+   function Reporte_Carteras_PDF() {
+        $("#CargarPDF").click(function () {
+
+            var id_cartera = $("#Id_Cartera").val();
+         
+            window.open("@Url.Action("Cartera_Asesor_PDF","Reporteria")?id_cartera=" + id_cartera );
+        });
+    }
+      function Vista_Listado_Carteras() {
+        $("#Cargar").click(function () {
+            var id_cartera = $("#Id_Cartera").val();
+             $.get("@Url.Action("Cartera_Asesor_Vista", "Reporteria")",
+                 {
+                     id_cartera: id_cartera
+                 },
+            function (lista) {
+                $("#listapagos").html(lista);
+            });
+        });
+    }
+        function CargarExcel() {
+        $("#CargarEXCEL").click(function () {
+            generateexcel("cartera_Asesor");
+        });
+       }
+   
+    function generateexcel(tableid) {
+        var tmpElemento = document.createElement('a');
+        var data_type = 'data:application/vnd.ms-excel';
+        var tabla_div = document.getElementById(tableid);
+        var tabla_html = tabla_div.outerHTML.replace(/ /g, '%20');
+        tmpElemento.href = data_type + ', ' + tabla_html;
+        tmpElemento.download = 'cartera.xls';
+        tmpElemento.click();
+    }
+</script>

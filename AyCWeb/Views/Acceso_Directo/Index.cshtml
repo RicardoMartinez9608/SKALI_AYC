@@ -1,0 +1,182 @@
+﻿@{
+    ViewData["Title"] = "Accesos directos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<input type="hidden" id="categoria_seleccionada" value="0"/>
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Personalizar Atajos</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Nueva Categoría</div>
+                    <div class="panel-body" id="cargar_nueva_categoria">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Seleccione Categoría</div>
+                    <div class="panel-body" id="Select_Acceso_Directo">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+
+            <div class="row">
+                <div class="col-md-6" id="menu_acordeon">
+                    
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading panel-heading-personalizado">Atajos</div>
+                        <div class="panel-body" id="atajos_creados">
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+</div>
+
+<script>
+    $(function (ready) {
+        Recargar_Categoria_Atajos();
+        Cargar_Nuevo_Categoria();
+        Cargar_Opciones();
+        Arbol_Atajo();
+    });
+
+
+    /*es el formulario para agregar categoria */
+    function Cargar_Nuevo_Categoria() {
+        $.get("@Url.Action("NuevaCategoria","Acceso_Directo")",
+            function (form) {
+                $("#cargar_nueva_categoria").html(form);
+                Procesar_Nueva_Categoria();
+        });
+    }
+
+    /*cargar las opciones */
+    function Cargar_Opciones() {
+        $.get("@Url.Action("Opciones", "Acceso_Directo")",
+            function (opciones) {
+                $("#menu_acordeon").html(opciones);
+                Crear_Atajo();
+        });
+    }
+
+    /*se guarda la nueva categoria */
+    function Procesar_Nueva_Categoria() {
+        $("#Agregar_Nueva_Categoria").click(function () {
+            var form = $("#NuevaCategoria").serializeAnything();
+            $.post("@Url.Action("NuevaCategoria", "Acceso_Directo")",
+                form,
+                function (resultado) {
+                    alertify.success(resultado);
+                    Recargar_Categoria_Atajos();
+                }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+            });
+    }
+
+    /*es el combo de categoria de los atajos */
+    function Recargar_Categoria_Atajos() {
+        $.get("@Url.Action("Accesos","Acceso_Directo")",
+            function (select) {
+                $("#Select_Acceso_Directo").html("");
+                $("#Select_Acceso_Directo").html(select);
+                Selection_Categoria();
+            }).fail(function (error) {
+                alertify.error(error.responseText);
+            });
+    }
+
+    /*evento del select combo de categoria */
+    function Selection_Categoria() {
+        $("#Id_Categoria_Acceso_Directo").change(function () {
+            var id_categoria_acceso_directo = $(this).val();
+            console.log(id_categoria_acceso_directo);
+            $("#categoria_seleccionada").val(id_categoria_acceso_directo);
+        });
+    }
+
+    /*evento para crear atajo */
+    function Crear_Atajo() {
+        $("a.crear_atajo").each(function (index) {
+            $("a.crear_atajo").eq(index).click(function () {
+                var url = $("input.url").eq(index).val();
+                var nombre = $("input.nombre").eq(index).val();
+                var id_categoria_acceso_directo = $("#categoria_seleccionada").val();
+                $.post("@Url.Action("Crear_Acceso", "Acceso_Directo")",
+                {
+                    Id_Categoria_Acceso_Directo : id_categoria_acceso_directo,
+                    Url: url,
+                    Nombre: nombre
+                },
+                function (resultado) {
+                    alertify.success(resultado);
+                    Arbol_Atajo();
+                }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+
+            });
+        });
+    }
+
+    function Eliminar_Categoria() {
+        $("a.eliminar_categoria").each(function (index) {
+            $("a.eliminar_categoria").eq(index).click(function () {
+                var id_categoria = $("input.id_categoria").eq(index).val();
+                $.post("@Url.Action("Eliminar_Categoria", "Acceso_Directo")",
+                    { id_categoria: id_categoria},
+                    function (resultado) {
+                        alertify.success(resultado);
+                    }).fail(function (error) {
+                        alertify.error(error.responseText);
+                    });
+            });
+        });
+    }
+
+    function Eliminar_Atajos() {
+        $("a.eliminar_atajo").each(function (index) {
+            $("a.eliminar_atajo").eq(index).click(function () {
+                var id_acceso_directo = $("input.id_acceso_directo").eq(index).val();
+                $.post("@Url.Action("Eliminar_Acceso", "Acceso_Directo")",
+                    { id_acceso_directo: id_acceso_directo},
+                    function (resultado) {
+                        alertify.success(resultado);
+                    }).fail(function (error) {
+                        alertify.error(error.responseText);
+                    });
+            });
+        });
+    }
+
+
+    /*arbol de atajos creados */
+    function Arbol_Atajo() {
+        $.get("@Url.Action("Atajos_Detalle","Acceso_Directo")",
+            function (html) {
+                $("#atajos_creados").html(html);
+                Eliminar_Categoria();
+                Eliminar_Atajos();
+        });
+    }
+
+</script>

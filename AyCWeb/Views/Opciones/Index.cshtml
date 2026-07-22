@@ -1,0 +1,253 @@
+﻿@using DevExtreme.AspNet.Mvc
+@model IEnumerable<ModelNucleo.Model.Menu_Categoria_vista>
+@{
+    ViewData["Title"] = "Créditos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string baseUrl = Html.ViewContext.HttpContext.Request.PathBase.Value.ToString();
+
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Mantenimiento de Menus</h4>
+            </div>
+
+        </div>
+    </div>
+    <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="panel-body panel-body-personalizado">
+                            <p></p>
+                            <div class="collapse" id="collapseExample">
+                                <div class="well">
+
+                                </div>
+                            </div>
+                                            <table>
+                                                <tr>
+                                                    <td>Título</td>
+                                                    <td></td>
+                                                </tr>
+                                                @foreach (var item in Model)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <input type="hidden" value="@item.Id_Menu_Categoria_Vista" class="id_catalogo">
+                                                            <a href="#" class="catalogo" >@item.Titulo</a>
+                                                        </td>
+                                                        <td>
+                                                            <a href="#" class="editar_catalogo">Editar</a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td cols="2">
+                                                            <div class="contenido"></div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </table>
+                                        </div>
+                                </div>
+                      
+                </div>
+                <div class="col-md-6 detalle">
+                    
+                </div>
+            </div>
+
+    </div>
+
+</div>
+
+<script>
+    $(function(){
+        MostrarContenido();
+        OcultarContenido();
+        Mostrar_Editar_Categoria();
+        Mostrar_Editar_Contenido();
+    });
+
+    function MostrarContenido()
+    {
+        $("a.catalogo").each(function(index){
+            $("a.catalogo").eq(index).click(function () {
+                OcultarContenido();
+                var idcategoria=$("input.id_catalogo").eq(index).val();
+                $.get("@Url.Action("Contenidos","Opciones")",
+                    { idcategoria: idcategoria },
+                    function(html) {
+                        $("div.contenido").eq(index).html(html);
+                        Mostrar_Editar_Contenido();
+                    });
+            });
+        });
+
+    }
+
+    function OcultarContenido() {
+        $("a.catalogo").each(function(index) {
+            $("div.contenido").eq(index).html("");
+        });
+
+    }
+
+    function Mostrar_Editar_Categoria() {
+        $("a.editar_catalogo").each(function(index){
+            $("a.editar_catalogo").eq(index).click(function () {
+                OcultarContenido();
+                var idcategoria = $("input.id_catalogo").eq(index).val();
+                $.get("@Url.Action("Editar_Categoria","Opciones")",
+                    { idcategoria: idcategoria },
+                    function(html) {
+                        $("div.detalle").html(html);
+                        Guardar_Edicion_Categoria();
+                        Cargar_Roles();
+                        Roles_Categoria();
+                        
+                    });
+            });
+        });
+    }
+    function Guardar_Edicion_Categoria() {
+        $("#guardar_edicion_categoria").click(function () {
+            var form_deduccion = $("#detalle_categoria").serializeAnything();
+            var direccion = "@Url.Action("Editar_Categoria_Exe", "Opciones")";
+            $.post(direccion, form_deduccion, function (resultado) {
+                alertify.success(resultado);
+            }).fail(function (error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+
+    function Cargar_Roles() {
+        $.get("@Url.Action("AgregarRoles","Opciones")",
+            function(html) {
+                $("div.cargar_roles").html(html);
+                Guardar_Rol_Categoria();
+                
+            });
+    }
+
+    function Roles_Categoria() {
+        var idcategoria = $("#detalle_categoria #Id_Menu_Categoria_Vista").val();
+        $.get("@Url.Action("RolporCategoria", "Opciones")",
+            { idcategoria: idcategoria },
+            function(html) {
+                $("div.roles_agregados").html(html);
+                BorrarRolCategoria();
+            });
+    }
+
+
+    function Guardar_Rol_Categoria() {
+        $("#Rol").change(function () {
+        
+            var rol = $(this).val();
+            var idcategoria = $("#detalle_categoria #Id_Menu_Categoria_Vista").val();
+            $.post("@Url.Action("AgregarRolCategoria", "Opciones")",
+                { idcategoria: idcategoria, rol: rol },
+                function (resultado) {
+                    Roles_Categoria();
+                    alertify.success(resultado);
+                }).fail(function(error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+
+    function BorrarRolCategoria() {
+        $(".borrarRol").each(function (index) {
+            $(".borrarRol").eq(index).click(function () {
+                $.post("@Url.Action("EliminarRolCategoria","Opciones")",
+                    { idrol: $("input.id_role").eq(index).val() },
+                    function (resultado) {
+                        Roles_Categoria();
+                        alertify.success(resultado);
+                    });
+            });
+        });
+    }
+    /*--------------------------------------------------Metodos para contenido de menus---------------------------------------*/
+    function Cargar_Roles_Contenido() {
+        $.get("@Url.Action("AgregarRoles","Opciones")",
+            function(html) {
+                $("div.cargar_roles").html(html);
+                Guardar_Rol_Contenido();
+            });
+    }
+    function Mostrar_Editar_Contenido() {
+        $("a.editar_contenido").each(function(index){
+            $("a.editar_contenido").eq(index).click(function () {
+                var idcontenido = $("input.id_contenido").eq(index).val();
+                $.get("@Url.Action("Editar_Contenido","Opciones")",
+                    { idcontenido: idcontenido },
+                    function(html) {
+                        $("div.detalle").html(html);
+                        Guardar_Edicion_Contenido();
+                        Cargar_Roles_Contenido();
+                        Roles_Contenido();
+                    });
+            });
+        });
+    }
+
+    function Guardar_Edicion_Contenido() {
+        $("#guardar_edicion_contenido").click(function() {
+            var form_deduccion = $("#detalle_contenido").serializeAnything();
+            var direccion = "@Url.Action("Editar_Contenido_Exe", "Opciones")";
+            $.post(direccion,
+                form_deduccion,
+                function(resultado) {
+                    alertify.success(resultado);
+                }).fail(function(error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+
+    function Roles_Contenido() {
+        var idcontenido = $("#detalle_contenido #Id_Menu_Contenido_Vista").val();
+        $.get("@Url.Action("RolporContenido", "Opciones")",
+            { idcontenido: idcontenido },
+            function(html) {
+                $("div.roles_agregados").html(html);
+                BorrarRolContenido();
+            });
+    }
+
+    function Guardar_Rol_Contenido() {
+        $("#Rol").change(function () {
+            var rol = $(this).val();
+            var idcontenido = $("#detalle_contenido #Id_Menu_Contenido_Vista").val();
+            $.post("@Url.Action("AgregarRolContenido", "Opciones")",
+                { idcontenido: idcontenido, rol: rol },
+                function (resultado) {
+                    Roles_Contenido();
+                    alertify.success(resultado);
+                }).fail(function(error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+    function BorrarRolContenido() {
+        $(".borrarRol").each(function (index) {
+            $(".borrarRol").eq(index).click(function () {
+                $.post("@Url.Action("EliminarRolContenido","Opciones")",
+                    { idrol: $("input.id_role").eq(index).val() },
+                    function (resultado) {
+                        Roles_Contenido();
+                        alertify.success(resultado);
+                    });
+            });
+        });
+    }
+ 
+
+</script>
+

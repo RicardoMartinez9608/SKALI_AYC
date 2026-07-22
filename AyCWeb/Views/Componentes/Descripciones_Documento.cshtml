@@ -1,0 +1,12 @@
+﻿@model IEnumerable<ModelNucleo.Model.Descripcion_Documento>
+
+<select name="Id_Descripcion_Documento" id="Id_Descripcion_Documento" class="form-control Id_Descripcion_Documento">
+    <option value="0">Seleccione una Descripción</option>
+    @foreach (var item in Model)
+    {
+        if (item.Id_Descripcion_Documento == ViewBag.Seleccionado)
+        {    <option value="@item.Id_Descripcion_Documento" selected="selected">@item.Descripcion</option> }
+        else
+        {   <option value="@item.Id_Descripcion_Documento">@item.Descripcion</option>   }
+    }
+</select>

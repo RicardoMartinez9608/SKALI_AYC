@@ -1,0 +1,120 @@
+﻿@model ModelNucleo.Model.Tablero.Meta
+    <div class="row">
+        <div class="col-md-3" id="agencias">
+            <div class="form-group">
+                <label for="Id_Agencia"> Agencia</label>
+                <div id="id_agencia_meta"></div>
+            </div>
+        </div>
+      
+    </div>
+        <div class="row">
+            <div class="col-md-4">
+                <form id="meta_nueva">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label for="Id_Cartera">Carteras</label>
+                        <div id="id_cartera"></div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Colecta" class="control-label"></label>
+                        <input asp-for="Colecta" class="form-control" type="number" />
+                        <span asp-validation-for="Colecta" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Cartera" class="control-label"></label>
+                        <input asp-for="Capital" class="form-control" type="number" />
+                        <span asp-validation-for="Capital" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Cosecha" class="control-label"></label>
+                        <input asp-for="Cosecha" class="form-control" type="number" />
+                        <span asp-validation-for="Cosecha" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="No_Clientes" class="control-label"></label>
+                        <input asp-for="No_Clientes" class="form-control" type="number" />
+                        <span asp-validation-for="No_Clientes" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Colocacion" class="control-label"></label>
+                        <input asp-for="Colocacion" class="form-control" type="number" />
+                        <span asp-validation-for="Colocacion" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Ingresos" class="control-label"></label>
+                        <input asp-for="Ingresos" class="form-control" type="number" />
+                        <span asp-validation-for="Ingresos" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Mora" class="control-label"></label>
+                        <input asp-for="Mora" class="form-control" type="number" />
+                        <span asp-validation-for="Mora" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Mes" class="control-label"></label>
+                        <input asp-for="Mes" class="form-control" type="number" id="mes" />
+                        <span asp-validation-for="Mes" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Anyo" class="control-label">Año</label>
+                        <input asp-for="Anyo" class="form-control" type="number" />
+                        <span asp-validation-for="Anyo" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="button" value="Guardar" class="btn btn-default" id="Guardar_Meta" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+<script>
+    $(function () {
+        Cargar_Combo_Agencias();
+        Crear_Meta();
+    });
+
+    function Cargar_Combo_Agencias() {
+        $.get("@Url.Action("Agencias_Combo_Metas","Componentes")", function (combo) {
+            $("#id_agencia_meta").html(combo);
+            ListaCarteras();
+        });
+    }
+
+    function ListaCarteras() {
+        $("#id_agencia_meta").change(function () {
+            var id_agencia = $("#Id_Agencia_Meta").val();
+                $.get("@Url.Action("Carteras", "Componentes")?id_agencia="+id_agencia, function (agencias) {
+                    $("#id_cartera").html(agencias);
+                });
+            });
+    }
+    function Crear_Meta() {
+        $("#Guardar_Meta").click(function () {
+            var meta = $("#meta_nueva").serializeAnything();
+            var id_agencia = $("#Id_Agencia_Meta").val();
+            var mes = $("#mes").val();
+            $.get("@Url.Action("Guardar_Meta", "Tablero")",
+                meta,
+                function(resultado) {
+                    alertify.success(resultado);
+                    data(id_agencia,mes);
+                    $('#Mantenimiento').modal('hide');
+                }).fail(function(error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+    function data(id_agencia,mes) {
+        $.get("@Url.Action("Metas_Por_Agencia", "Tablero")",
+            {
+                id_agencia: id_agencia,
+                mes:mes
+            },
+            function (lista) {
+                $("#listametas").html(lista);
+            });
+    }
+</script>
+

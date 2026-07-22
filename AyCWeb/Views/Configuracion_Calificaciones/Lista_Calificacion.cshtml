@@ -1,0 +1,58 @@
+﻿@model IEnumerable<ModelNucleo.Model.Configuracion_Calificacion>
+
+<table class="table">
+    <thead>
+    <tr>
+        @*<th>
+            ID
+        </th>*@
+        <th>
+            Buro
+        </th>
+        <th>
+            Calificación
+        </th>
+        <th>
+            Día Inicio
+        </th>
+        <th>
+            Día Fin
+        </th>
+        <th>
+            Saneamiento
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <!--<td>-->
+                
+                @*@Html.DisplayFor(modelItem => item.Id_Configuracion)*@
+            <!--</td>-->
+            <td>
+                <input type="hidden" value="@item.Id_Configuracion" class="id_configuracion">
+                @Html.DisplayFor(modelItem => item.Buro.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Calificacion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dia_Inicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dia_Fin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Saneamiento)
+            </td>
+            <td>
+                <input href="#Mantenimiento_Adicional_Configuracion" data-toggle="modal" type="button" value="Editar" class="btn btn-default editar_calificacion"  />
+          
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

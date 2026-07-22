@@ -1,0 +1,57 @@
+﻿@model IEnumerable<ModelNucleo.Model.Ahorro>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Cuenta
+                    </th>
+                    <th>
+                        Apertura
+                    </th>
+                    <th >
+                        Saldo
+                    </th>
+                    <th>
+                        Última Transacción
+                    </th>
+                    <th>
+                        Interés Anual Efectivo
+                    </th>
+                    <th>
+                        Capitalizable
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.No_Ahorro)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Fecha_Apertura)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Saldo_Actual)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Ultima_Fecha_Traslado)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Tasa_Interes)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Mes_Capitalizable)
+                        </td>
+                        <td>
+                            <input type="hidden" value="@item.Id_Ahorro" class="id_ahorro_valor" />
+                            <a href="#" class="ver_transacciones_ahorro">Transacciones</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>

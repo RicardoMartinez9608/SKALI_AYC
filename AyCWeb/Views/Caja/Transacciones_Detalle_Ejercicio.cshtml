@@ -1,0 +1,149 @@
+﻿@model ModelNucleo.Model.ModelView.CajaVista
+
+@{
+    ViewData["Title"] = "Transacciones Detalle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<input type="hidden" id="fecha" value="@ViewBag.Fecha"/>
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Transacciones Detalle</div>
+    <div class="panel-body panel-body-personalizado">
+
+        <div class="well">
+            <form action="@Url.Action("Transacciones_Detalle_Ejercicio","Caja")">
+                Fecha del ejercicio: <input type="date" name="fecha" class="form-control" />
+                <input type="submit" class="btn btn-default" value="Cargar detalle" />
+            </form>
+        </div>
+
+        <hr />
+        @if(Model !=null)
+        {
+
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a role="button" id="abrir_entradas" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Entradas @Model.Entrada.ToString("C")
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+
+                        <div class="panel-group" id="accordion1" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne1">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" id="pagos_detalle" data-parent="#accordion1" href="#collapseOne1" aria-expanded="true" aria-controls="collapseOne1">
+                                            Créditos: 
+                                            Capital:$<span id="capital"></span> 
+                                            Comisión:$<span id="comision"></span>
+                                            Interés:$<apan id="interes"></apan>
+                                            IVA:$<apan id="ivasobrecomision"></apan>
+                                            Recargo:$<apan id="recargo"></apan>
+                                            Resumen:$<apan id="resumen"></apan>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne1">
+                                    <div class="panel-body">
+                                        <div id="mostrar_detalle_pago"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingTwo1">
+                                    <h4 class="panel-title">
+                                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion1" href="#collapseTwo1" aria-expanded="false" aria-controls="collapseTwo1">
+                                            Depósitos: <span id="deposito_caja"></span>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseTwo1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo1">
+                                    <div class="panel-body">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Salidas @Model.Salida.ToString("C")
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        }
+    </div>
+</div>
+<script>
+    $(function () {
+        Entradas();
+        AbrirEntradas();
+    });
+
+    function Entradas() {
+        var fecha = $("#fecha").val();
+            /*Mostrar los depositos*/
+            $.get("@Url.Action("Deposito_Caja", "Caja")",
+                {
+                    fecha: fecha
+                }, function (depositoresumen) {
+                    $("#deposito_caja").text(depositoresumen);
+            });
+
+            $.get("@Url.Action("Pagos_Caja", "Caja")",
+                {
+                    fecha: fecha
+                }, function (pagoscreditos) {
+
+                    $("#capital").text(pagoscreditos.capital);
+                    $("#comision").text(pagoscreditos.comision);
+                    $("#interes").text(pagoscreditos.interes);
+                    $("#ivasobrecomision").text(pagoscreditos.iVASobreComision);
+                    $("#recargo").text(pagoscreditos.recargo);
+                    $("#resumen").text(pagoscreditos.resumen);
+                    Mostrar_Pagos_Detalles();
+            });
+    }
+
+    function AbrirEntradas() {
+        $("#abrir_entradas").click(function () {
+            Entradas();
+        });
+    }
+
+    function Mostrar_Pagos_Detalles() {
+        $("#pagos_detalle").click(function () {
+            Cargar_Pagos_Detalle();
+        });
+    }
+
+    function Cargar_Pagos_Detalle() {
+        var fecha = $("#fecha").val();
+        $.get("@Url.Action("Pagos_Caja_Detalle", "Caja")",
+            {
+                fecha: fecha
+            }, function (pagosdetalle) {
+                $("#mostrar_detalle_pago").html(pagosdetalle);
+            });
+    }
+
+</script>

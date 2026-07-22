@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Atajos</h4>
+            </div>
+            <div class="col-lg-6 text-right">
+                <a href="@Url.Action("Index","Acceso_Directo")" class="btn btn-default">
+                    <span class="glyphicon glyphicon-heart"></span> Nuevo Atajo
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body panel-body-personalizado" id="mis_atajos">
+    </div>
+</div>
+<script>
+    $(function () {
+        Cargar_Opciones();
+    });
+
+    function Cargar_Opciones() {
+        $.get("@Url.Action("Mis_Atajos", "Acceso_Directo")",
+            function (opciones) {
+                $("#mis_atajos").html(opciones);
+        });
+    }
+</script>

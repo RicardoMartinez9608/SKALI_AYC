@@ -1,0 +1,135 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.ComiteAmpliadoDetalle>
+
+@{
+    ViewData["Title"] = "Comités Ampliado Pendiente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Comités pendientes</div>
+    <div class="panel-body panel-body-personalizado">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Código Credito</th>
+                    <th>Monto Solicitado</th>
+                 
+                    <th>Verificar Informacion</th>
+                    <th>Aprobar Comité</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.Cliente.NombreCompleto
+                        </td>
+                        <td>
+                            @item.Credito.Codigo_Credito
+                        </td>
+                        <td>
+                            @item.Credito.Monto_pago
+                        </td>
+                       
+                         <td>
+                            <input type="hidden" value="@item.Comite_Ampliado.Id_Comite_Ampliado" class="id_comite">
+                            <a href="#Detalle_Fotografia_Comite" data-toggle="modal" class="ver_detalle">Verificar Documentacion</a>
+                         </td>
+                            <td>
+                                
+                            <input type="hidden" value="@item.Credito.Id_Credito" class="id_aprobar_ampliado">
+                                <a href="#Mantenimiento" data-toggle="modal" class="ver_detalle_aprobacion">Aprobar Comité</a>
+                            </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<div class="modal fade" id="Mantenimiento">
+    <div class="modal-dialog" style="width:800px">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title">Aprobación Comité de Crédito</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="detalle_linea_credito"></div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+ <div class="modal fade" id="Detalle_Fotografia_Comite">
+            <div class="modal-dialog" style="width:50%" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a href="#" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </a>
+                        <h4 class="modal-title" id="titulo_sub_modal_grupal">Detalle Comité</h4>
+                    </div>
+                    <div class="modal-body Detalle">
+
+                    </div>
+                </div>
+            </div>
+</div>
+<script>
+
+     $(document).ready(function () {
+            
+        Abrir_Documentos(); 
+        Mostrar_Detalle()
+     
+    });
+      function Abrir_Documentos() {
+                    $("a.ver_detalle").each(function (index) {
+           
+                    $("a.ver_detalle").eq(index).click(function () {
+                             var IdComiteAmpliado = $("input.id_comite").eq(index).val();
+
+                            $.get("@Url.Action("Detalle_Comite_Ampliado", "Comite")",
+                            { IdComiteAmpliado: IdComiteAmpliado },
+                                function (perfil) {
+                            $("div.Detalle").html(perfil);
+                            });
+                            
+                        });
+                     });
+      }
+
+    function Mostrar_Detalle() {
+        $("a.ver_detalle_aprobacion").each(function (index) {
+            $("a.ver_detalle_aprobacion").eq(index).click(function () {
+                var id_credito = $("input.id_aprobar_ampliado").eq(index).val();
+                Detalle_Comite(id_credito);
+            });
+        });
+    }
+    function Detalle_Comite(id_credito) {
+        $.get("@Url.Action("DetalleAptobacionComiteAmpliado", "Comite")",
+            {
+                id_credito: id_credito
+            },
+            function (detalle) {
+                $("div.detalle_linea_credito").html(detalle);
+
+            });
+    }
+</script>

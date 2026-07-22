@@ -1,0 +1,97 @@
+﻿@model ModelNucleo.Model.ModelView.RegisterDto
+@{
+    ViewData["Title"] = "Manejo de usuarios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Manejo de Usuario</h4>
+            </div>
+            <div class="col-lg-6 text-right">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="buscar_usuario" placeholder="Buscar usuario">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" data-toggle="collapse" data-target="#NuevoUsuarioPanel" aria-expanded="true" aria-controls="NuevoUsuarioPanel">
+                            Nuevo Usuario 
+                            <span class="caret"></span>
+                        </button>
+                    </span>
+                </div><!-- /input-group -->
+            </div>
+        </div>
+    
+    </div>
+    <div class="panel-body">
+
+        <div class="panel panel-default collapse" aria-expanded="true" id="NuevoUsuarioPanel">
+            <div class="panel-heading">Nuevo Usuario</div>
+            <div class="panel-body">
+                <div class="formRegistroUsuario">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        Correo:
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        Usuario
+                        <input asp-for="User" class="form-control" />
+                        <span asp-validation-for="User" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        Contraseña
+                        <input asp-for="Password" class="form-control" type="password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Registrar" class="btn btn-default guardarUsuario" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p></p>
+        <div class="panel panel-default">
+            <div class="panel-heading">Usuarios Creados</div>
+            <div class="panel-body">
+                <div class="listaUsuario"></div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+
+        function BuscarUsuario() {
+            $("#buscar_usuario").keyup(function () {
+                var busqueda = $("#buscar_usuario").val();
+                CargarListaUsuarios(busqueda);
+            });
+            //$("#Email").keyup(function () {
+            //    var busqueda = $("#Email").val();
+            //    CargarListaUsuarios(busqueda);
+            //});
+        }
+        
+        function CargarListaUsuarios(busqueda) {
+            $.get("@Url.Action("ListaUsuarios","Home")",
+                { busqueda: busqueda }
+                , function (tablaUsuarios) {
+                $(".listaUsuario").html(tablaUsuarios);
+            });
+        }
+
+        $(".guardarUsuario").click(function () {
+            var registro = $(".formRegistroUsuario").serializeAnything();
+            $.post("@Url.Action("RegistrarNuevoUsuario","Home")", registro, function () { 
+                var busqueda = $("#User").val();
+                CargarListaUsuarios(busqueda);
+            });
+        });
+            $(document).ready(function () {
+                BuscarUsuario();
+            });
+    </script>
+}

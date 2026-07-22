@@ -1,0 +1,62 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Catalogo_Evaluacion_Referencia_Guardada>
+
+@{
+    ViewData["Title"] = "";
+    Layout = "";
+
+    Referencia_Encabezado encabezado = ViewBag.Encabezado;
+}
+
+        <table class="table table-bordered">
+            <tr>
+                <td>Socio:</td>
+                <td>@encabezado.nombre_socio</td>
+            </tr>
+            <tr>
+                <td>Referencia:</td>
+                <td>@encabezado.nombre_referencia</td>
+            </tr>
+            <tr>
+                <td><span class="glyphicon glyphicon-earphone"></span> Teléfono disponible:</td>
+                <td>@encabezado.telefono_disponible</td>
+            </tr>
+            <tr>
+                <td>Tipo:</td>
+                <td>@encabezado.tipo_referencia</td>
+            </tr>
+        </table>
+
+
+        <input type="hidden" value="@encabezado.id_referencia" class="id_referencia_bateria" />
+        <hr />
+        <div style="overflow-y:auto; height:435px">
+            @foreach (var item in Model)
+            {
+                <div class="panel panel-default procesamiento_@item.Pregunta_catalogo.Id_Pregunta">
+                    <div class="panel-heading">
+                        @item.Pregunta_catalogo.Contenido
+                    </div>
+                    <div class="panel-body">
+
+                        @if (item.Id_Respuesta_Contestada > 0)
+                        {
+                            <span style="color:green;font-weight:800">@item.Pregunta_catalogo.Respuestas.Single(d => d.Id_Respuesta == item.Id_Respuesta_Contestada).Contenido</span>
+                        }
+                        else
+                        {
+                            <ul class="list-group">
+                                @foreach (var respuesta in item.Pregunta_catalogo.Respuestas)
+                                {
+                                    string compuesta = string.Format("id_respuesta_{0}", respuesta.Id_Pregunta);
+                                    <li class="list-group-item">
+                                        <input type="hidden" value="@respuesta.Id_Pregunta" class="id_pregunta" />
+                                        <input type="radio" name="@compuesta" value="@respuesta.Id_Respuesta" class="enviar_respuesta" />
+                                        @respuesta.Contenido
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            }
+        </div>

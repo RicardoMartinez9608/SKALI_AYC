@@ -1,0 +1,9 @@
+﻿@model IEnumerable<ModelNucleo.Model.Factura_Servicio>
+
+<select name="Id_Factura_Servicio_Basico" id="Id_Factura_Servicio_Basico" class="form-control">
+    <option value="0">Seleccione una Concepto</option>
+    @foreach (var item in Model)
+    {
+        <option value="@item.Id_Factura_Servicio">@item.Concepto</option>
+    }
+</select>

@@ -1,0 +1,125 @@
+﻿
+@{
+    ViewData["Title"] = "Otros Cobros";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string baseUrl = Html.ViewContext.HttpContext.Request.PathBase.Value.ToString();
+
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        Otros Cobros
+    </div>
+    <div class="panel-body panel-body-personalizado">
+
+        <div class="row">
+            <div class="col-lg-4">
+                    <input id="id_persona_valor" type="hidden" />
+                    <input type="text" name="dui_buscar" id="dui_buscar" placeholder="introduzca un DUI/Código válido completo" class="form-control" />
+            </div>
+            <div class="col-lg-4">
+                <div class="input-group">
+                    <input type="date" name="fecha" id="fecha_credito" placeholder="Fecha documentos" class="form-control" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="buscarpordui">Buscar</button>
+                    </span>
+
+                </div>
+            </div>
+
+        </div>
+        <p></p>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <table>
+                    <tr>
+                        <th>Nombre completo: </th>
+                        <td><span class="nombre_completo"></span></td>
+                    </tr>
+                    <tr>
+                        <th>DUI: </th>
+                        <td><span class="dui"></span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <p></p>
+
+        <div class="list-group">
+            <a href="#modal_detalle" class="list-group-item" id="mostrar_libreta" data-backdrop="false" data-toggle="modal">Nueva Libreta</a>
+            <a href="#modal_detalle" class="list-group-item" id="mostrar_accion" data-backdrop="false" data-toggle="modal">Acción</a>
+            <a href="#modal_detalle" id="mostrar_estructuracion" class="list-group-item" data-backdrop="false" data-toggle="modal">Cobro de Estructuración de Crédito</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_detalle">
+    <div class="modal-dialog" style="width:50%">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div class="btn-group pull-right" role="group" aria-label="...">
+                    <button class="btn btn-danger " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span> Cerrar
+                    </button>
+                </div>
+
+                <h4 class="modal-title" id="titulo_disposicion"></h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="detalle"></div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal_detalle_cobro">
+    <div class="modal-dialog" style="width:800px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title">Registrar cobro</h4>
+            </div>
+
+            <div class="modal-body">
+                No Acción: <b class="codigo_seleccionado"></b>
+
+                <div class="form-group">
+                    <input type="button" id="registrar_cobro" value="Registrar cobro" class="form-control" />
+                </div>
+
+            </div> <!-- /.modal-body -->
+
+        </div>
+    </div>
+</div>
+
+<link href="~/css/ventanas.css" rel="stylesheet" />
+
+
+<script src="~/js/manejo/manejo_caja.js"></script>
+
+<script>
+    $(function () {
+        constructor("@baseUrl");
+    });
+
+    $(function() {
+        var now = new Date();
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+        var today = now.getFullYear() + "-" + (month) + "-" + (day);
+        $("#fecha_credito").val(today);
+    });
+</script>

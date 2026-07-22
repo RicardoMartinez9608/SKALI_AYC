@@ -1,0 +1,45 @@
+﻿@model AyCWeb.Models.LoginView
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.min.css" />
+    <link href="~/css/Login.css" rel="stylesheet" />
+    <title>Login</title>
+</head>
+<body>
+    @*<environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>*@
+<div class="container">
+    <div class="card card-container">
+        <img id="profile-img" class="profile-img-card" src="~/images/logo.png" />
+        <p id="profile-name" class="profile-name-card"></p>
+        <form asp-action="Login" class="form-signin">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <label asp-for="Usuario" class="control-label"></label>
+                <input asp-for="Usuario" id="inputEmail" class="form-control" />
+                <span asp-validation-for="Usuario" class="text-danger"></span>
+
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" id="inputPassword" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+
+                <input type="submit" value="Acceder" class="btn btn-lg btn-primary btn-block btn-signin" />
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+</body>
+</html>

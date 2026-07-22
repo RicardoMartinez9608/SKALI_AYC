@@ -1,0 +1,67 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Capitalizacion>
+@{
+    Layout = "";
+}
+<style>
+    .fila-excluida {
+        background-color: #f8d7da !important;
+        color: #721c24;
+    }
+
+        .fila-excluida td {
+            text-decoration: line-through;
+        }
+</style>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Cuentahabiente
+            </th>
+            <th>
+                Cuenta
+            </th>
+            <th>
+                Última Capitalización
+            </th>
+            <th>
+                Saldo
+            </th>
+            <th>
+                Interés Aplicado
+            </th>
+            <th>Estado</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr data-id="@item.Id_Ahorro">
+                <td class="nombre-ahorrante">@Html.DisplayFor(modelItem => item.CuentaHabiente)</td>
+                <td>@Html.DisplayFor(modelItem => item.Cuenta)</td>
+                <td>@Html.DisplayFor(modelItem => item.UltimaCapitalizacion)</td>
+                <td>@Html.DisplayFor(modelItem => item.Saldo)</td>
+                <td>
+                    <input disabled class="valor-capitalizar" value="@item.Interes_Aplicar" />
+                </td>
+              
+
+                <td class="estado-capitalizacion">
+                    <span class="label label-success">
+                        Incluido
+                    </span>
+                </td>
+
+                <td>
+                    <button type="button"
+                            class="btn btn-warning btn-sm excluir-registro">
+                        Excluir
+                    </button>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+<input type="hidden" value="@ViewBag.Ids" id="array_lista">

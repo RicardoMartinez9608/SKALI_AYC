@@ -1,0 +1,87 @@
+﻿@model IEnumerable<ModelNucleo.Dto.DepositoPorVencer>
+
+@if (Model.Any())
+{
+    <table class="table table-bordered">
+
+        <thead>
+
+            <tr>
+
+                <th>Cliente</th>
+
+                <th>Cuenta</th>
+
+                <th>Vence</th>
+
+                <th>Días</th>
+
+                <th>Contacto</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+
+                <tr class="@(item.ColorAlerta=="danger"?"danger":
+                                 item.ColorAlerta == "warning" ? "warning" : "success")">
+
+            <td>@item.CuentaHabiente</td>
+
+                    <td>@item.Cuenta</td>
+
+                    <td>@item.FechaVencimiento.ToShortDateString()</td>
+
+                    <td>
+
+                @if (item.DiasRestantes < 7)
+                        {
+                            <span class="label label-danger">
+                                🔴 @item.DiasRestantes días
+                            </span>
+                        }
+                        else if (item.DiasRestantes < 15)
+                        {
+                            <span class="label label-warning">
+                                🟠 @item.DiasRestantes días
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="label label-success">
+                                🟢 @item.DiasRestantes días
+                            </span>
+                        }
+
+                    </td>
+
+                    <td>
+
+                        @item.Telefono
+
+                        <br />
+
+                        @item.Celular
+
+                    </td>
+
+                </tr>
+
+            }
+
+        </tbody>
+
+    </table>
+}
+else
+{
+    <div class="alert alert-success">
+
+        No existen depósitos próximos a vencer.
+
+    </div>
+}

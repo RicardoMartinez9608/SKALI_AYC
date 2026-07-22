@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewData["Title"] = "Reporte Movimiento Contabilidad";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Reporte Movimiento Contabilidad</div>
+    <div class="panel-body">
+        <div class="well">
+            <div class="row">
+                <div class="col-md-3" id="agencias">
+                    <div class="form-group">
+                        <div id="id_agencia"></div>
+                    </div>
+                </div>
+              
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input type="date" name="fecha" class="form-control" id="fecha" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-default" id="Cargar">Cargar Datos</button>
+                </div>
+
+            </div>
+          
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">Movimientos Diarios Contables</div>
+            <div class="panel-body">
+                <div id="listapagos"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        ListaCarteras();
+        Cargar_Agencias();
+        Reporte_Carteras();
+    });
+   function ListaCarteras() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol == "Administrador") {
+            $("#Id_Agencia").change(function () {
+                var id_agencia = $("#Id_Agencia").val();
+                $.get("@Url.Action("Carteras", "Componentes")?id_agencia="+id_agencia, function (agencias) {
+                    $("#id_cartera").html(agencias);
+                });
+            });
+
+        } else if (rol == "") {
+            $("#agencias").css("display", "none");
+            $("#carteras").css("display", "none");
+        }else {
+            $("#agencias").css("display", "none");
+            Cargar_Carteras_Agencia();
+        }
+    }
+   function Cargar_Agencias() {
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia").html(agencias);
+            ListaCarteras();
+        });
+   }
+
+
+
+  
+    function Reporte_Carteras() {
+        $("#Cargar").click(function () {
+            var fecha = $("#fecha").val();
+            var id_agencia = $("#Id_Agencia").val();
+             $.get("@Url.Action("Reporte_Movimiento_Diario_Contabilidad", "Reporteria")",
+                 {
+                     fecha_reporte:fecha,
+                     id_agencia: id_agencia
+                 },
+            function (lista) {
+                $("#listapagos").html(lista);
+                Verificar_Partida();
+            });
+        });
+    }
+        function Verificar_Partida() {
+            $("input.id_asiento").each(function (index) {
+                $("input.id_asiento").eq(index).click(function () {
+                    var id_asiento_contable = $("input.id_asiento").eq(index).val();
+                     alertify.confirm('Confirmación',
+                        '¿Quieres Verificar la Partida Contable?',
+                        function() {
+                               $.post("@Url.Action("Verificar_Partida", "Reporteria")",
+                    {
+                        id_asiento_contable: id_asiento_contable
+                    },
+                    function (resultado) {
+                        alertify.success(resultado);
+                    }).fail(function (badrequest) {
+                    alertify.error(badrequest.responseText);
+            });
+                        },
+                        function() {
+                            alertify.error('Operación Cancelada');
+                        });
+
+                });
+            });
+    }
+
+</script>

@@ -1,0 +1,350 @@
+﻿@model ModelNucleo.Model.ModelView.Credito_Amortizacion
+@{
+    ViewData["Title"] = "Detalle del crédito y Amortización";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Detalle del crédito y Amortización, cliente: @Model.Cliente.Nombres @Model.Cliente.Apellidos</div>
+    <div class="panel-body panel-body-personalizado">
+        <div class="bs-example bs-example-tabs" data-example-id="togglable-tabs">
+            <ul id="myTabs" class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#amortizacion" id="amortizacion-tab" role="tab" data-toggle="tab" aria-controls="amortizacion" aria-expanded="true">Amortización</a></li>
+                <li role="presentation"><a href="#cliente" role="tab" id="cliente-tab" data-toggle="tab" aria-controls="cliente">Cliente</a></li>
+                <li role="presentation"><a href="#credito" role="tab" id="credito-tab" data-toggle="tab" aria-controls="credito">Crédito</a></li>
+            </ul>
+
+            <div id="myTabContent" class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="amortizacion" aria-labelledBy="amortizacion-tab">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    No
+                                </th>
+                                <th>
+                                    Fecha pago
+                                </th>
+                                <th>
+                                    Dias
+                                </th>
+                                <th>
+                                    Interés
+                                </th>
+                                <th>
+                                    Plan AyC
+                                </th>
+                                <th>
+                                    IVA AyC
+                                </th>
+                                <th>
+                                    Otros Cobros
+                                </th>
+                                <th>
+                                    Abono Capital
+                                </th>
+                                <th>
+                                    Valor Cuota
+                                </th>
+                                <th>
+                                    Saldo Capital
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Amortizacion)
+                    {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.No)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FechaPago)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Dias)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Interes)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Comision)
+                                </td>
+                                <td>
+                                    @*@Html.DisplayFor(modelItem => item.IvaSobreComision)*@
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Otros_Cobros)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Abono_capital)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Valor_Cuota)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Saldo_Capital)
+                                </td>
+
+                            </tr>
+            }
+                        </tbody>
+                    </table>
+                    <form action="@Url.Action("Amortizacion", "Reporteria")" method="get" target="_blank">
+                        <input type="hidden" name="id_linea" value="@Model.Credito.Id_Linea" />
+                        <input type="hidden" name="monto" value="@Model.Credito.Monto_pago" />
+                        <input type="hidden" name="id_periodo" value="@Model.Credito.Periodo.Id_Periodo" />
+                        <input type="hidden" name="plazo" value="@Model.Credito.Plazo" />
+                        <input type="hidden" name="id_credito" value="@Model.Credito.Id_Credito" />
+                        <input type="hidden" name="numero_cuotas" value="@Model.Credito.Numero_cuotas" />
+                        <input type="submit" value="Exportar" id="Exportar" />
+                    </form>
+
+                    
+                    <script>
+                        $(function () {
+                            $("#Exportar").click(function () {
+                                $("input[name='GridHtml']").val($("#amortizacion").html());
+                            });
+                        });
+                        
+                    </script>
+                </div>
+
+                <div role="tabpanel" class="tab-pane fade" id="cliente" aria-labelledBy="cliente-tab">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Nombres)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Nombres)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Apellidos)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Apellidos)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Telefono)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Telefono)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Nit)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Nit)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Dui)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Dui)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Pasaporte)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Pasaporte)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Domicilio)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Domicilio)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.FechaNacimiento)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.FechaNacimiento)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.ExpedicionDocumentoIdentifcacion)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.ExpedicionDocumentoIdentifcacion)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.ExpiracionDocumentoIdentificacion)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.ExpiracionDocumentoIdentificacion)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.ISSS)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.ISSS)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.NUP)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.NUP)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.EstadoFamiliar)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.EstadoFamiliar)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Sexo)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Sexo)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Ocupacion)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Ocupacion)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Profesion)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Profesion)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Nacionalidad)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Nacionalidad)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.ConocidoPor)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.ConocidoPor)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Usuario)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Usuario)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Contrasena)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Contrasena)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Correo)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Correo)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Cartera)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Cartera.Id_Cartera)
+                        </dd>
+                    </dl>
+                </div>
+
+                <div role="tabpanel" class="tab-pane fade" id="credito" aria-labelledBy="credito-tab">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Codigo_Credito)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Codigo_Credito)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Aprobado)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Aprobado)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Aprobado_En)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Aprobado_En)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Liquidado_En)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Liquidado_En)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Interes_Comision)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Interes_Comision)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Monto_pago)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Monto_pago)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Plazo)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Plazo)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Numero_cuotas)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Numero_cuotas)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Periodo.Descripcion)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Periodo.Descripcion)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Valor_Cuota)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Valor_Cuota)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Interes)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Interes)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Valor_IVA)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Valor_IVA)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Cuota_Total)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Cuota_Total)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Linea_Credito)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Linea_Credito.Id_Linea)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Persona)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Persona.Id_Persona)
+                        </dd>
+                    </dl>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+﻿@model ModelNucleo.Model.Evaluacion_Tecnica.Cuenta_Cobrar
+
+@{
+    ViewData["Title"] = "Modificar Cuentas por Cobrar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<br />
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Modificar Cuentas por Cobrar</div>
+    <div class="panel-body">
+        <form asp-action="Modificar_Cuenta_Cobrar">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Id_Cuenta_Cobrar" type="hidden" class="form-control" />
+            <input asp-for="Id_Evaluacion" type="hidden" class="form-control" />
+            
+            <div class="form-group">
+                <label asp-for="Recuperado" class="control-label">Recuperado</label>
+                <input asp-for="Recuperado" class="form-control" />
+                <span asp-validation-for="Recuperado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Completo" class="control-label">Completo</label>
+                <input asp-for="Completo" class="form-control" />
+                <span asp-validation-for="Completo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+

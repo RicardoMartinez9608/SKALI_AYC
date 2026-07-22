@@ -1,0 +1,249 @@
+﻿@model ModelNucleo.Model.ModelView.DetalleComite
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Comités pendientes</div>
+    <div class="panel-body panel-body-personalizado">
+        <div class="bs-example bs-example-tabs" data-example-id="togglable-tabs">
+            <ul id="myTabs" class="nav nav-tabs" role="tablist">
+               
+                <li role="presentation" ><a href="#cliente" role="tab" id="cliente-tab" data-toggle="tab" aria-controls="cliente">Información Cliente</a></li>
+                <li role="presentation"><a href="#credito" role="tab" id="credito-tab" data-toggle="tab" aria-controls="credito">Crédito</a></li>
+                <li role="presentation"><a href="#comite" role="tab" id="comite-tab" data-toggle="tab" aria-controls="comite">Comité</a></li>
+                <li role="presentation" ><a href="#aprobacion" id="aprobacion-tab" role="tab" data-toggle="tab" aria-controls="aprobacion" aria-expanded="true">Aprobación</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="aprobacion" aria-labelledBy="aprobacion-tab">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input type="hidden" asp-for="ComiteActivo.Id_Comite" />
+
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input asp-for="ComiteActivo.Aprobado" /> @Html.DisplayNameFor(model => model.ComiteActivo.Aprobado)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ComiteActivo.Comentario" class="control-label"></label>
+                                <textarea  asp-for="ComiteActivo.Comentario" class="form-control" ></textarea>
+                                <span asp-validation-for="ComiteActivo.Comentario" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Guardar" class="btn btn-default actualizarComite" />
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        $(".actualizarComite").click(function (event) {
+                            event.preventDefault();
+                            var id_comite = $("#ComiteActivo_Id_Comite").val();
+                            var aprobado = $("#ComiteActivo_Aprobado").is(":checked");
+                            var comentario = $("#ComiteActivo_Comentario").val();
+                            $.post("@Url.Action("AprobacionComite", "Comite")",
+                                {
+                                    id_comite: id_comite,
+                                    aprobado: aprobado,
+                                    comentario: comentario
+                                },
+                                function (resultado) {
+                                    alertify.success(resultado);
+                                    window.location.href = "@Url.Action("ComitesPendientes", "Comite")?verificado=" + false;
+                                }).fail(function (error) {
+                                    alertify.error(error.responseText);
+                                });
+                        });
+                    </script>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="cliente" aria-labelledBy="cliente-tab">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Nombres)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Nombres)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Apellidos)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Apellidos)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Dui)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Dui)
+                        </dd>
+                       
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Domicilio)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Domicilio)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.FechaNacimiento)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.FechaNacimiento)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.EstadoFamiliar)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.EstadoFamiliar)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Ocupacion)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Ocupacion)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Profesion)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Profesion)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Nacionalidad)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Nacionalidad)
+                        </dd>
+                      
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cliente.Cartera.Colector)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cliente.Cartera.Colector)
+                        </dd>
+                    </dl>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="credito" aria-labelledBy="credito-tab">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Codigo_Credito)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Codigo_Credito)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Aprobado)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Aprobado)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Aprobado_En)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Aprobado_En)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Liquidado_En)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Liquidado_En)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Interes_Comision)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Interes_Comision)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Monto_pago)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Monto_pago)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Plazo)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Plazo)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Numero_cuotas)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Numero_cuotas)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Periodo.Descripcion)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Periodo.Descripcion)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Valor_Cuota)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Valor_Cuota)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Interes)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Interes)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Valor_IVA)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Valor_IVA)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Cuota_Total)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Cuota_Total)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Linea_Credito)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Linea_Credito.Id_Linea)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Credito.Persona)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Credito.Persona.Id_Persona)
+                        </dd>
+                    </dl>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="comite" aria-labelledBy="comite-tab">
+                    <div class="list-group">
+                        @foreach (var item in Model.Comites)
+                        {
+                            <p class="list-group-item">
+                                Usuario: @item.Id_Usuario <br />
+                                @item.Fecha_Verificado<br />
+                                @item.Comentario
+                                @if (item.Verificado)
+                                {
+                                    @if (item.Aprobado)
+                                    {
+                                        @string.Format("Aprobado")
+                                    }
+                                    else
+                                    {
+                                        @string.Format("Desaprobado")
+                                    }
+                                }
+                                else
+                                {
+                                    @string.Format("Sin verificar")
+                                }
+                            </p>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

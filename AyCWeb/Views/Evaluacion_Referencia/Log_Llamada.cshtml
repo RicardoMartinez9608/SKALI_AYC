@@ -1,0 +1,27 @@
+﻿@model ModelNucleo.Model.Llamada_Telefonica_Referencia
+@using DevExtreme.AspNet.Mvc
+
+<div class="row">
+    <div class="col-md-4">
+        <form id="agendar_llamada">
+
+            <input asp-for="Id_Llamada_Telefonica_Referencia" type="hidden" class="form-control" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input asp-for="Id_Referencia" class="form-control" type="hidden" value="@ViewBag.Id_Referencia"/>
+            <input asp-for="Usuario" class="form-control" type="hidden" />
+            <input asp-for="Efectuado_En" class="form-control" type="hidden" />
+            <input asp-for="Intentos" class="form-control" type="hidden" value="0" />
+            <input asp-for="Registrado_Para" type="hidden"/>
+            <div class="input-group-btn">
+                <input type="button" value="Llamar" id="Guardar_Llamada" class="btn btn-default" />
+            </div>
+            @*<div class="form-group">
+                <input type="button" value="Guardar" id="Guardar_Llamada" class="btn btn-default" />
+            </div>*@
+        </form>
+    </div>
+</div>
+
+<div id="agenda_para_referencia"></div>

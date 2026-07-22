@@ -1,0 +1,67 @@
+﻿@model ModelNucleo.Model.Linea_Credito
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+<h4>Linea_Credito</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id_Linea" />
+            <div class="form-group">
+                <label asp-for="Codigo" class="control-label"></label>
+                <input asp-for="Codigo" class="form-control" />
+                <span asp-validation-for="Codigo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion_linea" class="control-label"></label>
+                <input asp-for="Descripcion_linea" class="form-control" />
+                <span asp-validation-for="Descripcion_linea" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tipo_Garantia" class="control-label"></label>
+                <input asp-for="Tipo_Garantia" class="form-control" />
+                <span asp-validation-for="Tipo_Garantia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Interes_Comision" class="control-label">Interés más comisión</label>
+                <input asp-for="Interes_Comision" class="form-control" />
+                <span asp-validation-for="Interes_Comision" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tasa_Mora" class="control-label"></label>
+                <input asp-for="Tasa_Mora" class="form-control" />
+                <span asp-validation-for="Tasa_Mora" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Recargo" class="control-label"></label>
+                <input asp-for="Recargo" class="form-control" />
+                <span asp-validation-for="Recargo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Dia_Gracia" class="control-label"></label>
+                <input asp-for="Dia_Gracia" class="form-control" />
+                <span asp-validation-for="Dia_Gracia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Interes" class="control-label">Interés</label>
+                <input asp-for="Interes" class="form-control" />
+                <span asp-validation-for="Interes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

@@ -1,0 +1,9 @@
+﻿@model IEnumerable<ModelNucleo.Model.Caja>
+
+<select name="Id_Usuario" id="Id_Usuario" class="form-control">
+    <option value="0">Seleccione una Caja</option>
+    @foreach (var item in Model)
+    {
+        <option value="@item.Id_Caja">@item.Id_Caja - @item.Nombre_PC</option>
+    }
+</select>

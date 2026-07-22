@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewData["Title"] = "Caja";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Caja: _________  Usuario: ________</div>
+    <div class="panel-body panel-body-personalizado">
+        <div class="row">
+
+            <div class="col-lg-2">
+                
+            </div>
+            <div class="col-lg-10">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="identificacion">Tipo código</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    <select class="form-control">
+                                        <option value="0">DUI</option>
+                                        <option value="1">Crédito</option>
+                                        <option value="2">Ahorro</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="identificacion">Código</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="identificacion" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="panel-footer">
+                        <button type="button" class="btn btn-primary">Elegir</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

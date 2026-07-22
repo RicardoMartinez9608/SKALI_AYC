@@ -1,0 +1,110 @@
+﻿@model ModelNucleo.Model.ModelView.Boveda_Cajas
+
+@{
+    ViewData["Title"] = "Detalle de Bóveda";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Bóveda Habilitada</div>
+    <div class="panel-body">
+        <dl class="dl-horizontal">
+            <dt>
+                Usuario
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Boveda.Id_Usuario)
+            </dd>
+            <dt>
+                Terminal
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Boveda.Nombre_PC)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Boveda.Activa)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Boveda.Activa)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Boveda.Boveda)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Boveda.Boveda)
+            </dd>
+        </dl>
+        <hr />
+
+        <table>
+            <tr>
+                <td>
+                    Fecha de Cierre: <input type="date" name="fecha" id="fecha_cierre" class="form-control" />
+                </td>
+            </tr>
+        </table>
+           
+       
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        No
+                    </th>
+                    <th>
+                        Usuario
+                    </th>
+                    <th>
+                        Terminal
+                    </th>
+                    <th>
+                        Activa
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Cajas)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id_Caja)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id_Usuario)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombre_PC)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Activa)
+                        </td>
+                        <td>
+                            <input type="hidden" class="id_caja" value="@item.Id_Caja"/>
+                            @Html.ActionLink("Transacciones", "Transacciones_Caja", "Caja", new {id_caja = item.Id_Caja}, new {@target = "_blank", @class = "ver_cierre"})
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<script>
+    $(function() {
+        Cargar_Fecha_Seleccionada();
+    });
+
+    function Cargar_Fecha_Seleccionada() {
+        $("#fecha_cierre").change(function() {
+            var fecha_cierre = $(this).val();
+            $("a.ver_cierre").each(function (index) {
+                var id_caja=$("input.id_caja").eq(index).val();
+                $("a.ver_cierre")
+                    .eq(index)
+                    .attr("href", "@Url.Action("Transacciones_Caja","Caja")?fecha=" + fecha_cierre+"&id_caja="+id_caja);
+            });
+        });
+    }
+</script>

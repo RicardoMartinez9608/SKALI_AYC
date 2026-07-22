@@ -1,0 +1,893 @@
+﻿
+@{
+    ViewData["Title"] = "Meta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/startmin.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+
+</head>
+<p></p>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+     
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="glyphicon glyphicon-arrow-down" style=" font-size: 50px;"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge"><h3 id="caida"></h3></div>
+                                    <div>Caida Cartera</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="glyphicon glyphicon-user" style=" font-size: 50px;"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge"><h3 id="activos"></h3></div>
+                                    <div>Clientes activos</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="glyphicon glyphicon-usd" style=" font-size: 50px;"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge"><h3 id="cartera"></h3></div>
+                                    <div>Cartera</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="glyphicon glyphicon-signal" style=" font-size: 50px;"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge"><h3 id="mora"></h3></div>
+                                    <div>Indice Mora</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="well">
+                <div class="row">
+                    <div class="col-md-3" id="agencias">
+                        <div class="form-group">
+                            <div id="id_agencia"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" id="carteras">
+                        <div class="form-group">
+                            <div id="id_cartera"></div>
+                        </div>
+                    </div>
+                
+                    <div class="col-md-2" id="mes">
+                        <div id="seleccionar" class="form-group">
+                            <select id="mes_seleccion" class="form-control">
+                                <option value="0"> Mes</option>
+                                <option value="1">Enero</option>
+                                <option value="2">Febrero</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Mayo</option>
+                                <option value="6">Junio</option>
+                                <option value="7">Julio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2" id="anio">
+                        <div id="seleccionar" class="form-group">
+                            <select id="anio_seleccion" class="form-control">
+                                <option value="0">Año</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                               
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-default" id="Cargar">Cargar Datos</button>
+                    </div>
+
+                </div>
+            </div>
+       
+    </div>
+    <div style="po">
+        <div class="panel-body">
+            <div class="panel panel-default">
+                <div class="panel-heading">Operaciones</div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td style="background-color: #DF5353; padding: 4px"> CRITICO</td>
+                                    <td style="background-color: #ECFE0C; padding: 4px"> DEFICIENTE</td>
+                                    <td style="background-color: #FE730C; padding: 4px"> ESTABLE</td>
+                                    <td style="background-color: #0CFEE4; padding: 4px"> OPTIMO</td>
+                                    <td style="background-color: #10FE0C; padding: 4px"> TOP</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="panel-body">
+                            <div id="medidor"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td style="background-color: #0CFEE4; padding: 4px"> $ 7,500</td>
+                                    <td style="background-color: #FE730C; padding: 4px"> $ 15,000</td>
+                                    <td style="background-color: #ECFE0C; padding: 4px"> $ 22,500</td>
+                                    <td style="background-color: #10FE0C; padding: 4px"> $ 30,000</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="panel-body">
+                            <div id="colecta"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="panel-body">
+                            <div id="metas"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="panel-body">
+                            <div id="cosecha"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="panel-body">
+                            <div id="colecta_asesores"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="panel-body">
+                            <div id="mora_asesores"></div>
+                            <div>
+                                <h3> <span class="label label-primary"> Diferencia de Mora:</span>  
+                                <span class="label label-warning" id="diferencia_mora"></span></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+  
+</div>
+
+@section Scripts{
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+
+}
+<script>
+    $(document).ready(function () {
+        ListaCarteras();
+        Cargar_Agencias();
+        Cargar_Medidor();
+        Cargar_Colecta();
+        Cargar_Metas();
+        Cargar_Cosesha();
+        Cargar_Colocacion_Asesor();
+        Cargar_Mora_Asesor();
+        Cargar_Fichero();
+
+        var elementPosition = $('#navigation').offset();
+
+        $(window).scroll(function () {
+            if ($(window).scrollTop() > elementPosition.top) {
+                $('#navigation').css('position', 'fixed');
+                $('#navigation').css('width', '1110px');
+                if ($(window).width() < 1200) {
+                    $('#navigation').css('width', '500px');
+                }
+              
+            } else {
+                $('#navigation').css('position', 'static');
+            }
+        });
+    });
+    function ListaCarteras() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol == "Administrador") {
+            $("#Id_Agencia").change(function () {
+                var id_agencia = $("#Id_Agencia").val();
+                $.get("@Url.Action("Carteras", "Componentes")?id_agencia="+id_agencia, function (agencias) {
+                    $("#id_cartera").html(agencias);
+                });
+            });
+
+        } else if (rol == "") {
+            $("#agencias").css("display", "none");
+            $("#carteras").css("display", "none");
+        }else {
+            $("#agencias").css("display", "none");
+            Cargar_Carteras_Agencia();
+        }
+    }
+    function Cargar_Agencias() {
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia").html(agencias);
+            ListaCarteras();
+        });
+    }
+    function Cargar_Carteras_Agencia() {
+        $.get("@Url.Action("Carteras", "Componentes")",function (agencias) {
+            $("#id_cartera").html(agencias);
+        });
+    }
+    function Cargar_Medidor() {
+        $("#Cargar").click(function () {
+            var id_cartera = $("#Id_Cartera").val();
+            var month = $("#mes_seleccion").val();
+            var anio = $("#anio_seleccion").val();
+            var id_agencia = $("#Id_Agencia").val();
+            $.get("@Url.Action("Desempeno", "Tablero")",
+                {
+                    id_cartera: id_cartera,
+                    month: month,
+                    id_agencia : id_agencia,
+                    anio : anio
+                },
+                function (data) {
+                    medidor(data);
+                });
+        });
+    }
+    function Cargar_Colecta() {
+        $("#Cargar").click(function () {
+            var id_cartera = $("#Id_Cartera").val();
+            var month = $("#mes_seleccion").val();
+            var id_agencia = $("#Id_Agencia").val();
+              var anio = $("#anio_seleccion").val();
+            $.get("@Url.Action("Colocacion", "Tablero")",
+                {
+                    id_cartera: id_cartera,
+                    month: month,
+                    id_agencia : id_agencia,
+                    anio : anio
+                },
+                function (data) {
+                    colecta(data);
+                });
+        });
+    }
+    function Cargar_Metas() {
+        $("#Cargar").click(function () {
+            var id_cartera = $("#Id_Cartera").val();
+            var month = $("#mes_seleccion").val();
+            var id_agencia = $("#Id_Agencia").val();
+             var anio = $("#anio_seleccion").val();
+            $.get("@Url.Action("Metas", "Tablero")",
+                {
+                    id_cartera: id_cartera,
+                    month: month,
+                    id_agencia : id_agencia,
+                    anio : anio
+                },
+                function (data) {
+                    metas(data.porcentaje_Clientes, data.porcentaje_Cartera, data.porcentaje_Colecta);
+                });
+        });
+    }
+    function Cargar_Cosesha() {
+          $("#Cargar").click(function () {
+            var id_cartera = $("#Id_Cartera").val();
+            var month = $("#mes_seleccion").val();
+            var id_agencia = $("#Id_Agencia").val();
+            var anio = $("#anio_seleccion").val();
+            $.get("@Url.Action("Cosesha", "Tablero")",
+                {
+                    id_cartera: id_cartera,
+                    month: month,
+                    id_agencia : id_agencia,
+                    anio : anio
+                },
+                function (data) {
+                    cosecha(data);
+                });
+        });
+    }
+     function Cargar_Colocacion_Asesor() {
+          $("#Cargar").click(function () {
+            var id_cartera = $("#Id_Cartera").val();
+            var month = $("#mes_seleccion").val();
+            var id_agencia = $("#Id_Agencia").val();
+            var anio = $("#anio_seleccion").val();
+            $.get("@Url.Action("Colocacion_Asesores", "Tablero")",
+                {
+                    id_cartera: id_cartera,
+                    month: month,
+                    id_agencia : id_agencia,
+                    anio : anio
+                },
+                function (data) {
+                    Colecta_Asesores(data);
+                });
+        });
+    }
+     function Cargar_Mora_Asesor() {
+          $("#Cargar").click(function () {
+            var id_cartera = $("#Id_Cartera").val();
+            var month = $("#mes_seleccion").val();
+            var id_agencia = $("#Id_Agencia").val();
+             var anio = $("#anio_seleccion").val();
+            $.get("@Url.Action("Mora_Asesores", "Tablero")",
+                {
+                    id_cartera: id_cartera,
+                    month: month,
+                    id_agencia : id_agencia,
+                    anio : anio
+                },
+                function (data) {
+                    Mora_Asesores(data.valores, data.fecha_completa);
+                    $("#diferencia_mora").text("$ "+data.diferencia_Mora);
+                });
+        });
+    }
+     function Cargar_Fichero() {
+          $("#Cargar").click(function () {
+            var id_cartera = $("#Id_Cartera").val();
+            var month = $("#mes_seleccion").val();
+            var id_agencia = $("#Id_Agencia").val();
+             var anio = $("#anio_seleccion").val();
+            $.get("@Url.Action("Fichero", "Tablero")",
+                {
+                    id_cartera: id_cartera,
+                    month: month,
+                    id_agencia : id_agencia,
+                    anio : anio
+                },
+                function (data) {
+
+                    $("#caida").text("$ " + data.caida_Cartera);
+                    $("#activos").text( data.no_Clientes_Activos);
+                    $("#cartera").text("$ " + data.saldo_Cartera);
+                    $("#mora").text(data.indice_Mora + "%");
+                });
+        });
+    }
+    function medidor(data) {
+        Highcharts.chart('medidor', {
+
+            chart: {
+                type: 'gauge',
+                plotBackgroundColor: null,
+                plotBackgroundImage: null,
+                plotBorderWidth: 0,
+                plotShadow: false
+            },
+
+            title: {
+                text: 'Desempeño Asesor'
+            },
+
+            pane: {
+                startAngle: -100,
+                endAngle: 100,
+                background: [{
+                    backgroundColor: {
+                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        stops: [
+                            [0, '#FFF'],
+                            [1, '#333']
+                        ]
+                    },
+                    borderWidth: 0,
+                    outerRadius: '109%'
+                }, {
+                    backgroundColor: {
+                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        stops: [
+                            [0, '#333'],
+                            [1, '#FFF']
+                        ]
+                    },
+                    borderWidth: 1,
+                    outerRadius: '107%'
+                }, {
+                    // default background
+                }, {
+                    backgroundColor: '#DDD',
+                    borderWidth: 0,
+                    outerRadius: '105%',
+                    innerRadius: '103%'
+                }]
+            },
+
+            // the value axis
+            yAxis: {
+                min: 0,
+                max: 120,
+
+                minorTickInterval: 'auto',
+                minorTickWidth: 1,
+                minorTickLength: 10,
+                minorTickPosition: 'inside',
+                minorTickColor: '#666',
+
+                tickPixelInterval: 30,
+                tickWidth: 2,
+                tickPosition: 'inside',
+                tickLength: 10,
+                tickColor: '#666',
+                labels: {
+                    step: 2,
+                    rotation: 'auto'
+                },
+                title: {
+                    text: 'Desempeño'
+                },
+                plotBands: [{
+                    from: 0,
+                    to: 59,
+                    color: '#DF5353' // green
+                }, {
+                    from: 59,
+                    to: 70,
+                    color: '#ECFE0C' // yellow
+                }, {
+                    from: 70,
+                    to: 90,
+                    color: '#FE730C' // red
+                }, {
+                    from: 90,
+                    to: 100,
+                    color: '#0CFEE4' // red
+                }, {
+                    from: 100,
+                    to: 120,
+                    color: '#10FE0C' // red
+                }]
+            },
+
+            series: [{
+                name: 'Desempeño',
+                data: [data],
+                tooltip: {
+                    valueSuffix: ' %'
+                }
+            }]
+
+        }
+        );
+    }
+    function colecta(data) {
+        Highcharts.chart('colecta', {
+
+            chart: {
+                type: 'gauge',
+                plotBackgroundColor: null,
+                plotBackgroundImage: null,
+                plotBorderWidth: 0,
+                plotShadow: false
+            },
+
+            title: {
+                text: 'Colecta Asesor'
+            },
+
+            pane: {
+                startAngle: -100,
+                endAngle: 100,
+                background: [{
+                    backgroundColor: {
+                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        stops: [
+                            [0, '#FFF'],
+                            [1, '#333']
+                        ]
+                    },
+                    borderWidth: 0,
+                    outerRadius: '109%'
+                }, {
+                    backgroundColor: {
+                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        stops: [
+                            [0, '#333'],
+                            [1, '#FFF']
+                        ]
+                    },
+                    borderWidth: 1,
+                    outerRadius: '107%'
+                }, {
+                    // default background
+                }, {
+                    backgroundColor: '#DDD',
+                    borderWidth: 0,
+                    outerRadius: '105%',
+                    innerRadius: '103%'
+                }]
+            },
+
+            // the value axis
+            yAxis: {
+                min: 0,
+                max: 125000,
+
+                minorTickInterval: 'auto',
+                minorTickWidth: 1,
+                minorTickLength: 10,
+                minorTickPosition: 'inside',
+                minorTickColor: '#666',
+
+                tickPixelInterval: 30,
+                tickWidth: 2,
+                tickPosition: 'inside',
+                tickLength: 10,
+                tickColor: '#666',
+                labels: {
+                    step: 2,
+                    rotation: 'auto'
+                },
+                title: {
+                    text: 'Colecta'
+                },
+                plotBands: [{
+                    from: 0,
+                    to: 7500,
+                    color: '#0CFEE4' // green
+                }, {
+                    from: 7500,
+                    to: 15000,
+                    color: '#FE730C' // yellow
+                }, {
+                    from: 15000,
+                    to: 22500,
+                    color: '#ECFE0C' // red
+                }, {
+                    from: 22500,
+                    to: 30000,
+                    color: '#10FE0C' // red
+                }, {
+                    from: 30000,
+                    to: 125000,
+                    color: '#00B400' // red
+                }]
+            },
+
+            series: [{
+                name: 'Colecta',
+                data: [data],
+                tooltip: {
+                    valueSuffix: ' $'
+                }
+            }]
+
+        }
+        );
+    }
+    function metas(clientes, cartera,colecta ) {
+        Highcharts.chart('metas', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Metas por Asesor/Agencia'
+            },
+            xAxis: {
+                categories: null,
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Porcentaje',
+                    align: 'high'
+                },
+                labels: {
+                    overflow: 'left'
+                }
+            },
+            tooltip: {
+                valueSuffix: 'Porcentaje'
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: 19,
+                y: 70,
+                floating: false,
+                borderWidth: 1,
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Clientes',
+                data: [clientes],
+                color: '#06ED06'
+            },{
+                name: 'Cartera',
+                data: [cartera],
+                color: '#FF8300'
+             },{
+                name: 'Colecta',
+                data: [colecta],
+                color: '#06EDE6'
+            }]
+        });
+    }
+    function cosecha(data) {
+        if (data <= 3) {
+            Highcharts.chart('cosecha', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Cosecha Asesor'
+                },
+                accessibility: {
+                    announceNewData: {
+                        enabled: true
+                    }
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Porcentaje'
+
+                    }
+
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+
+                series: [
+                    {
+                        name: "Cosecha",
+                        colorByPoint: true,
+                        data: [
+                            {
+                                color: '#24D615',
+                                y: data
+                            },
+                            {
+
+                            }
+                        ]
+                    }
+                ]
+            });
+        } else {
+            Highcharts.chart('cosecha', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Cosecha Asesor'
+                },
+                accessibility: {
+                    announceNewData: {
+                        enabled: true
+                    }
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Porcentaje'
+
+                    }
+
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+
+                series: [
+                    {
+                        name: "Cosecha",
+                        colorByPoint: true,
+                        data: [
+                            {
+                                color: '#D61515',
+                                y: data
+                            },
+                            {
+
+                            }
+                        ]
+                    }
+                ]
+            });
+        }
+
+    }
+    function Colecta_Asesores(data) {
+        var array = data
+        var x = 0;
+        var len = array.length
+        while (x < len) {
+            array[x] = parseFloat(array[x]);
+            x++
+        }
+
+        Highcharts.chart('colecta_asesores', {
+
+            title: {
+                text: 'COLOCACIÓN'
+            },
+
+
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle'
+            },
+
+            plotOptions: {
+                series: {
+                    label: {
+                        connectorAllowed: false
+                    },
+                    pointStart: 0
+                }
+            },
+
+            series: [{
+                name: 'Colocación',
+                data: array
+            }],
+
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    chartOptions: {
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom'
+                        }
+                    }
+                }]
+            }
+
+        });
+    }
+
+    function Mora_Asesores(data, data_fechas) {
+        var array = data
+        var x = 0;
+        var len = array.length
+        while (x < len) {
+            array[x] = parseFloat(array[x]);
+            x++
+        }
+        Highcharts.chart('mora_asesores', {
+
+            title: {
+                text: 'MORA'
+            }
+            ,
+            xAxis: {
+                categories: data_fechas
+            },
+
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle'
+            },
+
+            plotOptions: {
+                series: {
+                    label: {
+                        connectorAllowed: false
+                    },
+                    pointStart: 0
+                }
+            },
+            series: [{
+                name: 'Mora',
+                color: '#DF5353',
+                data: array
+            }],
+
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    chartOptions: {
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom'
+                        }
+                    }
+                }]
+            }
+
+        });
+    }
+</script>

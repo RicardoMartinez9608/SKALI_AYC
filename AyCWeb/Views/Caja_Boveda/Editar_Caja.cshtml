@@ -1,0 +1,94 @@
+﻿@using DevExtreme.AspNet.Mvc
+@model ModelNucleo.Model.Caja
+@{
+    ViewData["Title"] = "Nueva Caja";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Editar Caja</div>
+    <div class="panel-body">
+        <form asp-action="Editar_Caja">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Id_Caja" class="form-control" type="hidden" />
+
+            <div class="form-group">
+                @*<input type="hidden" asp-for="Id_Usuario" />
+            Usuario: @Model.Id_Usuario*@
+                @*@(Html.DevExtreme().Lookup()
+                  .ID("usuario")
+                  .ElementAttr("class", "field-customization")
+                  .DataSource(
+                  d => d.Mvc().Controller("Caja_Boveda").LoadAction("Usuarios").Key("UsuarioNombre")
+                  ).DisplayExpr(new JS("lookup_displayExpr")).DisplayValue("UsuarioNombre").ValueExpr("UsuarioNombre")
+                  .SearchExpr(new[] { "UsuarioNombre", "UsuarioNombre" })
+                  .ItemTemplate(@<text>
+
+                </text>).OnSelectionChanged("Obtener_Usuario").OnContentReady("Usuario_Listo")
+            )*@
+            </div>
+            <div class="form-group">
+                <label asp-for="Id_Usuario" class="control-label">Usuarios</label>
+                <div id="id_usuario_combo"></div>
+                <span asp-validation-for="Id_Usuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Id_Agencia" class="control-label">Agencia</label>
+                <div id="id_agencia_combo"></div>
+                <span asp-validation-for="Id_Agencia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nombre_PC" class="control-label">Máquina</label>
+                <input asp-for="Nombre_PC" class="form-control" />
+                <span asp-validation-for="Nombre_PC" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Cuenta_Contable" class="control-label">Cuenta Contable</label>
+                <input asp-for="Cuenta_Contable" class="form-control" />
+                <span asp-validation-for="Cuenta_Contable" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Activa" /> @Html.DisplayNameFor(model => model.Activa)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Boveda" /> Se usa como Bóveda
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-default" />
+            </div>
+        </form>
+        <div>
+            <a href="@Url.Action("Cajas","Caja_Boveda",new { id_usuario=ViewBag.Id_Usuario})">Regresar a la lista</a>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(function () {
+
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia_combo").html(agencias);
+            $("#Id_Agencia").val(@Model.Id_Agencia);
+
+        }); 
+        $.get("@Url.Action("Usuarios_Combo", "Componentes")", function(usuarios) {
+            $("#id_usuario_combo").html(usuarios);
+            @*$("#Id_Usuario").val(@Model.Id_Usuario);*@
+        });
+    });
+
+
+
+
+
+</script>

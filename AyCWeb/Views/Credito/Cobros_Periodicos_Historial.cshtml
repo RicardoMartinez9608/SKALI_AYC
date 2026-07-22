@@ -1,0 +1,31 @@
+﻿@model IEnumerable<ModelNucleo.Model.Cobro_Periodico_Historial>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Valor)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Valor)
+            </td>
+            <td>
+                <input type="hidden" value="@item.Id_Cobro_Periodico_Historial" class="id_cobro_periodico_historial_valor" />
+                <a href="#Mantenimiento_Adicional" class="btn btn-default mostrar_cobro_periodico" data-backdrop="false" data-toggle="modal">Detalle</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

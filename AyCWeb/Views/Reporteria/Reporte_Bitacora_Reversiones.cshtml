@@ -1,0 +1,95 @@
+﻿@model IEnumerable<ModelNucleo.Model.Bitacora>
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/BordeCierre.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Reporte Movimiento Prestamos</title>
+</head>
+<body>
+    <table align="center">
+        <thead>
+            <tr>
+                <td style="width: 199px">
+                    <h6 align="left"> emision: @ViewBag.emision @ViewBag.usuario</h6>
+                </td>
+                <th style="width: 450px">
+                    <h2 align="center">@ViewBag.nombreEmpresa</h2>
+                </th>
+                <td style="width: 200px">
+                </td>
+            </tr>
+        </thead>
+    </table>
+    <h3 align="center">BITACORA DE REVERSIONES</h3>
+    <p></p>
+    <h4 align="center"> Periodo: @ViewBag.fecha</h4>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="text-align: center">
+                    Código
+                </th>
+                <th style="text-align: center">
+                    Cliente
+                </th>
+                <th style="text-align: center">
+                    Fecha Del Proceso
+                </th>
+                <th style="text-align: center">
+                    Responsable
+                </th>
+                <th style="text-align: center">
+                    Tabla Afectada
+                </th>
+                <th style="text-align: center">
+                    Proceso
+                </th>
+                <th style="text-align: center">
+                    ID Transacción
+                </th>
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td style="text-align: center">
+                    @Html.DisplayFor(modelItem => item.Codigo)
+                </td>
+                <td style="text-align: center">
+                    @Html.DisplayFor(modelItem => item.Cliente)
+                </td>
+                
+                <td style="text-align: center">
+                    @if (item.Id_Transaccion != null)
+                        @Html.DisplayFor(modelItem => item.Fecha_Proceso)
+                </td>
+                <td style="text-align: center">
+                    @Html.DisplayFor(modelItem => item.Id_Usuario)
+                </td>
+                <td style="text-align: center">
+                    @Html.DisplayFor(modelItem => item.Tabla_Operacion)
+                </td>
+                <td style="text-align: center">
+                    @Html.DisplayFor(modelItem => item.Proceso)
+                </td>
+                <td style="text-align: center">
+                    @Html.DisplayFor(modelItem => item.Id_Transaccion)
+                </td>
+
+            </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
+  

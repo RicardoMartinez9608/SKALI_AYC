@@ -1,0 +1,51 @@
+﻿@model ModelNucleo.Model.ModelView.Registro_Socio
+@{
+    Layout = "";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/reporte_matricial.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Registro de Socio</title>
+</head>
+<body>
+<h2 align="center">@ViewBag.nombreEmpresa  </h2>
+<h3 align="center">Credenciales de Socio </h3>
+<table align="center">
+    <tbody>
+    <tr>
+        <td>
+            Cliente:
+        </td>
+        <th>
+            @Html.DisplayFor(model => model.Nombre_completo)
+        </th>
+        
+    </tr>
+    <tr>
+      
+        <td>
+            Usuario
+        </td>
+        <th>
+            @Html.DisplayFor(model => model.user)
+        </th>
+       
+    </tr>
+    <tr>
+      
+        <td>
+            Contraseña
+        </td>
+        <th>
+            @Html.DisplayFor(model => model.password)
+        </th>
+       
+    </tr>
+    </tbody>
+   
+</table>
+
+</body>
+</html>

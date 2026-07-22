@@ -1,0 +1,251 @@
+﻿@model ModelNucleo.Model.ModelView.Corte_de_Caja
+@{
+    Layout = null;
+}
+    <html>
+    <head>
+        <link href="~/css/BordeCierre.css" rel="stylesheet" />
+        <meta name="viewport" content="width=device-width" />
+
+        <title>Corte Caja</title>
+    </head>
+    <body>
+        <h3 align="center">@ViewBag.nombreEmpresa</h3>
+        <h3 align="center">Corte Movimientos de Caja</h3>
+        <p></p>
+        <h5 align="left">Caja: @Model.caja</h5>
+        <h5 align="left">Cajero: @Model.cajero</h5>
+
+        <table style="border-bottom: 1pt solid black" align="left">
+            <thead>
+                <tr>
+                    <th style="width: 330px; text-align: center">
+                        Cuenta
+                    </th>
+                    <th style="width: 600px">
+                        Descripción
+                    </th>
+                    <th style="width: 170px">
+                        Valor
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @if (Model != null)
+                {
+                    @foreach (var item in Model.Rama)
+                    {
+                        <tr>
+                            <td style="width:330px; text-align:center">
+                                Agencia:
+                            </td>
+                            <td style="width:600px">
+                                @item.Agencia.Nombre
+                            </td>
+                            <td style="width:170px">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:330px; text-align:center">
+                            </td>
+                            <td style="width:600px">
+                                Ingresos
+                            </td>
+                            <td style="width:170px">
+                            </td>
+                        </tr>
+
+                        @foreach (var tipo in item.Ingresos)
+                        {
+                            <tr>
+                                <td style="width:330px; text-align:center">
+                                    @tipo.cuenta
+                                </td>
+                                <td style="width:600px">
+                                    @tipo.descripcion
+                                </td>
+                                <td style="width:170px; text-align:right">
+                                    @tipo.valor.ToString("C")
+                                </td>
+                            </tr>
+                        }
+
+                        <tr>
+                            <td style="width:330px; text-align:center">
+                            </td>
+                            <td style="width:600px">
+                                Ingresos
+                            </td>
+                            <td style="width:170px; text-align:right">
+                                @item.TotalIngreso.ToString("C")
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:330px; text-align:center">
+                            </td>
+                            <td style="width:600px">
+                                Egresos
+                            </td>
+                            <td style="width:170px">
+                            </td>
+                        </tr>
+                        @foreach (var tipo in item.Egresos)
+                        {
+                            <tr>
+                                <td style="width:330px; text-align:center">
+                                    @tipo.cuenta
+                                </td>
+                                <td style="width:600px">
+                                    @tipo.descripcion
+                                </td>
+                                <td style="width:170px; text-align:right">
+                                    @tipo.valor.ToString("C")
+                                </td>
+                            </tr>
+                        }
+                        <tr>
+                            <td style="width:330px; text-align:center">
+                            </td>
+                            <td style="width:600px">
+                                Egresos
+                            </td>
+                            <td style="width:170px; text-align:right">
+                                @item.TotalEgreso.ToString("C")
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+    <table>
+        <tr>
+            <td>
+                <table style="border-collapse:separate;
+                    border-spacing: 10;
+                    border:solid black 1px;
+                    border-radius:10px;
+                    -moz-border-radius:10px;
+                    -webkit-border-radius: 5px; "><tr><td>
+    <table style="border:0" align="center">
+        <thead>
+            <tr>
+                <th style="width: 1160px; text-align: center; border: 0">
+                   REMESA AL BANCO:
+                </th>
+                <th style="width: 34px">
+
+                </th>
+                <th style="width: 220px; text-align: center">
+                  
+                </th>
+            </tr>
+        <tr>
+            <th style="width: 1160px; text-align: center">
+                Efectivo
+            </th>
+            <th style="width: 34px">
+
+            </th>
+            <th style="width: 220px; text-align: center">
+                $0.00
+            </th>
+        </tr>
+        <tr>
+            <th style="width: 1160px; text-align: center">
+                Cheques:
+            </th>
+            <th style="width: 34px">
+
+            </th>
+            <th style="width: 220px;  text-align: center;border-bottom: 1pt solid black">
+                $0.00
+            </th>
+        </tr>
+            <tr>
+                <th style="width: 1160px; text-align: center">
+                    Total:
+                </th>
+                <th style="width: 34px">
+
+                </th>
+                <th style="width: 220px; text-align: center">
+                    $0.00
+                </th>
+            </tr>
+           
+           
+        </thead>
+    </table>
+</td></tr></table>
+            </td>
+            <td>
+                <table><tr><td><table style="border:0" align="left">
+                    <thead>
+                    <tr>
+                        <th style="width: 1160px; text-align: center; border: 0">
+                            Total Ingresos:
+                        </th>
+                        <th style="width: 34px">
+
+                        </th>
+                        <th style="width: 220px; text-align: right">
+                            @Model.TotalIngreso.ToString("C")
+                        </th>
+                    </tr>
+                    <tr>
+                        <th style="width: 1160px; text-align: center">
+                            Total Egresos:
+                        </th>
+                        <th style="width: 34px; border-bottom: 1pt solid black">
+
+                        </th>
+                        <th style="width: 220px; text-align: right;border-bottom: 1pt solid black">
+                            @Model.TotalEgreso.ToString("C")
+                        </th>
+                    </tr>
+                    <tr>
+                        <th style="width: 1160px; text-align: center; border: 0">
+                            Disponibilidad en Caja:
+                        </th>
+                        <th style="width: 34px">
+
+                        </th>
+                        <th style="width: 220px; border: 1px solid black; text-align: right">
+                            @Model.Disponible.ToString("C")
+                        </th>
+                    </tr>
+                    <tr>
+                        <th style="width: 1160px; text-align: center; border: 0">
+                            Cheques Recibidos:
+                        </th>
+                        <th style="width: 34px">
+
+                        </th>
+                        <th style="width: 220px;  text-align: center">
+                            $0.00
+                        </th>
+                    </tr>
+                    <tr>
+                        <th style="width: 1160px; text-align: center; border: 0">
+                            Efectivo Neto en Caja:
+                        </th>
+                        <th style="width: 34px">
+
+                        </th>
+                        <th style="width: 220px;  text-align: center">
+                            $0.00
+                        </th>
+                    </tr>
+                    </thead>
+                </table></td></tr></table>
+            </td>
+        </tr>
+    </table> 
+       
+    </body>
+    </html>
+

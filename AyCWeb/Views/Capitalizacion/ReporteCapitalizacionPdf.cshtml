@@ -1,0 +1,344 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Capitalizacion>
+
+@{
+    Layout = null;
+
+    var fechaProceso = ViewBag.Fecha ?? DateTime.Now;
+    var urlLogo = $"{Context.Request.Scheme}://{Context.Request.Host}/images/logo.png";
+    var totalRegistros = Model.Count();
+    var totalSaldo = Model.Sum(x => x.Saldo);
+    var totalInteres = Model.Sum(x => x.Interes_Aplicar);
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Reporte de Capitalización</title>
+
+    <style>
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            color: #333;
+            margin: 15px;
+        }
+
+        .header {
+            width: 100%;
+            border-bottom: 2px solid #1f4e78;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .titulo {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #1f4e78;
+        }
+
+        .subtitulo {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .info {
+            margin-top: 15px;
+            width: 100%;
+        }
+
+            .info td {
+                padding: 4px;
+            }
+
+        .resumen {
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            width: 31%;
+            display: inline-block;
+            border: 1px solid #d9d9d9;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            text-align: center;
+            padding: 10px;
+            margin-right: 1%;
+        }
+
+        .card-titulo {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .card-valor {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1f4e78;
+        }
+
+        table.detalle {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+            table.detalle thead th {
+                background-color: #1f4e78;
+                color: white;
+                padding: 8px;
+                border: 1px solid #d9d9d9;
+                text-align: center;
+            }
+
+            table.detalle tbody td {
+                border: 1px solid #d9d9d9;
+                padding: 6px;
+            }
+
+            table.detalle tbody tr:nth-child(even) {
+                background-color: #f7f7f7;
+            }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        tfoot td {
+            background-color: #eaf2f8;
+            font-weight: bold;
+            border: 1px solid #d9d9d9;
+            padding: 8px;
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 10px;
+            color: #666;
+            border-top: 1px solid #ccc;
+            padding-top: 8px;
+        }
+
+        .totales {
+            margin-top: 15px;
+            width: 350px;
+            float: right;
+        }
+
+        .tablaTotales {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .tablaTotales td {
+                border: 1px solid #ccc;
+                padding: 6px;
+            }
+
+            .tablaTotales tr:last-child {
+                background: #eaf2f8;
+                font-weight: bold;
+            }
+
+        .numero {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ENCABEZADO -->
+    <div class="header">
+
+        <table style="width:100%;">
+            <tr>
+
+                <td style="width:120px;">
+                    <img src="@urlLogo"
+                         style="height:80px;" />
+                </td>
+
+                <td style="text-align:center;">
+
+                    <div class="titulo">
+                        REPORTE DE CAPITALIZACIÓN
+                    </div>
+
+                    <div class="subtitulo">
+                        DEPÓSITOS A PLAZO
+                    </div>
+
+                </td>
+
+                <td style="width:180px; text-align:right;">
+                    <strong>Emisión:</strong><br />
+                    @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                </td>
+
+            </tr>
+        </table>
+
+    </div>
+
+    <!-- INFORMACIÓN -->
+    <table class="info">
+        <tr>
+            <td>
+                <strong>Fecha de Proceso:</strong>
+                @Convert.ToDateTime(fechaProceso).ToString("dd/MM/yyyy")
+            </td>
+
+            <td style="text-align:right">
+                <strong>Fecha de Emisión:</strong>
+                @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <strong>Usuario:</strong>
+                @User.Identity.Name
+            </td>
+
+            <td style="text-align:right">
+                <strong>Estado:</strong>
+                Pendiente de Capitalización
+            </td>
+        </tr>
+    </table>
+
+
+
+    <!-- DETALLE -->
+    <table class="detalle">
+
+        <thead>
+            <tr>
+                <th>Cuenta</th>
+                <th>CuentaHabiente</th>
+                <th>Forma de Pago</th>
+                <th>Saldo</th>
+                <th>Interés</th>
+                <th>Tasa de Interés</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td class="text-center">
+                        @item.Cuenta
+                    </td>
+
+                    <td>
+                        @item.CuentaHabiente
+                    </td>
+
+                    <td>
+                        @item.FormaPago
+                    </td>
+
+                    <td class="text-right">
+                        @item.Saldo.ToString("N2")
+                    </td>
+
+                    <td class="text-right">
+                        @item.Interes_Aplicar.ToString("N2")
+                    </td>
+                    <td class="text-right">
+                        @item.Tasa_Interes.ToString("N2")
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+        <tfoot>
+
+            <tr>
+
+                <td colspan="3">
+                    TOTALES
+                </td>
+
+                <td class="text-right">
+                    @totalSaldo.ToString("N2")
+                </td>
+
+                <td class="text-right">
+                    @totalInteres.ToString("N2")
+                </td>
+
+            </tr>
+
+        </tfoot>
+
+    </table>
+    <div class="totales">
+
+        <table class="tablaTotales">
+
+            <tr>
+                <td>Total de Certificados</td>
+                <td class="numero">
+                    @totalRegistros
+                </td>
+            </tr>
+
+            <tr>
+                <td>Saldo Total Depositado</td>
+                <td class="numero">
+                    @totalSaldo.ToString("N2")
+                </td>
+            </tr>
+
+            <tr>
+                <td>Interés Total a Capitalizar</td>
+                <td class="numero">
+                    @totalInteres.ToString("N2")
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+    <!-- PIE -->
+    <div class="footer">
+
+        <strong>Total de Certificados:</strong>
+        @totalRegistros
+
+        <br />
+
+        <strong>Monto Total Depositado:</strong>
+        @totalSaldo.ToString("N2")
+
+        <br />
+
+        <strong>Interés Total a Capitalizar:</strong>
+        @totalInteres.ToString("N2")
+
+        <br /><br />
+
+        Documento generado automáticamente por SKALI
+
+    </div>
+
+</body>
+</html>

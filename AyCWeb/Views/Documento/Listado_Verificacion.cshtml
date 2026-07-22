@@ -1,0 +1,67 @@
+﻿@model IEnumerable<ModelNucleo.Model.Fotografia_Atm>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+              
+            </th>
+            <th>
+                Banco
+            </th>
+           
+            <th>
+                Subido Por
+            </th>
+            <th>
+                Fecha de Subida
+            </th>
+            <th>
+                Verificado
+            </th>
+            <th>
+               Verificado Por
+            </th>
+            <th>
+               Fecha Verificación
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+              @* <input type="hidden" value="@item.Id_Fotografia_Atm" class="id_fotografía_Atm" />*@
+                @*@Html.DisplayFor(modelItem => item.Id_Fotografia_Atm)*@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Banco.Nombre)
+            </td>
+          
+            <td>
+                @Html.DisplayFor(modelItem => item.Creado_Por)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Creado_En)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Verificado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Verificado_Por)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Verificado_En)
+            </td>
+            <td>
+                <td>
+                    <input type="hidden" class="id_fotografia_atm" value="@item.Id_Fotografia_Atm" />
+                    <a href="#Mantenimiento" data-toggle="modal" class="editar_meta">Verificar</a>
+                </td>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

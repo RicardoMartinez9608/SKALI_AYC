@@ -1,0 +1,90 @@
+﻿@model ModelNucleo.Model.ModelView.Colecta_Agrupada
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/Reporte.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Informe Colecta Diaria</title>
+</head>
+<body>
+    @for (var i = 0; i <= 1; i++)
+    {
+        @Html.Partial("_Informe_Colecta_Diaria_Comprobante", Model)
+    }
+    <table class="greyGridTable">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    DUI Cliente
+                </th>
+                <th>
+                    Cliente
+                </th>
+                <th>
+                    Comprobante
+                </th>
+                <th>
+                    Cuenta
+                </th>
+                <th>
+                    Monto
+                </th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Colecta_Diaria.Colectas)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id_Colecta)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DUI)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre_Completo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.No_Comprobante)
+                    </td>
+                    <td>
+                        @if (item.Id_Ahorro > 0)
+                        {
+                            @string.Format("Cuenta Ahorro: {0}", item.Codigo_AHorro)
+                        }
+                        @if (item.Id_Credito > 0)
+                        {
+                            @string.Format("Cuenta Crédito: {0}", item.Codigo_Credito)
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Monto)
+                    </td>
+                </tr>
+            }
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        Total
+                    </td>
+                    <td>
+                        @Model.Colecta_Diaria.Colectas.Sum(i => i.Monto).ToString("0.00")
+                    </td>
+                </tr>
+        </tbody>
+    </table>
+</body>
+</html>

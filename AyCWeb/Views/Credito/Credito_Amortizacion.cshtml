@@ -1,0 +1,70 @@
+﻿@model IEnumerable<ModelNucleo.Model.Amortizacion>
+
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                No
+            </th>
+            <th>
+                Fecha
+            </th>
+            <th>
+                Abono Capital
+            </th>
+            <th>
+                Saldo Capital
+            </th>
+            <th>
+                Interés
+            </th>
+            <th>
+                Dias
+            </th>
+            <th>
+                Plan AyC
+            </th>
+
+            <th>
+                Cuota
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.No)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaPago)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Abono_capital)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Saldo_Capital)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Interes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Dias)
+                </td>
+                <td>
+                    @{
+                        decimal planAyC = Math.Round(item.Comision /*+ item.IvaSobreComision*/,2);
+                    }
+                    @planAyC
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Valor_Cuota)
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

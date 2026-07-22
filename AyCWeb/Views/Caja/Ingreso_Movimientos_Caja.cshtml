@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Ingreso Movimientos Caja";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        Ingreso Movimientos Caja
+    </div>
+    <div class="panel-body panel-body-personalizado">
+        <p></p>
+
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label for="efectivo" class="control-label">Efectivo</label>
+                <input class="form-control" id="efectivo" type="number" placeholder="Efectivo" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input type="radio" name="es_ingreso" id="es_ingreso" value="true" checked />
+                    <label for="es_ingreso">Ingreso</label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <input type="radio" name="es_ingreso" id="no_ingreso" value="false" />
+                    <label for="no_ingreso">Egreso</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-2">
+                <input type="submit" value="Procesar" class="btn btn-primary" id="Procesar_Ingreso_Egreso" />
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<p></p>
+
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        Ingreso de Excedente de Caja
+    </div>
+    <div class="panel-body panel-body-personalizado">
+        <p></p>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label for="Excedente" class="control-label">Excedente</label>
+                <input class="form-control" id="excedente" type="number" placeholder="ingrese Excedente" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-2">
+                <input type="submit" value="Procesar Excedente" class="btn btn-primary" id="Procesar_Excedente" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        Procesar_Ingreso_Egreso();
+        Ingreso_Excedente_Caja();
+    });
+
+    function Procesar_Ingreso_Egreso() {
+        $("#Procesar_Ingreso_Egreso").click(function () {
+            var ingreso = $("input[name='es_ingreso']:checked").val();
+            var cantidad = $("#efectivo").val();
+             $.get("@Url.Action("Ingreso_Egreso_Caja", "Caja")",
+                {
+                    ingreso: ingreso,
+                    cantidad: cantidad
+                },
+                 function (resultado) {
+                     alertify.success(resultado);
+                 }).fail(function (error) {
+                     alertify.error(error.responseText);
+                 });
+        });
+    }
+
+    function Ingreso_Excedente_Caja() {
+        $("#Procesar_Excedente").click(function () {
+            var excedente = $("#excedente").val();
+             $.get("@Url.Action("Ingreso_Excedente_Caja", "Caja")",
+                {
+                    excedente: excedente
+                },
+                 function (resultado) {
+                     alertify.success(resultado);
+                 }).fail(function (error) {
+                     alertify.error(error.responseText);
+                 });
+        });
+    }
+</script>

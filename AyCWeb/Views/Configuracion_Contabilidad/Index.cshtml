@@ -1,0 +1,430 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p> 
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Configuración de Partida Contable</h4>
+            </div>
+            <div class="col-lg-6 text-right">
+                <a href="#modal_detalle" data-toggle="modal" class="btn btn-default nueva_configuracion">Nueva configuración partida contable</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body panel-body-personalizado">
+
+        <div class="well selects">
+            <div class="form-group agencias"></div>
+            <div id="seleccionar" class="form-group">
+                <select id="tipo" class="form-control">
+                    <option value="0">Seleccionar el Tipo</option>
+                    <option value="1">Línea de crédito</option>
+                    <option value="2">Línea de ahorro</option>
+                    <option value="3">Facturas y Servicios</option>
+                    <option value="4">Otros Cobros</option>
+                </select>
+            </div>
+            <div class="form-group lineas_credito"></div>
+            <div class="form-group lineas_ahorro"></div>
+            <div class="form-group factura_servicio"></div>
+            <div class="form-group servicio_basico"></div>
+            <div class="form-group Otras_Operaciones"></div>
+            <input type="button" class="btn btn-default" id="buscar_configuraciones" value="Buscar" />
+        </div>
+
+        <div id="configuraciones"></div>
+
+    </div>
+</div>
+
+<input type="hidden" id="Id_Seleccionado" />
+
+<div class="modal fade" id="modal_detalle">
+    <div class="modal-dialog" style="width:50%">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title">Detalle</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="detalle_configuracion"></div>
+
+            </div> <!-- /.modal-body -->
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="Mantenimiento">
+    <div class="modal-dialog" style="width:70%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title" id="titulo_sub_modal">Mantenimiento</h4>
+            </div>
+            <div class="modal-body Cargar_Mantenimiento">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="Mantenimiento_Adicional">
+    <div class="modal-dialog" style="width:50%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title" id="titulo_sub_modal">Mantenimiento</h4>
+            </div>
+            <div class="modal-body Cargar_Adicional">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<link href="~/css/ventanas.css" rel="stylesheet" />
+<script>
+
+    $(document).on('show.bs.modal', '.modal', function (event) {
+        var zIndex = 1040 + (10 * $('.modal:visible').length);
+        $(this).css('z-index', zIndex);
+        setTimeout(function () {
+            $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+        }, 0);
+    });
+
+    $(function () {
+        CargarAgencias("selects");
+        CargarLinea("selects");
+        Nueva_Configuracion();
+        CargarConfiguracion();
+    });
+
+    //manejo de modales
+    function Finalizar_Modal_Principal() {
+        $("#modal_detalle").modal("hide");
+    }
+
+    function CargarLinea() {
+        $("#tipo").change(function () {
+            var tipo = $(this).val();
+            if (tipo == 1) {
+                CargarLineaCredito("selects");
+                $("div.lineas_ahorro").html("");
+                $("div.factura_servicio").html("");
+                $("div.Otras_Operaciones").html("");
+            }
+
+            if (tipo == 2) {
+                CargarLineaAhorro("selects");
+                $("div.lineas_credito").html("");
+                $("div.factura_servicio").html("");
+                $("div.Otras_Operaciones").html("");
+            }
+
+            if (tipo == 3) {
+                CargarFacturaServicio("selects");
+                $("div.lineas_ahorro").html("");
+                $("div.lineas_credito").html("");
+                $("div.Otras_Operaciones").html("");
+            }
+            if (tipo == 4) {
+                Otras_Operaciones("selects");
+                $("div.lineas_ahorro").html("");
+                $("div.lineas_credito").html("");
+                $("div.factura_servicio").html("");
+            }
+
+        });
+    }
+
+    function CargarAgencias(padre) {
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("div."+padre+" div.agencias").html(agencias);
+        });
+    }
+
+    function CargarLineaCredito(padre) {
+        $.get("@Url.Action("Lineas_Credito", "Componentes")", function (lineas) {
+            $("div." + padre +" div.lineas_credito").html(lineas);
+        });
+    }
+
+    function CargarLineaAhorro(padre) {
+        $.get("@Url.Action("Lineas_Ahorro", "Componentes")", function (lineas) {
+            $("div." + padre +" div.lineas_ahorro").html(lineas);
+        });
+    }
+
+    function CargarFacturaServicio(padre) {
+        $.get("@Url.Action("Concepto_Factura_Servicio", "Componentes")", function (concepto) {
+            $("div." + padre + " div.factura_servicio").html(concepto);
+            CargarFacturaServicioBasico(padre);
+        });
+    }
+    function CargarFacturaServicioBasico(padre) {
+        $("#Id_Factura_Servicio").change(function () {
+            var id_factura_servicio = $(this).val();
+            if (id_factura_servicio == 3) {
+                $.get("@Url.Action("Concepto_Factura_Servicios_Basicos", "Componentes")", function (concepto) {
+                    $("div." + padre + " div.servicio_basico").html(concepto);
+                });
+            }
+        });
+    }
+
+        function Otras_Operaciones(padre) {
+        $.get("@Url.Action("Otras_Operaciones", "Componentes")", function (concepto) {
+            $("div." + padre +" div.Otras_Operaciones").html(concepto);
+        });
+    }
+    function CargarConfiguracion() {
+        $("#buscar_configuraciones").click(function () {
+            var id_agencia = $("#Id_Agencia option:selected").val();
+
+            var tipo = $("#tipo option:selected").val();
+
+            var id_linea_credito = Number(0);
+            var id_linea_ahorro = Number(0);
+            var id_factura_servicio = Number(0);
+            var id_factura_servicio_basico = Number(0);
+            var id_otras_operaciones = Number(0);
+
+            if (tipo == 1)
+                id_linea_credito = $("#Id_Linea_Credito option:selected").val();
+            if (tipo == 2)
+                id_linea_ahorro = $("#Id_Linea_Ahorro option:selected").val();
+            if (tipo == 3){
+                id_factura_servicio = $("#Id_Factura_Servicio option:selected").val();
+                if(id_factura_servicio)
+                    id_factura_servicio_basico = $("#Id_Factura_Servicio_Basico option:selected").val();
+            }
+            if (tipo == 4)
+                id_otras_operaciones = $("#Id_Otras_Operaciones option:selected").val();
+
+            $.get("@Url.Action("Configuraciones", "Configuracion_Contabilidad")",
+            {
+                id_agencia:id_agencia,
+                id_linea_credito:id_linea_credito,
+                id_linea_ahorro: id_linea_ahorro,
+                id_factura_servicio: id_factura_servicio,
+                id_factura_servicio_basico: id_factura_servicio_basico,
+                id_otras_operaciones : id_otras_operaciones
+
+            }, function (configuraciones) {
+                $("#configuraciones").html("");
+                $("#configuraciones").html(configuraciones);
+                Detalle_Cuentas();
+                Editar_Configuracion();
+                Borrar_Conf_Completo();
+            });
+        });
+
+    }
+
+    function Nueva_Configuracion() {
+        $("a.nueva_configuracion").click(function () {
+            $.get("@Url.Action(
+              "Nueva_Configuracion",
+              "Configuracion_Contabilidad")",
+            function (detalle) {
+                $("div.detalle_configuracion").html(detalle);
+                CargarAgencias("nueva_configuracion");
+                CargarLineaCredito("nueva_configuracion");
+                CargarLineaAhorro("nueva_configuracion");
+                CargarFacturaServicio("nueva_configuracion");
+                Otras_Operaciones("nueva_configuracion");
+                Guardar_Nueva_Configuracion();
+            });
+        });
+    }
+
+    function Guardar_Nueva_Configuracion() {
+        $("#guardar_configuracion").click(function () {
+            var form_nueva_configuracion = $("div.nueva_configuracion").serializeAnything();
+            $.post("@Url.Action("Nueva_Configuracion","Configuracion_Contabilidad")", form_nueva_configuracion, function (resultado) {
+                alertify.success(resultado);
+                Finalizar_Modal_Principal();
+            }).fail(function (error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+
+    /* editar la configuración */
+    function Editar_Configuracion() {
+        $("a.editar_configuracion").each(function (index) {
+            $("a.editar_configuracion").eq(index).click(function () {
+                var id_configuracion = $("input.Id_Conf_Partida_Contable").eq(index).val();
+                $.get("@Url.Action("Editar_Configuracion","Configuracion_Contabilidad")",
+                    {
+                        id_configuracion:id_configuracion
+                    },
+                function (detalle) {
+                    $("div.Cargar_Mantenimiento").html(detalle);
+                    Guardar_Editar_Configuracion();
+                });
+            });
+        });
+    }
+
+    function Guardar_Editar_Configuracion() {
+        $("#Guardar_Editar_Configuracion").click(function () {
+            var form_editar_configuracion = $("div.editar_configuracion").serializeAnything();
+            $.post("@Url.Action("Editar_Configuracion", "Configuracion_Contabilidad")",
+                form_editar_configuracion,
+                function (resultado) {
+                    alertify.success(resultado);
+                }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+        });
+    }
+
+    function Detalle_Cuentas() {
+        $("a.ver_detalle").each(function (index) {
+            $("a.ver_detalle").eq(index).click(function () {
+                var id_configuracion = $("input.Id_Conf_Partida_Contable").eq(index).val();
+                $("#Id_Seleccionado").val(id_configuracion);
+                Detalle_Cuentas_Actualizada();
+            });
+        });
+    }
+
+     function Detalle_Cuentas_Actualizada() {
+        var id_configuracion = $("#Id_Seleccionado").val();
+        $.get("@Url.Action("Detalles_Conf_Partida_Contable", "Configuracion_Contabilidad")",
+            { id_configuracion: id_configuracion },
+            function (detalle) {
+                $("div.Cargar_Mantenimiento").html(detalle);
+                Nuevo_Detalle_Conf_Cuenta_Contable();
+                Editar_Detalle_Conf_Cuenta_Contable();
+                Borrar_Detalle_Conf_Partida();
+            });
+    }
+
+    function Nuevo_Detalle_Conf_Cuenta_Contable() {
+        $("#Nueva_Cuenta_Contable").click(function () {
+            var id_conf_partida_contable = $("#Id_Seleccionado").val();
+            $.get("@Url.Action("Nuevo_Detalle_Conf_Partida_Contable","Configuracion_Contabilidad")",
+                { id_conf_partida_contable: id_conf_partida_contable },
+                function (formulario) {
+                    $("div.Cargar_Adicional").html(formulario);
+                    Guardar_Detalle_Conf_Nueva_Cuenta_Contable();
+                });
+        });
+    }
+
+    function Guardar_Detalle_Conf_Nueva_Cuenta_Contable() {
+        $("#Guardar_Nueva_Conf_Detalle").click(function () {
+            var form_detalle_conf_cuenta_contable = $("div.conf_detalle_partida").serializeAnything();
+        $.post("@Url.Action("Nuevo_Detalle_Conf_Partida_Contable","Configuracion_Contabilidad")",
+            form_detalle_conf_cuenta_contable, function (mensaje) {
+                alertify.success(mensaje);
+                Detalle_Cuentas_Actualizada();
+        }).fail(function (error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+
+    function Editar_Detalle_Conf_Cuenta_Contable() {
+        $("a.editar_detalle_conf_cuenta_contable").each(function (index) {
+            $("a.editar_detalle_conf_cuenta_contable").eq(index).click(function () {
+                var id_detalle_conf_contable = $("input.id_detalle_conf_cuenta_contable").eq(index).val();
+                $.get("@Url.Action("Editar_Detalle_Conf_Partida_Contable", "Configuracion_Contabilidad")",
+                    {
+                        id_conf_detalle_partida: id_detalle_conf_contable
+                    },
+                function (formulario) {
+                    $("div.Cargar_Adicional").html(formulario);
+                    Guardar_Editar_Detalle_Conf_Cuenta_Contable();
+                });
+            });
+        });
+    }
+
+    function Guardar_Editar_Detalle_Conf_Cuenta_Contable() {
+        $("input.guardar_detalle_conf_cuenta").click(function () {
+            var form = $("div.editar_conf_detalle_partida").serializeAnything();
+            $.post("@Url.Action("Editar_Detalle_Conf_Partida_Contable", "Configuracion_Contabilidad")",
+                form,
+                function (mensaje) {
+                    Detalle_Cuentas_Actualizada();
+                    alertify.success(mensaje);
+                }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+        });
+    }
+
+    function Obtener_Cuenta_Contable(item) {
+        var id_cuenta_contable = item.selectedItem.Id_Cuenta_Contable;
+        $("#Id_Cuenta_Contable").val(id_cuenta_contable);
+    }
+
+
+    function Borrar_Conf_Completo() {
+        $("a.borrar_configuracion").each(function (index) {
+            $("a.borrar_configuracion").eq(index).click(function () {
+                var id_conf = $("input.Id_Conf_Partida_Contable").eq(index).val();
+                $.post("@Url.Action("Borrar_Conf_Partida_Contable", "Configuracion_Contabilidad")",
+                    {
+                        id_configuracion: id_conf
+                    },
+                    function (respuesta) {
+                        alertify.success(respuesta);
+                    }).fail(function (error) {
+                        alertify.error(error.responseText);
+                });
+            });
+        });
+    }
+
+
+    /*borrar el detalle donde esta la cuenta*/
+    function Borrar_Detalle_Conf_Partida() {
+        $("a.borrar_detalle_conf_cuenta_contable").each(function (index) {
+            $("a.borrar_detalle_conf_cuenta_contable").eq(index).click(function () {
+                var id_detalle_conf_contable = $("input.id_detalle_conf_cuenta_contable").eq(index).val();
+                $.post("@Url.Action("Borrar_Detalle_Conf_Partida_Contable", "Configuracion_Contabilidad")",
+                    {
+                        id_conf_detalle_partida: id_detalle_conf_contable
+                    },
+                    function (respuesta) {
+                        Detalle_Cuentas_Actualizada();
+                        alertify.success(respuesta);
+                }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+            });
+        });
+    }
+
+    function lookup_cuentas_contables(item) {
+                if (!item) {
+                    return "";
+                }
+                return item.Codigo + " " + item.Descripcion;
+            }
+
+</script>

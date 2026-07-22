@@ -1,0 +1,127 @@
+﻿@model ModelNucleo.Model.ModelView.Pago_Anticipado
+
+<div>
+    <div class="row">
+        <div class="col-md-6">
+             <table>
+      
+        <tbody>
+        <tr>
+            <td>
+                Saldo Capital
+            </td>
+            <th>
+                @Html.DisplayFor(model => model.Saldo_Capital)
+            </th>
+        </tr>
+        <tr>
+            <td>
+               Interes al Día
+            </td>
+            <th>
+                @Html.DisplayFor(model => model.Intereses_Dia)
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Penalización
+            </td>
+            <th>
+                @Html.DisplayFor(model => model.Penalizacion)
+            </th>
+        </tr>
+        <tr>
+            <td>
+               Cobertura en Transito
+            </td>
+            <th>
+                
+                @Html.DisplayFor(model => model.Cobertura_Transito)
+            </th>
+          
+        </tr>
+        <tr>
+            <td>
+                Valor de Pago Anticipado
+            </td>
+            <th>
+                 <input type="hidden" value="@Model.Valor_Pago_Anticipado" class="total_pago_anticipado" />
+                @Html.DisplayFor(model => model.Valor_Pago_Anticipado)
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Pago para Cancelar
+            </td>
+            <th>
+                
+                @Html.DisplayFor(model => model.Pago_Para_Cancelar)
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Descuento
+            </td>
+            <th>
+              <input type="hidden" value="@Model.Descuento" class="total_descuento" />
+                @Html.DisplayFor(model => model.Descuento)
+            </th>
+        </tr>
+       
+        </tbody>
+    </table>
+
+        </div>
+        <div class="col-md-6" style="text-align:center">
+           <table>
+                   <tbody>
+                        <tr>
+                        <td>
+                             <h5><b>Aplicar Penalización del 0%</b></h5>
+                             <div class="form-group">
+                                 <input type="radio" name="grupo" id="penalizacion" value="true"  />
+                                 <label for="penalizacion" class="control-label">Penalización 0%</label>
+                             </div>
+                             <div class="form-group">
+                                 <button type="button" id="recalcular" class="btn btn-primary">Recalcular</button>
+                            </div>
+                        </td>
+                    </tr>
+                   </tbody>
+            </table>
+        </div>
+    </div>
+   
+   <br />
+   <table>
+       <tbody>
+            <tr>
+            <td>
+                 <h5><b>Descuento a Aplicar</b></h5>
+                 <div class="form-group">
+                     <input type="radio" name="grupo" id="sesenta" value="true"  />
+                     <label for="sesenta" class="control-label">60%</label>
+
+                     <input type="radio" name="grupo" id="cincuenta" value="false"  />
+                     <label for="cincuenta" class="control-label">50%</label>
+
+                     <input type="radio" name="grupo" id="cuarenta" value="false"  />
+                     <label for="cuarenta" class="control-label">40%</label>
+
+                     <input type="radio" name="grupo" id="cero" value="false"  />
+                     <label for="cero" class="control-label">0%</label>
+                 </div>
+            </td>
+        </tr>
+       </tbody>
+   </table>
+   <br />
+     <table>
+                    <tr>
+                        <th> <h4>Total Pago Anticipado:</h4>  </th>
+                        <td><h4><b id="t_pago"></b></h4>   </td>
+                    </tr>
+                   
+     </table>
+</div>
+

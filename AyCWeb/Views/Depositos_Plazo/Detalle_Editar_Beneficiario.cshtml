@@ -1,0 +1,47 @@
+﻿@model ModelNucleo.Model.Beneficiarios_Deposito_Plazo
+
+<form id="Detalle_Editar_Beneficiario">
+    <input type="hidden" asp-for="Id_Beneficiario_Deposito_Plazo" class="form-control" />
+    <input type="hidden" asp-for="Id_Deposito_Plazo" class="form-control" />
+    <input type="hidden" asp-for="Id_Parentesco" class="form-control" />
+    <div class="row">
+        <div class="col-md-8">
+
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Edad" class="control-label"></label>
+                <input asp-for="Edad" class="form-control" />
+                <span asp-validation-for="Edad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Sexo" class="control-label"></label>
+                <input asp-for="Sexo" class="form-control" />
+                <span asp-validation-for="Sexo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Fecha_Nacimiento" class="control-label"></label>
+                <input asp-for="Fecha_Nacimiento" class="form-control" />
+                <span asp-validation-for="Fecha_Nacimiento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Residencia" class="control-label"></label>
+                <input asp-for="Residencia" class="form-control" />
+                <span asp-validation-for="Residencia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Telefono" class="control-label"></label>
+                <input asp-for="Telefono" class="form-control" />
+                <span asp-validation-for="Telefono" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-default" id="Editar_Beneficiario_Deposito" type="button">Editar</button>
+            </div>
+
+        </div>
+    </div>
+</form>
+

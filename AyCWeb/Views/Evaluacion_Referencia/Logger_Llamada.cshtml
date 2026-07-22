@@ -1,0 +1,26 @@
+﻿@model IEnumerable<ModelNucleo.Model.Llamada_Telefonica_Referencia>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Registro de intentos de llamadas
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Efectuado_En)
+            </td>
+            <td>
+                <input type="hidden" class="id_llamada" value="@item.Id_Llamada_Telefonica_Referencia"/>
+                @*<a href="#" class="btn btn-default llamando">Llamando</a>*@
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,264 @@
+﻿@model ModelNucleo.Model.ModelView.Pantalla_Credito
+
+@{
+
+    decimal total_deducciones=0.00M;
+    ViewData["Title"] = "DATOS DEL PRESTAMO";
+    Layout = "";
+}
+    <div style="font-size: 24px">
+        <h4 align="center">SOCIEDAD COOPERATIVA CREDITOS A&C DE R.L.</h4>
+        <br />
+        <table align="left">
+            <tbody>
+                <tr>
+                    <td>
+                        Fecha de Impresión  @Model.dia_ejecucion @Model.hora_ejecucion
+                    </td>
+
+                    <td style="width: 150px">
+                    </td>
+                    <td>
+                        @Model.Ciudad_Celebrado
+                    </td>
+                    <td style="width: 150px">
+
+                    </td>
+                    <td>
+                        Comprobante : --
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+        <table>
+            <tbody>
+            <tr>
+                <td style="width: 400px">
+                    @Model.Creador
+                </td>
+                <th style="width: 200px">
+
+                </th>
+                <td style="width: 350px">
+                </td>
+                <th style="width: 500px">
+                    OTORGAMIENTO DE PRESTAMOS
+                </th>
+            </tr>
+            </tbody>
+        </table>
+        <table align="center">
+            <tbody>
+                <tr>
+                    <td style="width: 600px">
+                    </td>
+                    <td> Aprobado por: COMITE DE CRÉDITOS </td>
+                </tr>
+                <tr>
+                    <td style="width: 600px">
+                    </td>
+                    <td> Asesor: @Model.Asesor </td>
+                </tr>
+                <tr>
+                    <td style="width: 600px">
+                    </td>
+                    <td> Colector: @Model.Colector </td>
+                </tr>
+            </tbody>
+        </table>
+        <h4 align="center">DATOS DEL PRESTAMO</h4>
+        <table align="left">
+            <tbody>
+                <tr>
+                    <td style="width: 700px">
+                        <b>Nombre del Asociado:</b>  @Model.Nombre_Socio
+                    </td>
+                    <td>
+                        <b>Código:</b>  @Model.Codigo_Credito
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table align="center">
+            <tbody>
+                <tr>
+                    <td>
+                        <b>DESTINO:</b>   @Model.Destino
+                    </td>
+                   
+                </tr>
+                <tr>
+                    <td style="width: 500px">
+                        <b>MONTO: </b> @Model.Monto_Letras
+                    </td>
+                </tr>
+                <tr style="width: 100px">
+                    <td>
+                        <b>EN NÚMEROS:</b>  @Model.Monto_Numero.ToString("#.##")
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 320px">
+                        <b> PLAZO:</b> @Model.Plazo <b>Meses</b> 
+                    </td>
+                    <td style="width: 350px">
+                        <b>Forma de Pago:</b>  @Model.Forma_Pago
+                    </td>
+                    <td style="width: 150px">
+                        <b>Valor Cuota:</b>  @Model.Cuota.ToString("#.##")
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 500px">
+                        <b> Garantia:</b> Fiduciaria
+                    </td>
+                    <td><b>Vencimiento:</b>  @Model.Vencimiento</td>
+                </tr>
+                <tr>
+                    <td style="width: 500px">
+                        Codeudor
+                        @if (Model.Codeudor != null)
+                        {
+
+                            @Model.Codeudor
+                        }
+                        else
+                        {
+
+
+                        }
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+        <h4 align="center">DEDUCCIONES</h4>
+        <table style="width:100%">
+            <tr>
+                <td>Cta.Contable</td>
+                <td>Descripción</td>
+                <td>Valor</td>
+            </tr>
+            @if (Model.Deducciones != null && Model.Deducciones.Any())
+            {
+                @foreach (var item in Model.Deducciones)
+                {
+                    if (item.Id_Credito_Financiado > 0)
+                    {
+                        total_deducciones += item.Valor;
+                        <tr>
+                            <td></td>
+                            <td>@item.Nombre @item.Codigo_Credito_Financiado </td>
+                            <td>@item.Valor.ToString("C")</td>
+                        </tr>
+                    }
+                }
+            }
+            else
+            {
+                <tr>
+                    <td></td>
+                    <td>---</td>
+                    <td>$0.00</td>
+                </tr>
+            }
+            <tr>
+                <td></td>
+                <td></td>
+                <td>_______________</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Total Deducciones</td>
+                <td>@total_deducciones.ToString("C")</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Líquido a recibir</td>
+                <td>
+                    @{
+                        decimal liquido;
+                    }
+                    @if (Model.Liquido_Recibir == 0.00M)
+                    {
+                       liquido= 0.00M;
+                       @liquido.ToString("C")
+                    }
+                    else
+                    {
+                        liquido = Model.Monto_Numero - total_deducciones;
+                        @liquido.ToString("C")
+                    }
+
+                </td>
+            </tr>
+        </table>
+
+        <span style="font-size: 20px">He recibido a mi entera satisfacción, lo arriba descrito, en fe de lo cuál firmo en la ciudad de @Model.Ciudad_Celebrado a las @Model.Hora_Celebrado horas del día @Model.Fecha_Letra </span>
+        <br />
+        <br />
+        <table cellspacing="10" align="center">
+            <thead>
+                <tr>
+                    <th> APROBADO________________________________</th>
+                    <th> ACTA NO. ________________________________</th>
+
+                </tr>
+            </thead>
+
+        </table>
+        <br /><br />
+          @if (Model.Codeudor != "")
+            {
+           <table align="center">
+            <tr>
+                <td>_______________________________________</td>
+                <td>_______________________________________</td>
+            </tr>
+            <tr>
+                <td>FIRMA DEL PRESTATARIO</td>
+                <td>FIRMA DEL CODEUDOR</td>
+            </tr>
+            </table>
+            }
+            else
+            {
+        <table align="center">
+            <tr>
+                <td>_______________________________________</td>
+            </tr>
+            <tr>
+                <td>FIRMA DEL PRESTATARIO</td>
+            </tr>
+        </table>
+            }
+    
+        <br /><br />
+    <table align="center">
+        <tr>
+            <td>_________  @Model.agencia.Usuario_Agencias.Max(a => a.Id_Usuario)___________</td>
+            <td>_______________________________________</td>
+            <td>_______________________________________</td>
+        </tr>
+        <tr align="center">
+            <td>HECHO POR</td>
+            <td>REVISADO</td>
+            <td>AUTORIZADO</td>
+        </tr>
+    </table>
+    <br /><br />
+    <table align="center">
+        <tr>
+            <td>                                       </td>
+            <td>                                       </td>
+            <td>_______________________________________</td>
+        </tr>
+        <tr align="center">
+            <td>                                       </td>
+            <td>                                       </td>
+            <td>FIRMA FUNCIONARIO DE DESEMBOLSO</td>
+        </tr>
+    </table>
+    </div>

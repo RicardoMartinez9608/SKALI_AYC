@@ -1,0 +1,282 @@
+﻿@{
+    ViewData["Title"] = "Tablero Mora";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<head>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/startmin.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+
+</head>
+<p></p>
+<div class="panel panel-default" style="background-color:white">
+    <div class="panel-body" style="background-color:white">
+        <div class="well">
+            <div class="row">
+                <div class="col-md-3" id="agencias">
+                    <div class="form-group">
+                        <div id="id_agencia"></div>
+                    </div>
+                </div>
+                <div class="col-md-3" id="carteras">
+                    <div class="form-group">
+                        <div id="id_cartera"></div>
+                    </div>
+                </div>
+
+                <div class="col-md-3" id="mes">
+                    <div id="seleccionar" class="form-group">
+                        <select id="mes_seleccion" class="form-control">
+                            <option value="0">Seleccione el mes</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-default" id="Cargar">Cargar Datos</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="row" style="background-color:white">
+            <div class="col-lg-4 col-md-6">
+                <div class="panel panel-red">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="glyphicon glyphicon-usd" style=" font-size: 50px;"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge"><h3 id="mora"></h3></div>
+                                <div>Mora Total</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="glyphicon glyphicon-user" style=" font-size: 50px;"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge"><h3 id="clientes"></h3></div>
+                                <div>Clientes en Mora</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="panel panel-yellow">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="glyphicon glyphicon-usd" style=" font-size: 50px;"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge"><h3 id="vencidos"></h3></div>
+                                <div>Vencidos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div id="Abonos_Mora">
+            <table class="table table-sm table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">
+                            <div class="alert alert-success text-center" role="alert"><h3>< 15 dias</h3></div>
+                        </th>
+                        <th scope="col">
+                            <div class="alert alert-info text-center" role="alert"><h3>16 - 30  dias</h3></div>
+
+
+                        </th>
+                        <th scope="col">
+                            <div class="alert alert-warning text-center" role="alert"><h3>31 - 60 dias</h3></div>
+
+                        </th>
+                        <th scope="col">
+                            <div class="alert alert-danger text-center" role="alert"><h3>> 61 dias</h3></div>
+
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="alert alert-success" role="alert"><h4 id="Clientes_Menor_Quince"></h4></div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="alert alert-success" role="alert"><h4 id="Saldo_Menor_Quince"></h4></div>
+                                </div>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="alert alert-info" role="alert"><h4 id="Clientes_Dieciseis_treina"></h4></div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="alert alert-info" role="alert"><h4 id="Saldo_Dieciseis_treina"></h4></div>
+                                </div>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="alert alert-warning" role="alert"><h4 id="Clientes_Treinta_Uno_Sesenta"></h4></div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="alert alert-warning" role="alert"><h4 id="Saldo_Treinta_Uno_Sesenta"></h4></div>
+                                </div>
+                            </div>
+                        </th>
+
+                        <th>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="alert alert-danger" role="alert"><h4 id="Clientes_Mayor_Sesenta_Uno"></h4></div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="alert alert-danger" role="alert"><h4 id="Saldo_Mayor_Sesenta_Uno"></h4></div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <div class="alert alert-info" role="alert" style="text-align:center" id="banner"> 
+        <h4 style="text-align:center">PRINCIPALES DEUDORES (MÁS DE 30 DIAS MORA Y MÁS 3%)</h4> 
+        </div>
+    
+        <div id="listadeudores"></div>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#Abonos_Mora").hide();
+        $("#banner").hide();
+        ListaCarteras();
+        Cargar_Agencias();
+        Cargar_Fichero();
+        Cargar_Abonos();
+        Cargar_Tabla();
+    });
+       function ListaCarteras() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol == "Administrador") {
+            $("#Id_Agencia").change(function () {
+                var id_agencia = $("#Id_Agencia").val();
+                $.get("@Url.Action("Carteras", "Componentes")?id_agencia="+id_agencia, function (agencias) {
+                    $("#id_cartera").html(agencias);
+                });
+            });
+
+        } else if (rol == "") {
+            $("#agencias").css("display", "none");
+            $("#carteras").css("display", "none");
+        }else {
+            $("#agencias").css("display", "none");
+            Cargar_Carteras_Agencia();
+        }
+    }
+    function Cargar_Agencias() {
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia").html(agencias);
+            ListaCarteras();
+        });
+    }
+    function Cargar_Carteras_Agencia() {
+        $.get("@Url.Action("Carteras", "Componentes")",function (agencias) {
+            $("#id_cartera").html(agencias);
+        });
+    }
+      function Cargar_Fichero() {
+          $("#Cargar").click(function () {
+            var id_cartera = $("#Id_Cartera").val();
+            var month = $("#mes_seleccion").val();
+            var id_agencia = $("#Id_Agencia").val();
+            $.get("@Url.Action("Fichero_Mora", "Tablero")",
+                {
+                    id_cartera: id_cartera,
+                    month: month,
+                    id_agencia : id_agencia
+                },
+                function (data) {
+                    $("#mora").text("$ " + data.mora_Total);
+                    $("#clientes").text(data.clientes_Mora);
+                    $("#vencidos").text("$ " + data.vencidos);
+                });
+        });
+    }
+    function Cargar_Abonos() {
+          $("#Cargar").click(function () {
+            $("#Abonos_Mora").show();
+            var id_cartera = $("#Id_Cartera").val();
+            var month = $("#mes_seleccion").val();
+            var id_agencia = $("#Id_Agencia").val();
+            $.get("@Url.Action("Ultimos_Abonos_Mora", "Tablero")",
+                {
+                    id_cartera: id_cartera,
+                    month: month,
+                    id_agencia : id_agencia
+                },
+                function (data) {
+                    $("#Saldo_Menor_Quince").text("$ " + data.saldo_Menor_Quince);
+                    $("#Clientes_Menor_Quince").text(data.clientes_Menor_Quince);
+
+                    $("#Saldo_Dieciseis_treina").text("$ " + data.saldo_Dieciseis_treina);
+                    $("#Clientes_Dieciseis_treina").text(data.clientes_Dieciseis_treina);
+
+                    $("#Saldo_Treinta_Uno_Sesenta").text("$ " + data.saldo_Treinta_Uno_Sesenta);
+                    $("#Clientes_Treinta_Uno_Sesenta").text(data.clientes_Treinta_Uno_Sesenta);
+
+                    $("#Saldo_Mayor_Sesenta_Uno").text("$ " + data.saldo_Mayor_Sesenta_Uno);
+                    $("#Clientes_Mayor_Sesenta_Uno").text(data.clientes_Mayor_Sesenta_Uno);
+                });
+        });
+    }
+    function Cargar_Tabla() {
+        $("#Cargar").click(function () {
+            $("#banner").show();
+            var id_cartera = $("#Id_Cartera").val();
+            var month = $("#mes_seleccion").val();
+            var id_agencia = $("#Id_Agencia").val();
+              $.get("@Url.Action("Principales_Deudores", "Tablero")",
+            {
+                id_cartera: id_cartera,
+                month: month,
+                id_agencia: id_agencia
+            },
+            function (lista) {
+                $("#listadeudores").html(lista);
+            });
+        });
+    }
+ 
+</script>

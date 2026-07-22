@@ -1,0 +1,9 @@
+﻿@model IEnumerable<ModelNucleo.Model.Cartera>
+
+<select name="Id_Cartera" id="Id_Cartera" class="form-control">
+    <option value="0">Todos los Asesores</option>
+    @foreach (var item in Model)
+    {
+        <option value="@item.Id_Cartera">@item.Nombre (@item.Colector)</option>
+    }
+</select>

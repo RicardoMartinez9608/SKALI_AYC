@@ -1,0 +1,206 @@
+﻿@model ModelNucleo.Model.ModelView.Reporte_Vencimiento_Cuotas_Mora_Diaria
+@{
+    Layout = null;
+}
+
+    @{
+    int centinela = 0;
+    }
+ 
+
+    <table class="greyGridTable" id="mora_diaria">
+        <tbody>
+            @if (Model.Detalle_Vencimiento_Cuotas_Mora_Diaria != null)
+    {
+            @if (ViewBag.es_mora == true)
+    {
+            <tr>
+                <th>Código</th>
+                <th style="width: 30%">Nombre</th>
+                <th>Fecha Pago</th>
+                <th>Cuota</th>
+                <th>Pago al Día</th>
+                <th>Último Movimiento</th>
+                <th>Días</th>
+                <th>Saldo</th>
+                <th>Teléfono</th>
+                <th>Vencimiento</th>
+                <th>%</th>
+            </tr>
+
+            @foreach (var item in Model.Detalle_Vencimiento_Cuotas_Mora_Diaria)
+        {
+            centinela += 1;
+            <tr>
+                <td>@item.Datos_Generales.Codigo_Credito</td>
+                <td>@item.Datos_Generales.Nombre_Cliente</td>
+                <td>@item.Datos_Generales.Fecha_Pago.ToString("dd/MM/yyyy")</td>
+                <td>@item.Datos_Generales.Cuota.ToString("C")</td>
+                <td>@item.Datos_Generales.Pago_Al_Dia.ToString("C")</td>
+                <td>@item.Datos_Generales.Ultimo_Movimiento.ToString("dd/MM/yyyy")</td>
+
+                <td>@item.Mora_Asesor.Dias</td>
+                <td>@item.Datos_Generales.Saldo.ToString("C")</td>
+                <td>@item.Datos_Generales.Telefono</td>
+                <td>@item.Datos_Generales.Vencimiento.ToString("dd/MM/yyyy")</td>
+                <td>@item.Mora_Asesor.Porcentaje_Mora</td>
+
+
+            </tr>
+        }
+    }
+    else
+    {
+
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Fecha Pago</th>
+                <th>Cuota</th>
+                <th>Pago al Día</th>
+                <th>Último Movimiento</th>
+                <th>Monto</th>
+                <th>Saldo</th>
+                <th>Teléfono</th>
+                <th>Vencimiento</th>
+                <th>SaldoAH</th>
+                <th>Abono Capital</th>
+                <th>Saldo Pendiente</th>
+            </tr>
+
+            @foreach (var item in Model.Detalle_Vencimiento_Cuotas_Mora_Diaria)
+        {
+            centinela += 1;
+            <tr>
+                <td>@item.Datos_Generales.Codigo_Credito</td>
+                <td>@item.Datos_Generales.Nombre_Cliente</td>
+                <td>@item.Datos_Generales.Fecha_Pago.ToString("dd/MM/yyyy")</td>
+                <td>@item.Datos_Generales.Cuota.ToString("C")</td>
+                <td>@item.Datos_Generales.Pago_Al_Dia.ToString("C")</td>
+                <td>@item.Datos_Generales.Ultimo_Movimiento.ToString("dd/MM/yyyy")</td>
+
+                <td>@item.Vencimiento_Cuotas.Monto.ToString("C")</td>
+                <td>@item.Datos_Generales.Saldo.ToString("C")</td>
+                <td>@item.Datos_Generales.Telefono</td>
+                <td>@item.Datos_Generales.Vencimiento.ToString("dd/MM/yyyy")</td>
+                <td>@item.Vencimiento_Cuotas.Saldo_Cuenta_Ahorro.ToString("C")</td>
+                <td>@item.Vencimiento_Cuotas.Abono_Capital.ToString("C")</td>
+                <td>@item.Vencimiento_Cuotas.Porcentaje_Saldo_Pendiente</td>
+
+
+            </tr>
+        }
+    }
+    }
+    else
+    {
+            @if (ViewBag.es_mora == true)
+    {
+            <tr>
+                <th>Código</th>
+                <th style="width: 25%">Nombre</th>
+                <th>Fecha Pago</th>
+                <th>Cuota</th>
+                <th>Pago al Día</th>
+                <th>Último Movimiento</th>
+                <th>Días</th>
+                <th>Saldo</th>
+                <th>Teléfono</th>
+                <th>Vencimiento</th>
+                <th>%</th>
+            </tr>
+
+
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+
+            </tr>
+
+    }
+    else
+    {
+
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Fecha Pago</th>
+                <th>Cuota</th>
+                <th>Pago al Día</th>
+                <th>Último Movimiento</th>
+                <th>Monto</th>
+                <th>Saldo</th>
+                <th>Teléfono</th>
+                <th>Vencimiento</th>
+                <th>SaldoAH</th>
+                <th>Abono Capital</th>
+                <th>Saldo Pendiente</th>
+            </tr>
+
+
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+
+            </tr>
+
+    }
+    }
+
+        </tbody>
+    </table>
+    <br />
+    <table style="border-collapse:separate;
+                    border-spacing: 10px;
+                    border:solid black 1px;
+                    border-radius:10px;
+                    -moz-border-radius:10px;
+                    -webkit-border-radius: 5px;text-align: center">
+        <tbody style="text-align: center">
+            <tr>
+                <th style="text-align: center">Totales por Asesor 0</th>
+                @if (Model != null)
+        {
+                <th style="text-align: center">Totales por Asesor @centinela</th>
+                <th style="text-align: center">Al día   @Model.Detalle_Vencimiento_Cuotas_Mora_Diaria.Sum(a => a.Datos_Generales.Pago_Al_Dia).ToString("C")</th>
+                <th style="text-align: center">Cuotas   @Model.Detalle_Vencimiento_Cuotas_Mora_Diaria.Sum(a => a.Datos_Generales.Cuota).ToString("C")</th>
+                <th style="text-align: center">Saldos   @Model.Detalle_Vencimiento_Cuotas_Mora_Diaria.Sum(a => a.Datos_Generales.Saldo).ToString("C")</th>
+                <th style="text-align: center">Porcentaje   @Model.Detalle_Vencimiento_Cuotas_Mora_Diaria.Sum(a => a.Mora_Asesor.Porcentaje_Mora).ToString()</th>
+        }
+        else
+        {
+                <th></th>
+                <th style="text-align: center">Cuotas   0.00</th>
+                <th></th>
+                <th style="text-align: center">Al día   0.00</th>
+        }
+
+
+            </tr>
+
+        </tbody>
+
+    </table>
+

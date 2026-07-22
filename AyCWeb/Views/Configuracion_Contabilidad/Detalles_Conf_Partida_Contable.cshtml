@@ -1,0 +1,87 @@
+﻿@model ModelNucleo.Model.ModelView.Detalle_Partida_Contable_Configuracion_Vista
+@{
+    Layout = null;
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading">Detalle de Configuración Partida Contable</div>
+    <div class="panel-body">
+        <table class="table">
+            <tr>
+                <td>Agencia:</td>
+                <td>@Model.Agencia.Nombre</td>
+            </tr>
+
+            @if (Model.Conf_Partida_Contable.Id_Linea_Credito > 0)
+            {
+                <tr>
+                    <td>Línea Crédito:</td>
+                    <td>@Model.Linea_Credito.Descripcion_linea</td>
+                </tr>
+            }
+
+            @if (Model.Conf_Partida_Contable.Id_Linea_Ahorro > 0)
+            {
+                <tr>
+                    <td>Línea Ahorro:</td>
+                    <td>@Model.Linea_Ahorro.Descripcion</td>
+                </tr>
+            }
+            <tr>
+                <td>Identificador:</td>
+                <td>@Model.Conf_Partida_Contable.Identificador</td>
+            </tr>
+            <tr>
+                <td>Descripción:</td>
+                <td>@Model.Conf_Partida_Contable.Descripcion</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Lista de Cuentas Contables</h4>
+            </div>
+            <div class="col-lg-6 text-right">
+                <a href="#Mantenimiento_Adicional" data-toggle="modal" class="btn btn-default" id="Nueva_Cuenta_Contable">Nueva Cuenta Contable</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="table">
+            <tr>
+                <th>Identificador</th>
+                <th>Cuenta</th>
+                <th>Concepto</th>
+                <th>Cargo</th>
+                <th>Abono</th>
+                <th></th>
+            </tr>
+            @foreach (var item in Model.Conf_Detalle_Partida_Contables)
+            {
+                <tr>
+                    <td>@item.Identificador</td>
+                    <td>@item.Cuenta_Contable</td>
+                    <td>@item.Concepto</td>
+                    <td>@item.Cargo</td>
+                    <td>@item.Abono</td>
+                    <td>
+                        <input type="hidden" value="@item.Id_Conf_Detalle_Partida_Contable" class="id_detalle_conf_cuenta_contable" />
+                        <div class="btn-group" role="group" aria-label="...">
+                            <a href="#Mantenimiento_Adicional" data-toggle="modal" class="btn btn-default editar_detalle_conf_cuenta_contable">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                            <a href="#" class="btn btn-default borrar_detalle_conf_cuenta_contable">
+                                <span class="glyphicon glyphicon-erase"></span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>

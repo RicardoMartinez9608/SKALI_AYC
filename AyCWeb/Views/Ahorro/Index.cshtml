@@ -1,0 +1,830 @@
+﻿@using DevExtreme.AspNet.Mvc
+@model ModelNucleo.Model.ModelView.AhorroFiltro
+@{
+    ViewData["Title"] = "Ahorros";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Ahorro</h4>
+            </div>
+            <div class="col-lg-6 text-right">
+                <a href="#Mantenimiento" data-toggle="modal" class="btn btn-default nuevo_ahorro">Nuevo ahorro</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body panel-body-personalizado">
+        @*<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Filtros <span class="caret"></span>
+        </button>*@
+        <p></p>
+        <div class="input-group">
+            <input type="text" name="dui_buscar" id="dui_buscar" placeholder="introduzca un DUI válido" class="form-control" />
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="buscarpordui">Buscar</button>
+            </span>
+        </div>
+        <p></p>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <table>
+                    <tr>
+                        <th>ID: </th>
+
+                        <td><span class="id" id="id_persona" />@ViewBag.Id_Persona </td>
+                    </tr>
+                    <tr>
+                        <th>Nombre completo: </th>
+                        <td><span class="nombre_completo" id="nombre">@ViewBag.nombre</span></td>
+                    </tr>
+                    <tr>
+                        <th>DUI: </th>
+                        <td><span class="dui" id="dui_persona">@ViewBag.dui</span></td>
+
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+        @(Html.DevExtreme().DataGrid().ID("ListaAhorros")
+                                        .ShowBorders(true)
+                                        .DataSource(d => d.Mvc()
+                                            .Controller("Ahorro")
+                                            .Key("Id_Ahorro")
+                                            .LoadAction("Ahorros")
+                                            .LoadParams(new
+                                            {
+                                                id_persona = Model.id_persona,
+                                                porCliente = Model.porCliente,
+                                                inicio = Model.inicio,
+                                                final = Model.final
+                                            }))
+                                        .Columns(columns =>
+                                        {
+                                            columns.Add().DataField("Id_Ahorro").DataType(GridColumnDataType.Number).VisibleIndex(1).Visible(false);
+                                            columns.Add().DataField("Id_Persona").DataType(GridColumnDataType.Number).VisibleIndex(2).Visible(false);
+
+                                            columns.Add().DataField("Id_Linea_Ahorro").DataType(GridColumnDataType.Number).VisibleIndex(3)
+                                            .Lookup(l => l.DataSource(d => d.Mvc().Controller("Linea_Ahorro").LoadAction("Lineas_Ahorro").Key("Id_Linea_Ahorro"))
+                                            .ValueExpr("Id_Linea_Ahorro").DisplayExpr("Descripcion"));
+
+                                            columns.Add().DataField("No_Ahorro").DataType(GridColumnDataType.String).VisibleIndex(4);
+                                            columns.Add().DataField("Fecha_Apertura").DataType(GridColumnDataType.Date).VisibleIndex(5);
+                                            columns.Add().DataField("Fecha_Retiro").Caption("Vencimiento").DataType(GridColumnDataType.Date).VisibleIndex(6);
+                                            columns.Add().DataField("Tasa_Interes").Caption("Interés %").DataType(GridColumnDataType.Number).VisibleIndex(7);
+                                            columns.Add().DataField("Plazo").DataType(GridColumnDataType.Number).VisibleIndex(8);
+                                            columns.Add().CellTemplate(@<text>
+                                              <input type="hidden"  id="id_ahorro_doc" class="documento_id" value="<%=data.Id_Ahorro%>"/>
+                                              <a href="#Mantenimiento_Adicional" data-toggle="modal" class="ver_detalle_documentos" >Documentos</a>
+                                                                        </text>).Caption("No Acta").VisibleIndex(16).FormItem(f => f.Editor(w => w.NumberBox().Visible(false)).Label(l => l.Visible(false)));
+                                            columns.Add().Fixed(true).VisibleIndex(9).CellTemplate(
+                                                    @<text>
+                                                        <input type="hidden" class="id_ahorro_valor" value="<%=data.Id_Ahorro%>" />
+                                                        <a href="#Mantenimiento" data-backdrop="false" data-toggle="modal" class="btn btn-default ver_detalle">Detalle</a>
+                                                     </text>
+
+                                                );
+                                            columns.Add().Fixed(true).VisibleIndex(10).CellTemplate(
+                                                    @<text>
+                                                    <input type="hidden" class="id_ahorro_valor" value="<%=data.Id_Ahorro%>" />
+                                                    <a href="#MantenimientoRecalculo" data-backdrop="false" data-toggle="modal" class="btn btn-default ver_detallerecalculo ">Recalculo</a>
+                                                </text>
+                                                );
+                                            columns.Add().Fixed(true).Width(170).VisibleIndex(11).CellTemplate(
+                                                    @<text>
+                                                    <input type="hidden" class="id_ahorro_valor" value="<%=data.Id_Ahorro%>" />
+                                                       <input type="hidden" class="no_cuenta" value="<%=data.No_Ahorro%>" />
+                                                    <a href="#" class="btn btn-default ver_estado_cuenta">Estado de Cuenta</a>
+                                                </text>
+                                                );
+
+                                        }).OnCellPrepared("Modificar_Columna")
+                                        .Paging(p => p.Enabled(true)).OnContentReady("DataGridPreparada")
+
+                            .FilterRow(f => f.Visible(false))
+                            .HeaderFilter(f => f.Visible(false))
+                            .GroupPanel(p => p.Visible(false))
+                            .Grouping(g => g.AutoExpandAll(true))
+                            .RemoteOperations(true)
+                            .MasterDetail(d =>
+                            {
+                                d.Enabled(true);
+                                d.Template(@<text>
+                                    <h4>Transacciones</h4>
+                                    @(Html.DevExtreme().DataGrid().ID("Transacciones_Ahorro")
+                                                .ColumnAutoWidth(true)
+                                                .ShowBorders(true)
+                                                .Columns(columns =>
+                                                    {
+                                                            columns.Add().DataField("Fecha");
+                                                            columns.Add().DataField("Deposito").Caption("Depósito");
+                                                            columns.Add().DataField("Retiro");
+                                                            columns.Add().DataField("Saldo");
+                                                        })
+                                                .FilterRow(fi => fi.Visible(false))
+                                                        .HeaderFilter(h => h.Visible(false))
+                                                        .GroupPanel(p => p.Visible(false))
+                                                        .Grouping(g => g.AutoExpandAll(true))
+                                                        .RemoteOperations(true)
+                                                        .DataSource(g => g.Mvc()
+                                                                .Controller("Ahorro")
+                                                                .LoadAction("Transacciones2").Key("Id")
+                                                                .LoadParams(new { id_ahorro = new JS("data.Id_Ahorro") })
+                                                            )
+                                    )
+                                </text>);
+                                                    })
+        )
+        <link href="~/css/ventanas.css" rel="stylesheet" />
+        <div class="modal fade" id="Mantenimiento">
+            <div class="modal-dialog" style="width:80%">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <a href="#" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </a>
+                        <h4 class="modal-title">Detalle</h4>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="detalle_ahorro_detalle"></div>
+
+                    </div> <!-- /.modal-body -->
+
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="MantenimientoRecalculo">
+            <div class="modal-dialog" style="width:80%">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <a href="#" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </a>
+                        <h4 class="modal-title">Generar Estado de Cuenta</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="detalle_ahorro">
+                            <p><strong>Ahorro Seleccionado:</strong> <span id="ahorroDetalle"></span></p>
+                            <input type="hidden" id="idAhorro" />
+                        </div>
+                        <form id="formRecalculo">
+                            <div class="form-group">
+                                <label for="fechaInicio">Fecha de inicio</label>
+                                <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" required />
+                            </div>
+
+                            <div class="form-group">
+                                <p id="confirmMessage" style="display:none;">¿Estás seguro de recalcular el ahorro desde la fecha indicada?</p>
+                            </div>
+
+                            <div class="form-group text-center">
+                                <button type="button" id="btnConfirmar" class="btn btn-primary" disabled>Confirmar Recalculo</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </form>
+                    </div> 
+
+                </div>
+            </div>
+        </div>
+       <div class="modal fade" id="MantenimientoEstadoCuenta">
+            <div class="modal-dialog" style="width:80%">
+                <div class="modal-content">
+
+                    <!-- HEADER -->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Estado de Cuenta</h4>
+                    </div>
+
+                    <!-- BODY -->
+                    <div class="modal-body">
+
+                        <!-- INFO AHORRO -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><strong>Información de Cuenta</strong></div>
+                            <div class="panel-body">
+                                <p><strong>Ahorro:</strong> <span id="estadoCuentaDetalle"></span></p>
+                                <input type="hidden" id="estadoCuentaIdAhorro" />
+                            </div>
+                        </div>
+
+                        <!-- FILTROS -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><strong>Rango de Fechas</strong></div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Fecha inicio</label>
+                                            <input type="date" id="fechaInicioEC" class="form-control" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Fecha fin</label>
+                                            <input type="date" id="fechaFinEC" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PERSONALIZACIÓN -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><strong>Personalización del Documento</strong></div>
+                            <div class="panel-body">
+
+                                <div class="form-group">
+                                    <label>Texto publicidad</label>
+                                    <textarea id="textoPublicidad" class="form-control" rows="3"></textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Imagen arriba</label>
+                                            <input type="file" id="imagenArribaFile" class="form-control" accept="image/*" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Imagen abajo</label>
+                                            <input type="file" id="imagenAbajoFile" class="form-control" accept="image/*" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- BOTONES -->
+                        <div class="text-center" style="margin-top:20px;">
+                            <button type="button" id="btnGenerarPDF" class="btn btn-primary">
+                                <i class="glyphicon glyphicon-file"></i> Generar PDF
+                            </button>
+
+                            <button type="button" id="btnEnviarCorreo" class="btn btn-success">
+                                <i class="glyphicon glyphicon-envelope"></i> Enviar por Email
+                            </button>
+
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                Cerrar
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="Mantenimiento_Adicional">
+            <div class="modal-dialog" style="width:80%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a href="#" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </a>
+                        <h4 class="modal-title" id="titulo_sub_modal">Mantenimiento</h4>
+                    </div>
+                    <div class="modal-body Cargar_Mantenimiento_Adicional">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="Mantenimiento_Adicional">
+            <div class="modal-dialog" style="width:80%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a href="#" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </a>
+                        <h4 class="modal-title" id="titulo_sub_modal">Mantenimiento</h4>
+                    </div>
+                    <div class="modal-body Cargar_Mantenimiento_Adicional">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <script>
+            $(function () {
+                $("#dui_buscar").mask("00000000-0");
+                BuscarPorDui();
+                Recalculo();
+                Procesar_Recalculo();
+                Nuevo_Detalle();
+                EstadoCuenta();
+            });
+            function DataGridPreparada() {
+                Ver_Detalle();
+             
+                Documentos_Legales();
+              
+            }
+            function BuscarPorDui() {
+                $("#buscarpordui").click(function () {
+                    var filtro = $("#dui_buscar").val();
+                    $.get("@Url.Action("JDetalle_Persona","Persona")",
+                        { filtro: filtro },
+                        function (detalle) {
+                            $("span.nombre_completo").text(detalle.nombreCompleto);
+                            $("span.dui").text(detalle.dui);
+                            $("span.id").text(detalle.id_Persona);
+                            var id_persona = $("#id_persona").text();
+                            var nombre = $("#nombre").text();
+                            var dui = $("#dui_persona").text();
+                            if (id_persona != null) {
+                                window.location.href = "@Url.Action("Index", "Ahorro")?id_persona=" + id_persona + "&nombre=" + nombre + "&dui=" + dui;
+                            }
+
+                        }).fail(function (error) {
+                        alertify.error("No se encontró esa identificación");
+                    });
+                });
+            }
+            
+            function Nuevo_Detalle() {
+                $("a.nuevo_ahorro").click(function () {
+                    //Refrescar_Modales();
+                    $.get("@Url.Action("Ahorro_Manejo", "Ahorro")", { esNuevo: true }, function (perfil) {
+                        $("div.detalle_ahorro_detalle").html(perfil);
+                        //Select_Linea_Ahorro();
+                        Guardar_Ahorro();
+                        var id = $("#id_persona").text();
+                        $("#Id_Persona").val(id);
+                        //Eventos_Inicial();
+                        Lista_Firmas_Autorizadas();
+                        Nueva_Firma_Autorizada();
+                    });
+                });
+            }
+
+            function Ver_Detalle() {
+                $("a.ver_detalle").each(function (index) {
+                    $("a.ver_detalle").eq(index).click(function () {
+                        $('#MantenimientoRecalculo').modal('hide');
+
+                        var id_ahorro = $(this).closest("td").find("input.id_ahorro_valor").val();
+
+                        if (!id_ahorro) {
+                            alertify.error("No se encontró el ID del ahorro seleccionado.");
+                            return;
+                        }                        //Refrescar_Modales();
+                        $.get("@Url.Action("Ahorro_Manejo", "Ahorro")", { esNuevo:false, id_ahorro: id_ahorro }, function (perfil) {
+                            $("div.detalle_ahorro_detalle").html(perfil);
+                            //Select_Linea_Ahorro();
+                            Guardar_Ahorro();
+                            Editar_Ahorro();
+                            Guardar_Libreta();
+                            Ver_NCuenta();
+                            Rotulado(id_ahorro);
+                            N_Cuenta_Ahorro(id_ahorro);
+                            //Eventos_Inicial();
+                            Lista_Firmas_Autorizadas();
+                            Nueva_Firma_Autorizada();
+                        });
+                    });
+                });
+            }
+
+            function Recalculo() {
+                // Evitar que se dupliquen los eventos si se vuelve a cargar el grid
+                $(document).off('click', '.ver_detallerecalculo');
+
+                // Delegar el evento de clic
+                $(document).on('click', '.ver_detallerecalculo', function (e) {
+                    e.preventDefault();
+
+                    // Ocultar otro modal abierto, por si acaso
+                    $('#Mantenimiento').modal('hide');
+
+                    // Obtener el ID del ahorro desde la fila del botón
+                    var idAhorro = $(this).closest('tr').find('.id_ahorro_valor').val();
+                    $('#idAhorro').val(idAhorro);
+
+                    // Si tienes un nombre de ahorro en la tabla
+                    var ahorroDetalle = $(this).closest('tr').find('.nombre_ahorro').text();
+                    $('#ahorroDetalle').text(ahorroDetalle || "(Sin nombre)");
+
+                    // Limpiar estado anterior del formulario
+                    $('#fechaInicio').val('');
+                    $('#confirmMessage').hide();
+                    $('#btnConfirmar').prop('disabled', true);
+
+                    // Mostrar el modal de recalculo
+                    $('#MantenimientoRecalculo').modal('show');
+                });
+
+                // Delegar también el evento del cambio de fecha (por si el modal se regenera)
+                $(document).off('change', '#fechaInicio');
+                $(document).on('change', '#fechaInicio', function () {
+                    var fechaSeleccionada = $(this).val();
+
+                    if (fechaSeleccionada) {
+                        $('#confirmMessage').show();
+                        $('#btnConfirmar').prop('disabled', false);
+                    } else {
+                        $('#confirmMessage').hide();
+                        $('#btnConfirmar').prop('disabled', true);
+                    }
+                });
+            }
+            function Procesar_Recalculo() {
+                $("#btnConfirmar").click(function () {
+                    var idAhorro = $("#idAhorro").val();
+                    var fechaInicio = $("#fechaInicio").val();
+
+                    if (!fechaInicio) {
+                        alertify.warning("Por favor ingresa una fecha válida.");
+                        return;
+                    }
+
+                    // Enviar parámetros simples
+                    $.post("@Url.Action("ProcesarRecalculo", "Ahorro")", {
+                        idAhorro: idAhorro,
+                        fechaInicio: fechaInicio
+                    })
+                        .done(function (response) {
+                            alertify.success("Recalculo completado correctamente");
+                            $("#MantenimientoRecalculo").modal("hide");
+                            console.log(response);
+                        })
+                        .fail(function (xhr) {
+                            alertify.error("Error al realizar el recalculo: " + xhr.responseText);
+                            console.log(xhr);
+                        });
+                });
+            }
+            function EstadoCuenta() {
+
+                $(document).off('click', '.ver_estado_cuenta');
+
+                $(document).on('click', '.ver_estado_cuenta', function (e) {
+                    e.preventDefault();
+                    var fila = $(this).closest('tr');
+                    var idAhorro = $(this).closest('tr').find('.id_ahorro_valor').val();
+
+                    // opcional: agarrar número de cuenta desde columna
+                   var idAhorro = fila.find('.id_ahorro_valor').val();
+                    var noCuenta = fila.find('.no_cuenta').val();
+
+                    $("#estadoCuentaIdAhorro").val(idAhorro);
+                     $("#estadoCuentaDetalle").text(
+                            noCuenta
+                        );
+
+                    $("#fechaInicioEC").val('');
+                    $("#fechaFinEC").val('');
+
+                    $("#MantenimientoEstadoCuenta").modal("show");
+                });
+            }
+           $("#btnGenerarPDF").off("click").on("click", async function () {
+
+            var id = $("#estadoCuentaIdAhorro").val();
+            var inicio = $("#fechaInicioEC").val();
+            var fin = $("#fechaFinEC").val();
+
+            var texto = $("#textoPublicidad").val();
+
+            var fileArriba = $("#imagenArribaFile")[0].files[0];
+            var fileAbajo = $("#imagenAbajoFile")[0].files[0];
+
+            if (!inicio || !fin) {
+                alertify.warning("Selecciona ambas fechas");
+                return;
+            }
+
+            let imgArriba = "";
+            let imgAbajo = "";
+
+            if (fileArriba) {
+                imgArriba = await convertirBase64(fileArriba);
+            }
+
+            if (fileAbajo) {
+                imgAbajo = await convertirBase64(fileAbajo);
+            }
+
+            $.ajax({
+                url: '@Url.Action("GenerarEstadoCuentaPDF", "Ahorro")',
+                type: "POST",
+                data: {
+                    idAhorro: id,
+                    fechaInicio: inicio,
+                    fechaFin: fin,
+                    textoPublicidad: texto,
+                    imagenArriba: imgArriba,
+                    imagenAbajo: imgAbajo
+                },
+                xhrFields: {
+                    responseType: 'blob' // 🔥 IMPORTANTE
+                },
+                success: function (data) {
+
+                    var blob = new Blob([data], { type: 'application/pdf' });
+                    var url = window.URL.createObjectURL(blob);
+
+                    // abrir en nueva pestaña
+                    window.open(url);
+
+                    // opcional: descarga automática
+                    // var a = document.createElement("a");
+                    // a.href = url;
+                    // a.download = "EstadoCuenta.pdf";
+                    // a.click();
+                },
+                error: function () {
+                    alertify.error("Error al generar PDF");
+                }
+            });
+
+        });
+            $("#btnEnviarCorreo").off("click").on("click", async function () {
+
+                var id = $("#estadoCuentaIdAhorro").val();
+                var inicio = $("#fechaInicioEC").val();
+                var fin = $("#fechaFinEC").val();
+
+                var texto = $("#textoPublicidad").val();
+
+                var fileArriba = $("#imagenArribaFile")[0].files[0];
+                var fileAbajo = $("#imagenAbajoFile")[0].files[0];
+
+                if (!inicio || !fin) {
+                    alertify.warning("Selecciona ambas fechas");
+                    return;
+                }
+
+                let imgArriba = "";
+                let imgAbajo = "";
+
+                if (fileArriba) {
+                    imgArriba = await convertirBase64(fileArriba);
+                }
+
+                if (fileAbajo) {
+                    imgAbajo = await convertirBase64(fileAbajo);
+                }
+
+                $.ajax({
+                    url: '@Url.Action("EnviarEstadoCuentaEmail", "Ahorro")',
+                    type: "POST",
+                    data: {
+                        idAhorro: id,
+                        fechaInicio: inicio,
+                        fechaFin: fin,
+                        textoPublicidad: texto,
+                        imagenArriba: imgArriba,
+                        imagenAbajo: imgAbajo
+                    },
+                    success: function () {
+                        alertify.success("Correo enviado correctamente");
+                    },
+                    error: function () {
+                        alertify.error("Error al enviar correo");
+                    }
+                });
+
+            });
+            function convertirBase64(file) {
+                return new Promise((resolve, reject) => {
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = error => reject(error);
+                });
+            }
+            function Editar_Ahorro() {
+                $("#Editar_Ahorro_Cuenta").click(function() {
+                    var cuenta_ahorro = $("#form_ahorro").serializeAnything();
+                    $.post("@Url.Action("Editar_Ahorro_Manual", "Ahorro")",
+                            cuenta_ahorro,
+                            function (correcto) {
+                                alertify.success("Editado  Exitosamente");
+                                Detectar_Grid_Credito();
+                            }).fail(function (error) {
+                            alertify.error(error.responseText);
+                            console.log(error);
+                        });
+                });
+            }
+
+            function Guardar_Ahorro() {
+                $("#Guardar_Ahorro_Cuenta").click(function() {
+                    var cuenta_ahorro = $("#form_ahorro").serializeAnything();
+                    $.post("@Url.Action("Guardar", "Ahorro")",
+                            cuenta_ahorro,
+                            function (correcto) {
+                                alertify.success(correcto);
+                                Detectar_Grid_Credito();
+                            }).fail(function (error) {
+                            alertify.error(error.responseText);
+                            console.log(error);
+                        });
+                });
+            }
+            function Guardar_Libreta() {
+                $("#Guardar_Libreta").click(function () {
+                    var id_ahorro = $(".id_ahorro_valor").val();
+                    var No_Libreta = $("#valorLibreta").val();
+                    var Activo = Boolean(true);
+
+                    $.post("@Url.Action("Nueva_Libreta","Ahorro")",{
+                            Id_Ahorro: id_ahorro, No_Libreta : No_Libreta, Activo:Activo},
+                        function (correcto) {
+                            alertify.success(correcto);
+                            Detectar_Grid_Credito();
+                        }).fail(function (error) {
+                        alertify.error(error.responseText);
+                        console.log(error);
+                    });
+                });
+            }
+
+            function Rotulado(id_ahorro) {
+                $("input.N_Cuenta").each(function (index) {
+                    $("input.N_Cuenta").eq(index).click(function () {
+                        window.open("@Url.Action("Rotulado_Libreta", "Ahorro")?id_ahorro="+ id_ahorro);
+                    });
+                });
+
+            }
+              function N_Cuenta_Ahorro(id_ahorro) {
+                  $("input.N_Libreta").each(function (index) {
+                      $("input.N_Libreta").eq(index).click(function () {
+                        window.open("@Url.Action("Cuenta_Ahorro_Libreta", "Ahorro")?id_ahorro="+ id_ahorro);
+                    });
+                });
+
+            }
+            function Ver_NCuenta() {
+                var id_ahorro = $("input.id_ahorro_valor").val();
+                $.get("@Url.Action("LibretaCliente", "Ahorro")",
+                    { id_ahorro: id_ahorro },
+                    function (cuenta) {
+                        $("#NCuenta").html(cuenta.no_Libreta);
+                        console.log(cuenta);
+                    });
+            }
+            function Detectar_Grid_Credito() {
+                $("#Mantenimiento").modal("hide");
+                if ($("#ListaAhorros").length > 0) {
+                    $("#ListaAhorros").dxDataGrid("instance").refresh();//probando si funciona
+                } else {
+                    //Cargar_Cuentas_Credito();
+                }
+            }
+
+            function lookup_displayExpr(item) {
+                if (!item) {
+                    return "";
+                }
+                return item.Nombres + " " + item.Apellidos + " " + item.Dui;
+            }
+
+            function ObtenerPersona(item) {
+                var id_persona = item.selectedItem.Id_Persona
+                $("#id_persona").val(id_persona);
+            }
+
+            function RetornarPersona(rowData) {
+                return rowData.Id_Persona = @Model.id_persona;
+            }
+
+            function Modificar_Columna(e) {
+                if (e.rowType === "data" && e.column.command === "edit") {
+                    $editLink = e.cellElement.find(".dx-link:contains(Edit)");
+                    $editLink.text("Detalle");
+                }
+            }
+
+            //manejo de Firma
+            function Lista_Firmas_Autorizadas() {
+                var id_ahorro = $("#form_ahorro #Id_Ahorro").val();
+                $.get("@Url.Action("Firmas_Autorizada","Ahorro")",
+                    { id_ahorro:id_ahorro },
+                    function (lista) {
+                        $("#lista_firma_autorizadas").html(lista);
+                    });
+            }
+
+            function Nueva_Firma_Autorizada() {
+                $(".nueva_firma_autorizada").click(function () {
+                    var id_ahorro = $("#form_ahorro #Id_Ahorro").val();
+                    Detalle_Firma_Autorizada(true,id_ahorro);
+                });
+            }
+
+            function Detalle_Firma_Autorizada(esNuevo,id_ahorro) {
+                $.get("@Url.Action("Detalle_Firma_Autorizada","Ahorro")",
+                    { esNuevo: esNuevo, id_ahorro: id_ahorro },
+                    function (form) {
+                        $("div.Cargar_Mantenimiento_Adicional").html(form);
+                        Guardar_Firma_Autorizada();
+                    });
+            }
+
+            function Guardar_Firma_Autorizada() {
+                $("#guardar_firma_autorizacion").click(function () {
+                    var firma = $("#Nueva_Firma_Autorizada").serializeAnything();
+                    $.post("@Url.Action("Nueva_Firma_Autorizada", "Ahorro")", firma, function (resultado) {
+                        alertify.success(resultado);
+                        Lista_Firmas_Autorizadas();
+                    }).fail(function (error) {
+                        alertify.error(error.responseText);
+                    });
+                });
+            }
+
+            function Documentos_Legales() {
+                $("a.ver_detalle_documentos").each(function (index) {
+                    $("a.ver_detalle_documentos").eq(index).click(function () {
+                        var id_ahorro = $("input.documento_id").eq(index).val();
+                        $.get("@Url.Action("Documentos_Legales_Ahorro", "Documentos_Legales")",
+                            {},
+                            function(perfil) {
+                                $("div.Cargar_Mantenimiento_Adicional").html(perfil);
+                                Abrir_Documentos(id_ahorro);
+                            });
+                    });
+                });
+            }
+
+            function Abrir_Documentos(id_ahorro) {
+                $("a.doc_legal").each(function(index) {
+                    $("a.doc_legal").eq(index).click(function() {
+                        var id_doc = $("input.id").eq(index).val();
+                        if (id_doc == 18) {
+                            Solicitud_Socio_Admision();
+                        } else if (id_doc == 19) {
+                            Solicitud_Cambio_Beneficiario(id_ahorro);
+                        }
+                        else if (id_doc == 20) {
+                            Perfil_Socio();
+                        }
+                        else if (id_doc == 21) {
+                            Declaracion_Jurada();
+                        }
+                        else if (id_doc == 16) {
+                            Contrato_Deposito(id_ahorro);
+                        }
+                        else if (id_doc == 17) {
+                            Contrato_Deposito_Copia(id_ahorro);
+                        }
+
+                    });
+                });
+            }
+
+            function Solicitud_Socio_Admision() {
+                var id_persona = @Model.id_persona;
+                window.open("@Url.Action("Generar_Solicitud_Socio", "Ahorro")?id_persona=" + id_persona);
+            }
+
+            function Solicitud_Cambio_Beneficiario(id_ahorro) {
+                var id_persona = @Model.id_persona;
+                window.open("@Url.Action("Solicitud_Cambio_Beneficiario","Ahorro")?id_persona=" + id_persona + "&id_ahorro=" + id_ahorro);
+
+            }
+            function Perfil_Socio() {
+                var id_persona = @Model.id_persona;
+                window.open("@Url.Action("Perfil_Socio", "Ahorro")?id_persona=" + id_persona);
+            }
+            function Declaracion_Jurada() {
+                var id_persona = @Model.id_persona;
+                window.open("@Url.Action("Declaracion_Jurada", "Ahorro")?id_persona=" + id_persona);
+            }
+            function Contrato_Deposito(id_ahorro) {
+                var id_persona = @Model.id_persona;
+                window.open("@Url.Action("Contrato_Deposito","Ahorro")?id_persona=" + id_persona + "&id_ahorro=" + id_ahorro);
+
+            }
+            function Contrato_Deposito_Copia(id_ahorro) {
+                var id_persona = @Model.id_persona;
+                window.open("@Url.Action("Contrato_Deposito_Copia","Ahorro")?id_persona=" + id_persona + "&id_ahorro=" + id_ahorro);
+
+            }
+        </script>
+    </div>
+</div>

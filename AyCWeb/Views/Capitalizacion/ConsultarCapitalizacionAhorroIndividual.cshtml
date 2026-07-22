@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Capitalizacion>
+@{
+    Layout = "";
+}
+
+@if (Model != null && Model.Any())
+{
+    var item = Model.First();
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <tr>
+                <th>Cuenta Habiente</th>
+                <td>@item.CuentaHabiente</td>
+            </tr>
+            <tr>
+                <th>Cuenta</th>
+                <td>@item.Cuenta</td>
+            </tr>
+            <tr>
+                <th>Saldo</th>
+                <td>@item.Saldo.ToString("C")</td>
+            </tr>
+            <tr>
+                <th>Interés a Aplicar</th>
+                <td>@item.Interes_Aplicar.ToString("C")</td>
+                <input type="hidden" id="valor_capitalizar" value="@item.Interes_Aplicar" />
+
+            </tr>
+            <tr>
+                <th>Días Capitalizables</th>
+                <td>@item.DiasCapitalizables</td>
+            </tr>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        No hay capitalización disponible para la fecha seleccionada.
+    </div>
+}

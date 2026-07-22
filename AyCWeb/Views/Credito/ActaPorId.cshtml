@@ -1,0 +1,52 @@
+﻿@model IEnumerable<ModelNucleo.Model.Credito>
+
+@{
+    ViewData["Title"] = "Detalle acta";
+    Layout = "";
+}
+
+<h2>SOCIEDAD COOPERATIVA CREDITOS</h2>
+<h4>ACTAS DE COMITE DE FECHA: _______________</h4>
+@foreach (var item in Model)
+{
+    <div>
+        <table>
+            <tr>
+                <td>CODIGO</td>
+                <td>@item.Codigo_Credito</td>
+                <td>NOMBRE</td>
+                <td>@item.Persona.Nombres @item.Persona.Apellidos</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>APROBADO POR</td>
+                <td>____________________</td>
+                <td>UN MONTO DE</td>
+                <td>@item.Monto_pago.ToString("C")</td>
+                <td>PARA UN PLAZO DE</td>
+                <td>@item.Plazo meses</td>
+            </tr>
+            <tr>
+                <td>FORMA DE PAGO</td>
+                <td>@item.Periodo.Descripcion</td>
+                <td>FIADOR</td>
+                <td>__________________________</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>ASESOR</td>
+                <td>______________________</td>
+                <td>LINEA</td>
+                <td>@item.Linea_Credito.Descripcion_linea</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+}
+
+<script>
+    window.beforeprint();
+</script>

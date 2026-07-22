@@ -1,0 +1,40 @@
+﻿@model ModelNucleo.Model.Interes_Periodo_Linea_Credito
+
+<h4>Editar Interes del Periodo</h4>
+<hr />
+<div id="editar_periodo">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                @*<label asp-for="Id_Interes_Periodo_Linea_Credito" class="control-label"></label>*@
+                <input asp-for="Id_Interes_Periodo_Linea_Credito" class="form-control" type="hidden" />
+                <span asp-validation-for="Id_Interes_Periodo_Linea_Credito" class="text-danger"></span>
+                <input asp-for="Id_Linea_Credito" class="form-control" type="hidden" />
+                <span asp-validation-for="Id_Linea_Credito" class="text-danger"></span>
+                <input asp-for="Id_Periodo" class="form-control" type="hidden" />
+                <span asp-validation-for="Id_Periodo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*<label asp-for="Id_Linea_Credito" class="control-label"></label>*@
+               
+            </div>
+            <div class="form-group">
+                @*<label asp-for="Id_Periodo" class="control-label"></label>*@
+               
+            </div>
+            <div class="form-group">
+                <label class="control-label">Interés más Comisión </label>
+                <input asp-for="Interes_Comision" class="form-control" />
+                <span asp-validation-for="Interes_Comision" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Interés </label>
+                <input asp-for="Interes" class="form-control" />
+                <span asp-validation-for="Interes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="button" value="Guardar" class="btn btn-default" id="guardar_edicion_interes" />
+            </div>
+</div>
+
+
+

@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ModelNucleo.Model.Menu_Rol_Categoria>
+
+    <table class="table">
+        <thead>
+        <tr>
+            @*<th>
+                @Html.DisplayNameFor(model => model.Id_Menu_Rol_Categoria)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Id_Menu_Categoria_Vista)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Rol)
+            </th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model) {
+            <tr>
+
+                <td >
+                    <input type="hidden" value=" @Html.DisplayFor(modelItem => item.Id_Menu_Rol_Categoria)" class="id_role"/>
+                </td>
+                @*<td>
+                @Html.DisplayFor(modelItem => item.Id_Menu_Categoria_Vista)
+            </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rol)
+                </td>
+                <td>
+                    <input type="hidden" value="@item.Rol" class="nombreRole"/>
+                    <input type="button" value="Borrar" class="btn btn-default borrarRol"/>
+                </td>
+                @*<td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>*@
+            </tr>
+        }
+        </tbody>
+    </table>
+
+

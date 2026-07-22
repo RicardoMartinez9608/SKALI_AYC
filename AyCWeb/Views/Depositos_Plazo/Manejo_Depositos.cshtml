@@ -1,0 +1,114 @@
+﻿@model ModelNucleo.Model.Deposito_Plazo
+
+<form id="form_deposito">
+    <input asp-for="Id_Deposito_Plazo" type="hidden" class="form-control" />
+    <input asp-for="Id_Persona" type="hidden" class="form-control" />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Id_Ahorro">Cuentas de Ahorro</label>
+                <div id="id_ahorro"></div>
+                <input asp-for="Id_Ahorro" id="Id_Ahorro_hidden" type="hidden" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="No_Ahorro" class="control-label">Cuenta de Ahorro</label>
+                <input asp-for="No_Ahorro" class="form-control" />
+                <span asp-validation-for="No_Ahorro" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Fecha_Apertura" class="control-label">Fecha de Apertura</label>
+                <input asp-for="Fecha_Apertura" class="form-control" />
+                <span asp-validation-for="Fecha_Apertura" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Fecha_Vencimiento" class="control-label">Fecha de Vencimiento</label>
+                <input asp-for="Fecha_Vencimiento" class="form-control" />
+                <span asp-validation-for="Fecha_Vencimiento" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Monto" class="control-label">Monto</label>
+                <input asp-for="Monto" class="form-control" />
+                <span asp-validation-for="Monto" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Interes" class="control-label">Interes</label>
+                <input asp-for="Interes" class="form-control" />
+                <span asp-validation-for="Interes" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Plazo" class="control-label">Plazo</label>
+                <input asp-for="Plazo" class="form-control" />
+                <span asp-validation-for="Plazo" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="No_Certificado" class="control-label"># Certificado</label>
+                <input asp-for="No_Certificado" class="form-control" />
+                <span asp-validation-for="No_Certificado" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Id_Forma_Pago">Forma de Pago</label>
+                <div id="id_forma_pago"></div>
+                <input asp-for="Id_Forma_Pago" id="Id_Forma_Pago_hidden" type="hidden" />
+            </div>
+        </div>
+       
+    </div>
+    <div class="row">
+        <!--<div class="col-md-6">
+        <div class="form-group">
+            <label for="Pagos_Interes_Mensual" class="control-label">Tipo de Pago</label>
+            <input type="checkbox" />-->
+        @*@Html.DisplayNameFor(model => model.Pagos_Interes_Mensual)*@
+
+        <!--</div>
+    </div>-->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Pagos_Interes_Mensual" class="control-label">Tipo de Pago</label>
+                <p></p>
+                <input asp-for="Pagos_Interes_Mensual" type="checkbox"  />
+                <label  class="control-label" for="Pagos_Interes_Mensual">Mensual</label>
+                <input type="checkbox" />
+                <label  class="control-label">Fin de Plazo</label>
+            </div>
+        </div>
+    </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="submit" value="Guardar Depósito a Plazo" class="btn btn-default" id="Guardar_Deposito_Plazo" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="button" value="Editar Cuenta de Ahorro" id="Editar_Ahorro_Cuenta" class="btn btn-default" />
+                </div>
+
+            </div>
+        </div>
+</form>
+  
+
+

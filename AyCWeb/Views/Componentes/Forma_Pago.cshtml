@@ -1,0 +1,11 @@
+﻿@model IEnumerable<ModelNucleo.Model.Forma_Pago_DP>
+
+<select name="Id_Forma_Pago" id="Id_Forma_Pago" class="form-control">
+    <option value="0">Seleccione una manera de Pago</option>
+    @foreach (var item in Model)
+    {
+        <option value="@item.Id_Forma_Pago">@item.Descripcion</option>
+    }
+</select>
+
+

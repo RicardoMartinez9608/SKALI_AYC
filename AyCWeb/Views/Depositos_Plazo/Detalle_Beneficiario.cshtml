@@ -1,0 +1,100 @@
+﻿@model IEnumerable<ModelNucleo.Model.Beneficiarios_Deposito_Plazo>
+<div class="col-lg-12 text-right">
+    <a href="#Nuevo_Beneficiario_Modal" data-toggle="modal" class="btn btn-default nuevo_beneficiario">Nuevo Beneficiario</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+
+            <th></th>
+            <th>
+                Beneficiario
+            </th>
+            <th>
+                Edad
+            </th>
+            <th>
+                Sexo
+            </th>
+            <th>
+                Fecha Nacimiento
+            </th>
+            <th>
+                Residencia
+            </th>
+            <th>
+                Teléfono
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <input type="hidden" value="@item.Id_Beneficiario_Deposito_Plazo" class="id_beneficiario_deposito" />
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Edad)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sexo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fecha_Nacimiento)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Residencia)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telefono)
+                </td>
+                <td>
+                    <button class="btn btn-default Eliminar_Beneficiario" type="button">Eliminar</button>
+                </td>
+                <td>
+                    <a href="#Editar_Beneficiario_Modal" data-toggle="modal" class="btn btn-default Editar_Beneficiario" type="button">Editar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<link href="~/css/ventanas.css" rel="stylesheet" />
+<div class="modal" id="Nuevo_Beneficiario_Modal">
+    <div class="modal-dialog" style="width:80%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title" id="titulo_sub_modal">Beneficiarios</h4>
+            </div>
+            <div class="modal-body ">
+                <div class="nuevo_beneficiario"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="Editar_Beneficiario_Modal">
+    <div class="modal-dialog" style="width:80%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title" id="titulo_sub_modal">Beneficiarios</h4>
+            </div>
+            <div class="modal-body ">
+                <div class="editar_nuevo_beneficiario"></div>
+            </div>
+        </div>
+    </div>
+</div>

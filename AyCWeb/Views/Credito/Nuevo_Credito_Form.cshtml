@@ -1,0 +1,140 @@
+﻿@model ModelNucleo.Model.Credito
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Id_Credito" class="control-label"></label>
+                <input asp-for="Id_Credito" class="form-control" />
+                <span asp-validation-for="Id_Credito" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Codigo_Credito" class="control-label"></label>
+                <input asp-for="Codigo_Credito" class="form-control" />
+                <span asp-validation-for="Codigo_Credito" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Id_Persona" class="control-label"></label>
+                <input asp-for="Id_Persona" class="form-control" />
+                <span asp-validation-for="Id_Persona" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Id_Acta" class="control-label"></label>
+                <input asp-for="Id_Acta" class="form-control" />
+                <span asp-validation-for="Id_Acta" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Id_Linea" class="control-label"></label>
+                <input asp-for="Id_Linea" class="form-control" />
+                <span asp-validation-for="Id_Linea" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Id_Cartera" class="control-label"></label>
+                <input asp-for="Id_Cartera" class="form-control" />
+                <span asp-validation-for="Id_Cartera" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Aprobado" /> @Html.DisplayNameFor(model => model.Aprobado)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Liquidado" /> @Html.DisplayNameFor(model => model.Liquidado)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Aprobado_En" class="control-label"></label>
+                <input asp-for="Aprobado_En" class="form-control" />
+                <span asp-validation-for="Aprobado_En" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Liquidado_En" class="control-label"></label>
+                <input asp-for="Liquidado_En" class="form-control" />
+                <span asp-validation-for="Liquidado_En" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comentario" class="control-label"></label>
+                <input asp-for="Comentario" class="form-control" />
+                <span asp-validation-for="Comentario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Interes_Comision" class="control-label">Interés más comisión</label>
+                <input asp-for="Interes_Comision" class="form-control" />
+                <span asp-validation-for="Interes_Comision" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Monto_pago" class="control-label"></label>
+                <input asp-for="Monto_pago" class="form-control" />
+                <span asp-validation-for="Monto_pago" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Plazo" class="control-label"></label>
+                <input asp-for="Plazo" class="form-control" />
+                <span asp-validation-for="Plazo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Numero_cuotas" class="control-label"></label>
+                <input asp-for="Numero_cuotas" class="form-control" />
+                <span asp-validation-for="Numero_cuotas" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Id_Periodo" class="control-label"></label>
+                <input asp-for="Id_Periodo" class="form-control" />
+                <span asp-validation-for="Id_Periodo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Valor_Cuota" class="control-label"></label>
+                <input asp-for="Valor_Cuota" class="form-control" />
+                <span asp-validation-for="Valor_Cuota" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Interes" class="control-label"></label>
+                <input asp-for="Interes" class="form-control" />
+                <span asp-validation-for="Interes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Valor_IVA" class="control-label"></label>
+                <input asp-for="Valor_IVA" class="form-control" />
+                <span asp-validation-for="Valor_IVA" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cuota_Total" class="control-label"></label>
+                <input asp-for="Cuota_Total" class="form-control" />
+                <span asp-validation-for="Cuota_Total" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Cancelado" /> @Html.DisplayNameFor(model => model.Cancelado)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Vencido" /> @Html.DisplayNameFor(model => model.Vencido)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cancelado_En" class="control-label"></label>
+                <input asp-for="Cancelado_En" class="form-control" />
+                <span asp-validation-for="Cancelado_En" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Vencido_En" class="control-label"></label>
+                <input asp-for="Vencido_En" class="form-control" />
+                <span asp-validation-for="Vencido_En" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Id_Linea_Credito_Historial" class="control-label"></label>
+                <input asp-for="Id_Linea_Credito_Historial" class="form-control" />
+                <span asp-validation-for="Id_Linea_Credito_Historial" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+    

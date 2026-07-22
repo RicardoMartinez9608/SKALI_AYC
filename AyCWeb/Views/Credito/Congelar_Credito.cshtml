@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "Congelar Crédito";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string baseUrl = Html.ViewContext.HttpContext.Request.PathBase.Value.ToString();
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Congelar Créditos</div>
+    <div class="panel-body panel-body-personalizado">
+        <div id="mensajes"></div>
+        <p></p>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="input-group">
+                    <input type="text" name="dui_buscar" id="dui_buscar" placeholder="introduzca un DUI/Código válido completo" class="form-control" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="buscarpordui">Buscar</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <p></p>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <table>
+                    <tr>
+                        <th>Nombre completo: </th>
+                        <td><span class="nombre_completo"></span></td>
+                    </tr>
+                    <tr>
+                        <th>DUI: </th>
+                        <td><span class="dui"></span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <p></p>
+        <div class="well">
+             <div class="row">
+             <div class="col-md-4">
+                    <div class="form-group">
+                      <div  class="creditos form-group"></div>
+                    </div>
+             </div>
+
+              <div class="col-md-4">
+                    <div class="form-group">
+                     <input type="date" name="fecha_congelar" id="fecha_congelar" class="form-control" />
+                    </div>
+             </div>
+
+              <div class="col-md-4">
+                    <div class="form-group">
+                      <button class="btn btn-default" id="congelar" type="button">Congelar Crédito Seleccionado</button>
+                    </div>
+             </div>
+
+        </div>
+        </div>
+       
+
+
+
+     
+       
+     
+       
+    </div>
+</div>
+<script src="~/js/manejo/manejo_caja.js"></script>
+
+<script>
+    $(function () {
+        constructor("@baseUrl");
+        $("#dui_buscar").mask("00000000-0");
+        Procesar_Congelar();
+    });
+
+    function BotonesAsesores() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol !== "Administrador" && rol !== "Jefe" && rol  ) {
+            $('.revertir').hide();
+        }
+    }
+     function Procesar_Congelar() {
+                $("#congelar").click(function () {
+                    var id_credito = $("#id_credito_combo").val();
+                    var fecha = $("#fecha_congelar").val();
+                     console.log(id_credito);
+                    $.get("@Url.Action("Procesar_Congelar","Credito")",
+                        {
+                            id_credito: id_credito,
+                            fecha:fecha
+                        },
+                        function (success) {
+                            alertify.success(success);
+                        }).fail(function (error) {
+                            alertify.error(error.responseText);
+                        });
+                   
+                });
+            }
+</script>

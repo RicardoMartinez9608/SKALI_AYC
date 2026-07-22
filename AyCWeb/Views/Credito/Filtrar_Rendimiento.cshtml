@@ -1,0 +1,72 @@
+﻿@model ModelNucleo.Model.ModelView.FechasFiltro
+
+@{
+    ViewData["Title"] = "Filtrar_Rendimiento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Filtrar rendimiento</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="inicio" class="control-label">Fecha inicial</label>
+                    <input asp-for="inicio" class="form-control" />
+                    <span asp-validation-for="inicio" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="final" class="control-label">Fecha final</label>
+                    <input asp-for="final" class="form-control" />
+                    <span asp-validation-for="final" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Agencia</label>
+                    <div id="agencias_lista"></div>
+                </div>
+
+                <div class="form-group">
+                    <input type="button" value="Mostrar" id="mostrar_rendimiento" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div id="resultado_rendimiento"></div>
+    </div>
+</div>
+<script>
+    $(function () {
+        cargar_agencias();
+        resultado_rendimiento();
+    });
+
+    function cargar_agencias() {
+        $.get("@Url.Action("Agencias_Combo","Componentes")", function (combo) {
+            $("#agencias_lista").html(combo);
+        });
+    }
+
+    function resultado_rendimiento() {
+        $("#mostrar_rendimiento").click(function () {
+            var inicio = $("#inicio").val();
+            var final = $("#final").val();
+            var id_agencia = $("#Id_Agencia").val();
+            console.log("El clic funciona");
+            $.get("@Url.Action("Resultado_Rendimiento","Credito")",
+                {
+                    inicio: inicio,
+                    final: final,
+                    id_agencia: id_agencia
+                },
+                function (carteras) {
+                    $("#resultado_rendimiento").html(carteras);
+                }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+
+        });
+    }
+</script>

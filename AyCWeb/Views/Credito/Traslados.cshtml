@@ -1,0 +1,52 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Traslado_Abono>
+
+<table class="table" id="table_traslados">
+    <thead>
+    <tr>
+        <th>
+            Fecha amortización
+        </th>
+        <th>
+            Nombre
+        </th>
+        <th>
+            Crédito
+        </th>
+        <th>
+            Requerido
+        </th>
+        <th>
+            Cuenta Ahorro
+        </th>
+        <th>
+            Saldo Ahorro
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.Fecha_Amortizacion.Date.ToString("d")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre_Completo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Codigo_Credito)
+            </td>
+            <td>
+                @item.Pago_Requerido.ToString("C")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Codigo_Ahorro)
+            </td>
+            <td>
+                @item.Saldo_Ahorro.ToString("C")
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<input type="hidden" value="@ViewBag.pagos" id="array_lista">
+

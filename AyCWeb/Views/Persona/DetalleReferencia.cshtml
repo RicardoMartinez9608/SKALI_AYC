@@ -1,0 +1,123 @@
+﻿@model ModelNucleo.Model.ModelView.ReferenciaVista
+@{ 
+    int tipo =Convert.ToInt32(ViewBag.Tipo_Referencia);
+}
+<div id="formReferenciaContent" name="formReferenciaContent">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="Beneficiario" type="hidden" value="@ViewBag.Beneficiario" />
+    <input asp-for="Tipo_Referencia" type="hidden" value="@ViewBag.Tipo_Referencia" />
+    <input type="hidden" asp-for="Id_Referencia" />
+
+    @if (tipo == 1)
+    {
+        <div class="form-group">
+            <label asp-for="Parentesco" class="control-label"></label>
+            @Html.DropDownList("Parentesco", null, htmlAttributes: new { @class = "form-control" })
+            <span asp-validation-for="Parentesco" class="text-danger"></span>
+        </div>
+    }
+    @*<div class="form-group">
+            <label asp-for="Tipo_Referencia" class="control-label"></label>
+            @Html.DropDownList("Tipo_Referencia", null, htmlAttributes: new { @class = "form-control" })
+            <span asp-validation-for="Tipo_Referencia" class="text-danger"></span>
+        </div>*@
+    <div class="form-group">
+        <label asp-for="Nombre" class="control-label"></label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="FechaNacimiento" class="control-label">Fecha nacimiento</label>
+        <input asp-for="FechaNacimiento" class="form-control" />
+        <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Telefono" class="control-label">Teléfono</label>
+        <input asp-for="Telefono" class="form-control" />
+        <span asp-validation-for="Telefono" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Residencia" class="control-label"></label>
+        <input asp-for="Residencia" class="form-control" />
+        <span asp-validation-for="Residencia" class="text-danger"></span>
+    </div>
+
+
+    @if (tipo == 1)
+    {
+        <div class="form-group">
+            <input asp-for="Esta_Estudiando" />
+            <label asp-for="Esta_Estudiando" class="control-label">Esta estudiando</label>
+            <span asp-validation-for="Esta_Estudiando" class="text-danger"></span>
+        </div>
+
+        <div id="contenido_estudiante" style="display:none">
+            <div class="form-group">
+                <label asp-for="Direccion_Estudio" class="control-label">Dirección de estudio</label>
+                <input asp-for="Direccion_Estudio" class="form-control" />
+                <span asp-validation-for="Direccion_Estudio" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input asp-for="Esta_Trabajando" />
+            <label asp-for="Esta_Trabajando" class="control-label">Esta trabajando</label>
+            <span asp-validation-for="Esta_Trabajando" class="text-danger"></span>
+        </div>
+
+        <div id="contenido_empleo" style="display:none">
+            <div class="form-group">
+                <label asp-for="Direccion_Empleo" class="control-label">Dirección de empleo</label>
+                <input asp-for="Direccion_Empleo" class="form-control" />
+                <span asp-validation-for="Direccion_Empleo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cargo_Empleo" class="control-label">Cargo en el empleo</label>
+                <input asp-for="Cargo_Empleo" class="form-control" />
+                <span asp-validation-for="Cargo_Empleo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Salario_Empleo" class="control-label">Salario</label>
+                <input asp-for="Salario_Empleo" class="form-control" />
+                <span asp-validation-for="Salario_Empleo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nombre_Jefe_Inmediato" class="control-label">Nombre jefe inmediato</label>
+                <input asp-for="Nombre_Jefe_Inmediato" class="form-control" />
+                <span asp-validation-for="Nombre_Jefe_Inmediato" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Telefono_Empleo" class="control-label">Teléfono empleo</label>
+                <input asp-for="Telefono_Empleo" class="form-control" />
+                <span asp-validation-for="Telefono_Empleo" class="text-danger"></span>
+            </div>
+        </div>
+    }
+
+
+    @if (tipo == 1 && ViewBag.Beneficiario)
+    {
+        <div class="form-group">
+            <label asp-for="Porcentaje" class="control-label"></label>
+            <input asp-for="Porcentaje" class="form-control" />
+            <span asp-validation-for="Porcentaje" class="text-danger"></span>
+        </div>
+    }
+
+    <p></p>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+
+        </div>
+        <div class="panel-body">
+            <div id="referencia_adicional_lista"></div>
+        </div>
+    </div>
+    <p></p>
+
+    <div class="form-group">
+        <button value="Guardar" class="btn btn-default guardarReferencia">
+            <span class="glyphicon glyphicon-floppy-disk"></span> Guardar
+        </button>
+    </div>
+</div>

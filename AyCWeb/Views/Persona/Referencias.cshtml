@@ -1,0 +1,87 @@
+﻿@using ModelNucleo.Model.ModelView
+@model IEnumerable<ModelNucleo.Model.ModelView.ReferenciaVista>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    @if (ViewBag.Tipo == 1)
+                    {
+                        <th>
+                            @Html.DisplayNameFor(model => model.Parentesco)
+                        </th>
+                    }
+                    <th>
+                        Tipo
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Nombre)
+                    </th>
+                    <th>Edad</th>
+                    <th>
+                        Teléfono
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Residencia)
+                    </th>
+                    @if (ViewBag.Tipo == 1)
+                    {
+                        <th>
+                            @Html.DisplayNameFor(model => model.Porcentaje)
+                        </th>
+                    }
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td style="display:none">
+                        <input type="hidden" value="@Html.DisplayFor(modelItem => item.Id_Referencia)" class="id_referencia" />
+                        
+                    </td>
+                    @if (ViewBag.Tipo == 1)
+                    {
+                        <td>
+                            @Enum.GetValues(typeof(Parentesco)).GetValue(Convert.ToInt32(item.Parentesco))
+                        </td>
+                    }
+                    <td>
+                        @Enum.GetValues(typeof(Tipo_Refencia_Option)).GetValue(Convert.ToInt32(item.Tipo_Referencia))
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Edad)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Telefono)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Residencia)
+                    </td>
+                    @if (ViewBag.Tipo == 1)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Porcentaje)
+                        </td>
+                    }
+                    <td>
+                        <input type="hidden" class="id_ReferenciaValor" value="@item.Id_Referencia" />
+                        <div class="btn-group" role="group" aria-label="...">
+                            <a data-toggle="modal" href="#Mantenimiento" data-backdrop="false" class="detalleReferencia btn btn-default" title="Editar">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                            <input type="button" value="Borrar" class="btn btn-default borrarReferencia" />
+                            @*<a href="#" class="borrarReferencia btn btn-danger" title="Borrar">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </a>*@
+                        </div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>

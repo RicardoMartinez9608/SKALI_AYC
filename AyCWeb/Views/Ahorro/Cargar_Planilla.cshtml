@@ -1,0 +1,55 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Planilla>
+
+@{ 
+    bool procesar = ViewBag.Procesar;
+}
+    <table class="table table-striped table-responsive">
+        <thead>
+            <tr>
+                <th>
+                    Código
+                </th>
+                <th>
+                    Nombre
+                </th>
+                <th>
+                    Monto
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+
+                string estado = "active";
+
+                @if (procesar)
+                {
+                    @if (item.procesado)
+                    {
+                        estado = "success";
+                    }
+                    else
+                    {
+                        estado = "warning";
+                    }
+                }
+
+                <tr class="@estado">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.codigo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.nombre)
+                    </td>
+                    <td>
+                        @item.monto.ToString("C")
+                    </td>
+                    <td>
+                        @item.mensaje_error
+                    </td>
+                </tr>
+}
+        </tbody>
+    </table>

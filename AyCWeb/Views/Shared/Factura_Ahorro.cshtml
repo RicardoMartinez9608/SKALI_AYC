@@ -1,0 +1,72 @@
+﻿@model ModelNucleo.Model.ModelView.Impresion
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/reporte_matricial.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+
+    <title>Recibo Ahorro</title>
+
+</head>
+<body>
+    <table class="matricial_ahorro" border="0" align="left">
+        <tr class="AhorroEspacio">
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td>Agencia:</td>
+            <td colspan="2" align="left">@Model.Factura.Agencia</td>
+        </tr>
+
+        <tr>
+            <td>Fecha:</td>
+            <td colspan="2" align="left">@Model.Factura.Fecha</td>
+        </tr>
+        <tr>
+            <td colspan="2">Cajero:</td>
+            <td text-transform: uppercase;>@Model.Factura.Cajero</td>
+            @if (Model.Factura.id_cajero == null)
+            {
+                <td style="text-align: left "> ()</td>
+            }
+            else
+            {
+                <td style="text-align: left "> (@Model.Factura.id_cajero)</td>
+            }
+        </tr>
+
+        <tr>
+            <td>Comprobante:  </td>
+            <td colspan="2" align="left">@Model.Comprobante.NoComprobante</td>
+        </tr>
+        <tr>
+            <td>Cliente:  </td>
+            <td colspan="2" align="left">@Model.Factura.No_Ahorro </td>
+        </tr>
+        <tr>
+            <td>Concepto:  </td>
+            <td colspan="2" align="left">@Model.Factura.Concepto</td>
+
+        </tr>
+        <tr>
+            <td>Línea: </td>
+            <td colspan="2" align="left">@Model.Factura.Linea </td>
+        </tr>
+
+        <tr>
+            <td>Nombre:  </td>
+            <td colspan="2" align="left">@Model.Factura.Cliente </td>
+        </tr>
+        <tr></tr>
+        <tr>
+            <td align="right" colspan="4">Total Transacción: @Model.Factura.Total.ToString("C")</td>
+        </tr>
+    </table>
+    <br />
+    <br />
+</body>
+</html>

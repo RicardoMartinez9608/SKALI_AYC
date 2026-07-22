@@ -1,0 +1,107 @@
+﻿@model ModelNucleo.Model.ModelView.Reporte_Denominacion
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="~/css/BordeCierre.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+
+    <title>Asignacion de Fondos</title>
+</head>
+<body>
+    <h3 align="center">@ViewBag.nombreEmpresa</h3>
+    <h4 align="center">Asignación de Fondos </h4>
+    <br />
+    <table align="left">
+        <thead>
+            <tr>
+                <td style="width: 200px">
+                    Fecha
+                </td>
+                <th style="width: 200px">
+                    DD/MM/YYYY
+                </th>
+
+            </tr>
+
+        </thead>
+    </table>
+    <br />
+    <br />
+    <table style="border-bottom: 1pt solid black" align="left">
+        <thead>
+            <tr>
+                <th style="width: 680px">
+                    Nombre: Usuario que asigna
+                </th>
+                <th style="width: 250px">
+                    Nombre: Usuario que recibe
+                </th>
+                <th style="width: 170px">
+                    Monto
+                </th>
+            </tr>
+        </thead>
+    </table>
+    <br />
+    <br />
+
+    <table class="greyGridTable" align="center">
+        <thead>
+
+        </thead>
+        <tbody>
+            @foreach (var item in Model.detalle)
+            {
+                <tr>
+                    <td style="width: 50px">
+                        @item.Denominacion_dinero.denominacion.ToString("N")
+                    </td>
+                    <td style="width: 50px">
+                        @item.Denominacion_dinero.tipo
+                    </td>
+                    <td style="width: 40px; border: none">
+                        --
+                    </td>
+                    <td style="width: 180px">
+                        0
+                    </td>
+                    <td style="width: 40px; border: none">
+                        --
+                    </td>
+                    <td style="width: 180px">
+                     @Model.valor
+                    </td>
+                </tr>
+
+            }
+
+        </tbody>
+    </table>
+    <br />
+
+    <br />
+    <table cellspacing="10" align="center">
+        <thead>
+            <tr>
+                <th>________________________________</th>
+                <th>________________________________</th>
+
+            </tr>
+
+            <tr>
+                <th style="text-align:center">Responsable</th>
+                <th style="text-align:center">Contabilidad</th>
+
+            </tr>
+
+        </thead>
+
+    </table>
+</body>
+</html>
+

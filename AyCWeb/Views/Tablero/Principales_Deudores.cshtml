@@ -1,0 +1,46 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Reporte_Mora_Deudores>
+
+<table class="table">
+    <thead >
+        <tr>
+            <th >
+                Código Cliente
+            </th>
+            <th>
+                Nombre Completo
+            </th>
+            <th>
+               Saldo Mora
+            </th>
+            <th>
+                Porcentaje
+            </th>
+            <th>
+                Dias
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr  class="active"> 
+            <td>
+                @Html.DisplayFor(modelItem => item.Codigo_Cliente)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre_Cliente)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Saldo_mora)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Porcentaje)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dias)
+            </td>
+         
+        </tr>
+}
+    </tbody>
+</table>

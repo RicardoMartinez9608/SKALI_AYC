@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Filtrar Flujo de Efectivo";
+    Layout = "";
+}
+<form action="@Url.Action("Mostrar_Liquidez_Agencia","Caja")" method="get" target="_blank">
+    <!--enviar el nombre de la agencia-->
+    <input type="hidden" name="Nombre_Agencia" id="Nombre_Agencia" />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                Agencia:
+                <div id="id_agencia_combo" class="form-group"></div>
+            </div>
+        </div>
+    
+        <div class="col-md-12">
+        @*    <div class="form-group">
+                Fecha:
+                <input type="date" name="fecha" class="form-control" />
+            </div>*@
+        </div>
+    </div>
+
+    <div class="row">
+      @*  <div class="col-md-2">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" value="Cerrar mes" id="cerrar_mes" />
+            </div>
+        </div>*@
+        <div class="col-md-2">
+            <div class="form-group">
+                <input type="submit" class="form-control btn btn-primary" value="Cargar" id="CargarGrid" />
+            </div>
+        </div>
+    </div>
+   
+</form>
+<script>
+    $(document).ready(function () {
+        Agencia_Combo();
+    });
+
+    function Agencia_Combo() {
+         $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia_combo").html(agencias);
+             Obtener_Nombre_Agencia();
+             Cierre_Mes();
+        });
+    }
+
+    function Cierre_Mes() {
+        $("#CargarGrid").click(function () {
+            $.get("@Url.Action("Ejecutar_Cierre_Mes", "Caja")", function (resultado) {
+                alertify.success(resultado);
+            }).fail(function (badrequest) {
+                alertify.error(badrequest.responseText);
+            });
+        });
+    }
+
+</script>

@@ -1,0 +1,70 @@
+﻿@model IEnumerable<ModelNucleo.Model.Evaluacion_Tecnica.Evaluacion>
+@{
+    ViewData["Title"] = "Evaluación Técnica";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Evaluaciones técnicas de @ViewBag.Nombre_Completo</div>
+    <div class="panel-body panel-body-personalizado">
+
+        <p>
+            <a href="@Url.Action("Nuevo_Inicial","Evaluacion_Tecnica",new { id_persona=ViewBag.Id_Persona,nombre_completo=ViewBag.Nombre_Completo})">Nuevo</a>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        Días Buenos
+                    </th>
+                    <th>
+                        Días Malos
+                    </th>
+                    <th>
+                        días Descanso
+                    </th>
+                    <th>
+                       Ventas Buenas
+                    </th>
+                    <th>
+                        Ventas Malas
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id_Evaluacion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.No_Dias_Buenos)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.No_Dias_Malos)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.No_Dias_Descanso)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Venta_Mensual_Bueno)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Venta_Mensual_Malo)
+                        </td>
+                       
+                        <td>
+                            @Html.ActionLink("Agregar detalles", "Gestionar_Detalle", new { id_evaluacion=item.Id_Evaluacion })
+                           
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

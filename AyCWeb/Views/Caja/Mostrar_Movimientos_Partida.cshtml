@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Monitor_Movimientos>
+
+<table class="table table-striped" id="movimientos_caja_all">
+    <thead>
+        <tr>
+            <th>
+                Comprobante
+            </th>
+            <th>
+                Cuenta
+            </th>
+            <th>
+                Concepto
+            </th>
+            <th>
+                Tipo
+            </th>
+            <th>
+                Monto
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Comprobante)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cuenta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Concepto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tipo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Monto)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

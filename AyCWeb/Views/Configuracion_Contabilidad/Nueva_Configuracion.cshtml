@@ -1,0 +1,55 @@
+﻿@model ModelNucleo.Model.Contabilidad.Conf_Partida_Contable
+
+<h4>Nueva Configuración Partida Contable</h4>
+<hr />
+<div class="nueva_configuracion">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="Id_Conf_Partida_Contable" type="hidden" class="form-control" />
+
+    <div class="form-group">
+        <label asp-for="Identificador" class="control-label"></label>
+        <input asp-for="Identificador" class="form-control" />
+        <span asp-validation-for="Identificador" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Descripcion" class="control-label">Descripción</label>
+        <input asp-for="Descripcion" class="form-control" />
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Id_Agencia" class="control-label">Agencia</label>
+        <div class="agencias"></div>
+        <span asp-validation-for="Id_Agencia" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Id_Linea_Credito" class="control-label">Línea Crédito</label>
+        <div class="lineas_credito"></div>
+        <span asp-validation-for="Id_Linea_Credito" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Id_Linea_Ahorro" class="control-label">Línea Ahorro</label>
+        <div class="lineas_ahorro"></div>
+        <span asp-validation-for="Id_Linea_Ahorro" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Id_Factura_Servicio" class="control-label">Facturas y Servicios</label>
+        <div class="factura_servicio"></div>
+        <span asp-validation-for="Id_Factura_Servicio" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        Servicios Básicos
+        <div class="servicio_basico"></div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Id_Otras_Operaciones" class="control-label">Otras Operaciones</label>
+        <div class="Otras_Operaciones"></div>
+        <span asp-validation-for="Id_Otras_Operaciones" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Guardar" class="btn btn-default" id="guardar_configuracion" />
+    </div>
+</div>

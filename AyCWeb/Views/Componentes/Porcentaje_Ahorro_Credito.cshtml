@@ -1,0 +1,9 @@
+﻿@model IEnumerable<ModelNucleo.Model.Porcentaje_Ahorro_Credito>
+
+<select name="Id_Ahorro_Credito" id="Id_Ahorro_Credito" class="form-control">
+    <option value="0">Seleccione un Porcentaje</option>
+    @foreach (var item in Model)
+    {
+        <option value="@item.Id_Porcentaje_Ahorro_Credito">@item.Porcentaje</option>
+    }
+</select>

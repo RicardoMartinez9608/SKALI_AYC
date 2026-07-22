@@ -1,0 +1,329 @@
+﻿@model ModelNucleo.Model.ModelView.DetalleComite
+<p></p>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <ul id="myTabs" class="nav nav-tabs" role="tablist">
+       
+            <li role="presentation" class="active">
+                <a href="#credito"  data-toggle="tab" aria-controls="credito">Crédito Solicitado</a>
+            </li>
+             <li role="presentation">
+                <a href="#cliente" data-toggle="tab" aria-controls="cliente">Crédito Aprobado</a>
+            </li>
+         
+        </ul>
+    </div>
+    <div class="panel-body" >
+        <div id="tab_contenido_linea" class="tab-content">
+
+                <div role="tabpanel" class="tab-pane active" id="credito" aria-labelledBy="credito-tab">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Credito.Codigo_Credito" class="control-label">Código Crédito</label>
+                            <input asp-for="Credito.Codigo_Credito" class="form-control" readonly />
+                            <span asp-validation-for="Credito.Codigo_Credito" class="text-danger"></span>
+                              <input type="hidden" asp-for="Credito.Id_Credito" id="idcredito" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Credito.Interes" class="control-label">Interes</label>
+                            <input asp-for="Credito.Interes" class="form-control" readonly />
+                            <span asp-validation-for="Credito.Interes" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Credito.Monto_pago" class="control-label">Monto</label>
+                            <input asp-for="Credito.Monto_pago"  class="form-control" readonly />
+                            <span asp-validation-for="Credito.Monto_pago"  class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Credito.Periodo.Descripcion" class="control-label">Periodo</label>
+                            <input asp-for="Credito.Periodo.Descripcion" class="form-control" readonly />
+                            <span asp-validation-for="Credito.Periodo.Descripcion"  class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Credito.Plazo" class="control-label">Plazo</label>
+                            <input asp-for="Credito.Plazo"  class="form-control" readonly />
+                            <span asp-validation-for="Credito.Plazo"  class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Credito.Numero_cuotas" class="control-label">Número de Cuotas</label>
+                            <input asp-for="Credito.Numero_cuotas" class="form-control" readonly />
+                            <span asp-validation-for="Credito.Numero_cuotas"  class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Credito.Linea_Credito.Descripcion_linea" class="control-label">Linea de Crédito</label>
+                            <input asp-for="Credito.Linea_Credito.Descripcion_linea" class="form-control" readonly />
+                            <span asp-validation-for="Credito.Linea_Credito.Descripcion_linea" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                  
+                </div>
+                   
+                </div>
+
+             <div role="tabpanel" class="tab-pane " id="cliente" aria-labelledBy="cliente-tab">
+                 <form id="form_credito">
+                     <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Credito.Id_Linea" class="control-label">Línea de crédito</label>
+                                @Html.DropDownList("Id_Linea", null, htmlAttributes: new { @class = "form-control" })
+                                <span asp-validation-for="Credito.Id_Linea"  class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Credito.Monto_pago" class="control-label">Monto</label>
+                                <input asp-for="Credito.Monto_pago" id="Monto_pago" class="form-control monto_credito_ahorro" />
+                                <span asp-validation-for="Credito.Monto_pago" id="Monto_pago" class="text-danger"></span>
+                            </div>
+                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Credito.Plazo" class="control-label"></label>
+                            <input asp-for="Credito.Plazo" id="Plazo" class="form-control" />
+                            <span asp-validation-for="Credito.Plazo" id="Plazo" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Credito.Id_Periodo" class="control-label">Frecuencia de pago</label>
+                            @Html.DropDownList("Id_Periodo", null, htmlAttributes: new { @class = "form-control" })
+                            <span asp-validation-for="Credito.Id_Periodo" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+
+                 <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Credito.Id_Comportamiento_Credito" class="control-label">Comportamiento de crédito</label>
+                            @Html.DropDownList("Id_Comportamiento_Credito", null, htmlAttributes: new { @class = "form-control" })
+                            <span asp-validation-for="Credito.Id_Comportamiento_Credito" id="Id_Comportamiento_Credito" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Credito.Codigo_Credito" class="control-label"></label>
+                            <input asp-for="Credito.Codigo_Credito" class="form-control" />
+                            <span asp-validation-for="Credito.Codigo_Credito" id="Codigo_Credito" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+                  <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h4>Resultado</h4>
+                </div>
+                <div class="col-lg-6 text-right">
+                    <button type="button" class="btn btn-default" id="Calcular_Cuota">Calcular</button>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Credito.Numero_cuotas" class="control-label">Número de cuotas</label>
+                        <input asp-for="Credito.Numero_cuotas" id="Numero_cuotas" class="form-control" />
+                        <span asp-validation-for="Credito.Numero_cuotas" id="Numero_cuotas" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Credito.Interes_Comision" class="control-label">Interés más comisión</label>
+                        <input asp-for="Credito.Interes_Comision" id="Interes_Comision" class="form-control" />
+                        <span asp-validation-for="Credito.Interes_Comision" id="Interes_Comision" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Credito.Cuota_Total" class="control-label">Cuota</label>
+                        <input asp-for="Credito.Cuota_Total" id="Cuota_Total"class="form-control" />
+                        <span asp-validation-for="Credito.Cuota_Total" id="Cuota_Total" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Credito.Comentario" class="control-label"></label>
+                        <input asp-for="Credito.Comentario" id="Comentario" class="form-control" />
+                        <span asp-validation-for="Credito.Comentario" id="Comentario" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input asp-for="Credito.Id_Credito" type="hidden" id="Id_Credito" class="form-control" />
+    <input asp-for="Credito.Codigo_Credito" type="hidden"  id="Codigo_Credito"  class="form-control" />
+    <input asp-for="Credito.Id_Persona" type="hidden" id="Id_Persona" class="form-control" />
+    <input asp-for="Credito.Id_Acta" type="hidden" id="Id_Acta" class="form-control" />
+    <input asp-for="Credito.Id_Cartera" type="hidden" id="Id_Cartera" class="form-control" />
+    <input asp-for="Credito.Aprobado" id="Aprobado" type="hidden" />
+    <input asp-for="Credito.Liquidado" id="Liquidado" type="hidden" />
+    <input asp-for="Credito.Aprobado_En" id="Aprobado_En" type="hidden" class="form-control" />
+    <input asp-for="Credito.Liquidado_En" id="Liquidado_En" type="hidden" class="form-control" />
+    <input asp-for="Credito.Valor_Cuota" id="Valor_Cuota" type="hidden" class="form-control" />
+    <input asp-for="Credito.Interes" id="Interes" type="hidden" class="form-control" />
+    <input asp-for="Credito.Valor_IVA" id="Valor_IVA" type="hidden" class="form-control" />
+    <input asp-for="Credito.Cancelado" id="Cancelado" type="hidden" />
+    <input asp-for="Credito.Vencido" id="Vencido" type="hidden" />
+    <input asp-for="Credito.Cancelado_En" id="Cancelado_En" type="hidden" class="form-control" />
+    <input asp-for="Credito.Vencido_En" id="Vencido_En" type="hidden" class="form-control" />
+    <input asp-for="Credito.Id_Linea_Credito_Historial" id="Id_Linea_Credito_Historial" type="hidden" class="form-control" />
+    <input asp-for="Credito.Id_Manejo_Refinanciamiento" id="Id_Manejo_Refinanciamiento" type="hidden" class="form-control" value="0" />
+    <input asp-for="Credito.Monto_Credito_Ahorro"  type="hidden" class="form-control" id="id_porcentaje_ahorro" />
+                </form>
+                  
+                
+    <div class="row">
+        <div class="col-md-2">
+               <button type="button" class="btn btn-default" id="Guardar_Credito">Guardar</button>
+        </div>
+        <div class="col-md-2">
+               <button type="button" class="btn btn-default" id="Aprovar_Credito">Aprobar</button>
+        </div>
+      
+       <div class="col-md-2">
+               <button type="button" class="btn btn-default" id="Desaprobar_Credito">Desaprobar</button>
+        </div>
+      
+
+      
+
+
+      
+    </divclass>
+            </div>
+    
+        </div>
+    </div>
+</div>
+<script>
+  $(document).ready(function () {
+            
+      Calcular_Cuota();
+      GuardarCredito();
+      Aprovar();
+      Desaprobar();
+    });
+    function Calcular_Cuota() {
+    $("#Calcular_Cuota").click(function () {
+        ProcesarCalculo();
+    });
+}
+
+  function Aprovar() {
+    $("#Aprovar_Credito").click(function () {
+        var id_credito = $("#Id_Credito").val();
+        $.post("@Url.Action("AprobarAmpliado", "Comite")",
+           {
+                id_credito: id_credito
+           },
+           function (resultado) {
+              alertify.success("Comite Ampliado Aprovado");
+                                  
+            }).fail(function (error) {
+              alertify.error(error.responseText);
+           });                    
+       
+    });
+}
+function Desaprobar() {
+    $("#Desaprobar_Credito").click(function () {
+        var id_credito = $("#Id_Credito").val();
+        $.post("@Url.Action("RechazarAmpliado", "Comite")",
+           {
+                id_credito: id_credito
+           },
+           function (resultado) {
+              alertify.success("Comite Ampliado Rechazado");
+                                  
+            }).fail(function (error) {
+              alertify.error(error.responseText);
+           });                    
+       
+    });
+}
+function ProcesarCalculo() {
+    /*obtener los datos de linea de crédito*/
+    var lineaCredito = $("#Id_Linea").val();
+      $.get("@Url.Action("LineaDetalle", "Linea_Credito")",
+                            { id_linea: lineaCredito },
+                                function (lineadetalle) {
+                          $("#Interes_Comision").val(lineadetalle.interes_Comision);
+
+            var id_linea = lineadetalle.id_Linea;
+            var monto = $("#Monto_pago").val();
+            var id_periodo = $("#Id_Periodo").val();
+            var plazo = $("#Plazo").val();
+            var id_credito = $("#form_credito #Id_Credito").val();
+
+              $.get("@Url.Action("CuotaPrimaria", "Credito")",
+                            { 
+                              id_linea: id_linea, 
+                              monto: monto, 
+                              id_periodo: id_periodo, 
+                              plazo: plazo,
+                              id_credito: 0
+                            },
+                                function (resultado) {
+                              $("#Valor_Cuota").val(resultado.cuotaPrimaria.toFixed(2));
+                                $("#PlanAyC").val(resultado.cuotaAyC);
+                                $("#Valor_IVA").val(resultado.ivaCalculado);
+                                $("#Cuota_Total").val(resultado.cuotaTotal);
+                                $("#Numero_cuotas").val(resultado.no_Cuotas);
+                            });
+                            });
+}
+function GuardarCredito() {
+    $("#Guardar_Credito").click(function () {
+        var datos_credito = $("#form_credito").serializeAnything();
+        var lineaCredito = $("#Id_Linea").val();
+        var periodo = $("#Id_Periodo").val();
+         var comportamiento = $("#Id_Comportamiento_Credito").val();
+      
+        $.post("@Url.Action("EditCreditoAmpliado", "Credito")?linea=" + lineaCredito + "&periodo=" + periodo +
+                    "&comportamiento="+comportamiento,
+            
+               datos_credito
+                ,
+            function (resultado) {
+                alertify.success("El crédito se ha guardado correctamente");
+
+            });
+    
+    });
+}
+</script>

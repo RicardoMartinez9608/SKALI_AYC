@@ -1,0 +1,75 @@
+﻿@model ModelNucleo.Model.ModelView.Impresion
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/reporte_matricial.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Factura Crédito</title>
+</head>
+<body>
+    <table class="matricial" style="width:550px">
+        <tr>
+            <td>Agencia: @Model.Factura.Agencia</td>
+            <td style="width: 650px">Cajero: @Model.Factura.Cajero</td>
+            <td style="text-align: left"> (@Model.Factura.id_cajero)</td>
+            @*<td>Tasa: @Model.Factura.Tasa.ToString("0.##")</td>*@
+        </tr>
+        <tr>
+            <td>Comprobante: @Model.Comprobante.NoComprobante </td>
+            <td style="width: 650px">Fecha: @Model.Factura.Fecha</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Cliente: @Model.Factura.No_Ahorro </td>
+            <td>Proxima Cuota: @Model.Factura.Detalle_Factura_Credito.Proximo_Pago.ToString("dd/MM/yyyy")</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Concepto: @Model.Factura.Concepto </td>
+            <td>Línea: @Model.Factura.Linea </td>
+            <td>Saldo Capital: @Model.Factura.Saldo_Capital.ToString("C") </td>
+        </tr>
+        <tr>
+            <td style="width: 650px">Nombre: @Model.Factura.Cliente </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <table style="width:550px">
+                    <tr>
+                        <td>No Sujeto</td>
+                        <td>Exento</td>
+                        <td colspan="2">Gravados</td>
+                    </tr>
+                    <tr>
+                        <td>Abono Capital</td>
+                        <td>Interés</td>
+                        <td>Plan AyC</td>
+                        <td>Recargo</td>
+                    </tr>
+                    <tr>
+                        <td>@Model.Factura.Detalle_Factura_Credito.Abono_Capital.ToString("C")</td>
+                        <td>@Model.Factura.Detalle_Factura_Credito.Interes.ToString("C")</td>
+                        <td>@Model.Factura.Detalle_Factura_Credito.Plan_AyC.ToString("C")</td>
+                        <td>@Model.Factura.Detalle_Factura_Credito.Recargos.ToString("C")</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>Total Pago: @Model.Factura.Detalle_Factura_Credito.Total_Pagar.ToString("C")</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td style="width: 19px">COLECTA ASESOR</td>
+        </tr>
+    </table>
+</body>
+</html>

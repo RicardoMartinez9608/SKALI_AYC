@@ -1,0 +1,1 @@
+insert into aycnucleo_alpha.cartera(Colector,Nombre) select COLECTOR,NOMBCOLEC from administracion.colector;

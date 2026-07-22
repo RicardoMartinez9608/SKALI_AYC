@@ -1,0 +1,171 @@
+﻿@using DevExtreme.AspNet.Mvc
+@model ModelNucleo.Model.Colecta
+@{
+    ViewData["Title"] = "Nueva colecta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Nuevo registro de colecta</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Nueva_Colecta">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input asp-for="Id_Colecta_Diaria" type="hidden" value="@ViewBag.Id_Colecta_Diaria" class="form-control" />
+                    <div class="form-group">
+                        <input asp-for="Id_Cliente" type="hidden" class="form-control" />
+                        <span asp-validation-for="Id_Cliente" class="text-danger"></span>
+                        <div class="input-group">
+                            <input type="text" name="dui_buscar" id="dui_buscar" placeholder="introduzca un DUI válido" class="form-control" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" id="buscarpordui">Buscar</button>
+                            </span>
+                        </div>
+                        @*Nombre o DUI: @(Html.DevExtreme().Lookup()
+                             .ID("Datos")
+                             .ElementAttr("class", "field-customization")
+                             .DataSource(
+                             d => d.Mvc().Controller("Persona").LoadAction("Personas").Key("Id_Persona")
+                             ).DisplayExpr(new JS("lookup_displayExpr")).DisplayValue("Nombres").ValueExpr("Id_Persona")
+                             .SearchExpr(new[] { "Nombres", "Apellidos", "Dui", "Id_Persona" })
+                             .ItemTemplate(@<text>
+                                <div class="custom-item">
+                                    <div><%= Nombres %> <%= Apellidos %> <%= Dui %></div>
+                                </div>
+                            </text>).OnSelectionChanged("ObtenerPersona")
+                        )*@
+
+                    </div>
+                    <div class="well">
+                        <input type="radio" name="Tipo_Transaccion" id="Tipo_Transaccion" value="Ahorro" checked="checked"> Ahorro
+                        <input type="radio" name="Tipo_Transaccion" id="Tipo_Transaccion" value="Credito"> Crédito
+                    </div>
+
+                    <div id="Form_Ahorro">
+                        <div class="form-group">
+                            Cuentas de Ahorro:
+                            <input asp-for="Id_Ahorro" type="hidden" class="form-control" />
+                            <div id="Cuentas_Ahorro"></div>
+                        </div>
+                    </div>
+
+                    <div id="Form_Credito" style="display:none">
+                        <div class="form-group">
+                            Cuentas de Crédito:
+                            <input asp-for="Id_Credito" type="hidden" class="form-control" />
+                            <div id="Cuentas_Credito"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Monto" class="control-label"></label>
+                        <input asp-for="Monto" class="form-control" />
+                        <span asp-validation-for="Monto" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="No_Comprobante" class="control-label">Comprobante</label>
+                        <input asp-for="No_Comprobante" class="form-control" />
+                        <span asp-validation-for="No_Comprobante" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Guardar" class="btn btn-default" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div>
+            <a href="@Url.Action("Colectas","Colecta",new { id_colecta_diaria=ViewBag.Id_Colecta_Diaria})">Regresar a la lista</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        Check_Credito_Ahorro();
+        BuscarPorDui();
+    });
+
+    function BuscarPorDui() {
+            $("#buscarpordui").click(function () {
+                var filtro = $("#dui_buscar").val();
+                $.get("@Url.Action("JDetalle_Persona","Persona")",
+                    { filtro: filtro },
+                    function (detalle) {
+                        $("#Id_Cliente").val(detalle.id_Persona);
+
+                        Obtener_Ahorro_Combo(detalle.id_Persona);
+                        Obtener_Credito_Combo(detalle.id_Persona);
+
+                        alertify.success("Se ha encontrado");
+                    }).fail(function (error) {
+                    alertify.error("No se encontró esa identificación");
+                });
+            });
+            }
+
+    function lookup_displayExpr(item) {
+        if (!item) {
+            return "";
+        }
+        return item.Nombres + " " + item.Apellidos + " " + item.Dui;
+    }
+
+    //function ObtenerPersona(item) {
+    //    var id_persona = item.selectedItem.Id_Persona
+    //    $("#Id_Cliente").val(id_persona);
+    //    /*cargar los el select de ahorro y creditos de esa persona*/
+    //    Obtener_Ahorro_Combo(id_persona);
+    //    Obtener_Credito_Combo(id_persona);
+    //}
+
+    function Obtener_Ahorro_Combo(id_persona) {
+        $.get("@Url.Action("AhorrosCombo","Componentes")",
+            { id_persona: id_persona },
+            function (selectCombo) {
+                $("#Cuentas_Ahorro").html(selectCombo);
+                Cuenta_Ahorro_Seleccionado();
+            }
+        );
+    }
+
+    function Obtener_Credito_Combo(id_persona) {
+        $.get("@Url.Action("CreditosCombos","Componentes")",
+            { id_persona: id_persona },
+            function (selectCombo) {
+                $("#Cuentas_Credito").html(selectCombo);
+                Cuenta_Credito_Seleccionado();
+            }
+        );
+    }
+
+    function Cuenta_Ahorro_Seleccionado() {
+        $("#id_ahorro_combo").change(function () {
+            var id_ahorro = $(this).val();
+            $("#Id_Ahorro").val(id_ahorro);
+        });
+    }
+
+    function Cuenta_Credito_Seleccionado() {
+        $("#id_credito_combo").change(function () {
+            var id_credito = $(this).val();
+            $("#Id_Credito").val(id_credito);
+        });
+    }
+
+    function Check_Credito_Ahorro() {
+        $("input[name=Tipo_Transaccion]").click(function () {
+            var check = $(this).val();
+            console.log(check);
+            if (check == "Credito") {
+                $("#Form_Credito").show();
+                $("#Form_Ahorro").hide();
+            }
+            if (check == "Ahorro") {
+                $("#Form_Ahorro").show();
+                $("#Form_Credito").hide();
+            }
+        });
+    }
+</script>

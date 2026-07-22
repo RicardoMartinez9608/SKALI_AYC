@@ -1,0 +1,139 @@
+﻿@model ModelNucleo.Model.ModelView.Reversion_Credito
+
+@{
+    ViewData["Title"] = "Revertir_Credito";
+    Layout = "";
+}
+<div style="font-size: 24px">
+    <h4 align="center">SOCIEDAD COOPERATIVA CREDITOS A&C DE R.L.</h4>
+  
+    <h4 align="center">COMPROBANTE DE REVERSIÓN DE LIQUIDACIÓN</h4>
+    <table align="left">
+        <tbody>
+        <tr>
+            <td>
+                Fecha de Impresión  @Model.Emision
+            </td>
+
+            <td style="width: 150px">
+            </td>
+            <td>
+                @Model.Usuario
+            </td>
+            <td style="width: 150px">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <br />
+    <h4 align="center">DETALLE DE LA REVERSIÓN </h4>
+    <br />
+    <table align="center">
+        <tbody>
+        <tr>
+            <td>
+                NUMERO DE LA CUENTA:  @Model.Codigo_Credito
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                NOMBRE DE LA CUENTA: @Model.Cliente
+            </td>
+        </tr>
+        <tr style="width: 100px">
+            <td>
+                VALOR DE LA REVERSIÓN: @Model.Monto.ToString("#.##")
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 320px">
+                FECHA DE REVERSIÓN: @Model.Revertido_En
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 350px">
+                FECHA DE APERTURA: @Model.Aperturado_En
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 150px">
+                CONCEPTO: REVERSIÓN DE LIQUIDACIÓN 
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 500px">
+                REVERTIDO POR: USUARIO: @Model.Usuario
+            </td>
+            
+        </tr>
+        </tbody>
+    </table>
+    <table align="center">
+        <tr>
+            <td>_______________________________________</td>
+            <td>_______________________________________</td>
+            
+        </tr>
+        <tr align="center">
+            <td>ELABORADO</td>
+            <td>AUTORIZADO</td>
+        </tr>
+    </table>
+    @*<dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Emision)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Emision)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Usuario)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Usuario)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Codigo_Credito)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Codigo_Credito)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Cliente)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Cliente)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Monto)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Monto)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Revertido_En)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Revertido_En)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Aperturado_En)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Aperturado_En)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Concepto)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Concepto)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Revertido_Por)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Revertido_Por)
+        </dd>
+    </dl>*@
+</div>

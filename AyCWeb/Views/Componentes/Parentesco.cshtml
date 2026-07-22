@@ -1,0 +1,9 @@
+﻿@model IEnumerable<ModelNucleo.Model.Parentesco_Persona>
+
+<select name="Id_Parentesco" id="Id_Parentesco" class="form-control">
+    <option value="0">Seleccione un Parentesco</option>
+    @foreach (var item in Model)
+    {
+        <option value="@item.Id_Parentesco">@item.Descripcion</option>
+    }
+</select>

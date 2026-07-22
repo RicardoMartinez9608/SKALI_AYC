@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Mvc.ApiExplorer;
+@model ApiDescription
+@{
+    ViewData["Title"] = "Detalle";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<h1>@Model.RelativePath</h1>
+<p></p>
+<table class="greyGridTable">
+    <tr>
+        <td>Verbo:</td>
+        <td>@Model.HttpMethod</td>
+    </tr>
+</table>
+<hr />
+Parámetros:
+<table class="greyGridTable">
+    <tr>
+        <th>Nombre</th>
+        <th>Tipo</th>
+    </tr>
+    @foreach (var item in Model.ActionDescriptor.Parameters)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.ParameterType</td>
+        </tr>
+    }
+</table>
+
+<hr />
+Respuestas posibles
+<table class="greyGridTable">
+    <tr>
+        <th>Modelo</th>
+        <th>Tipo</th>
+        <th>Código estado</th>
+    </tr>
+    @foreach (var item in Model.SupportedResponseTypes)
+    {
+        <tr>
+            <td>@item.ModelMetadata</td>
+            <td>@item.Type</td>
+            <td>@item.StatusCode</td>
+        </tr>
+    }
+</table>
+
+<a href="javascript:window.history.back();">&laquo; Volver a búsqueda</a>

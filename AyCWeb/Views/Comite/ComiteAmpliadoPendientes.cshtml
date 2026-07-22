@@ -1,0 +1,86 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.ComiteAmpliadoDetalle>
+
+@{
+    ViewData["Title"] = "Comités Ampliado Pendiente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Comités pendientes</div>
+    <div class="panel-body panel-body-personalizado">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Código Credito</th>
+                    <th>Monto Solicitado</th>
+                    <th>Asesor</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.Cliente.NombreCompleto
+                        </td>
+                        <td>
+                            @item.Credito.Codigo_Credito
+                        </td>
+                        <td>
+                            @item.Credito.Monto_pago
+                        </td>
+                        <td>
+                            @item.Cliente.Cartera.Id_Usuario
+                         </td>
+                         <td>
+                            <input type="hidden" value="@item.Comite_Ampliado.Id_Comite_Ampliado" class="id_colecta_foto">
+                            <a href="#Subir_Fotografia_Colecta" data-toggle="modal" class="subir_foto">Subir Fotografías</a>
+                         </td>
+                        
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<div class="modal fade" id="Subir_Fotografia_Colecta">
+    <div class="modal-dialog" style="width:50%; height:600px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                @*<h4 class="modal-title" id="titulo_sub_modal_grupal">Subir Fotografía</h4>*@
+            </div>
+            <div class="modal-body Detalle_SubirFoto">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+      
+        Abrir_Subir_Foto()
+      
+    });
+    function Abrir_Subir_Foto() {
+        $("a.subir_foto").each(function (index) {
+
+            $("a.subir_foto").eq(index).click(function () {
+                var id_comite = $("input.id_colecta_foto").eq(index).val();
+          
+                $.get("@Url.Action("Dev_Foto", "Comite")",
+                    { id_comite: id_comite },
+                    function (perfil) {
+                        $("div.Detalle_SubirFoto").html(perfil);
+
+                    });
+
+            });
+        });
+    }
+</script>

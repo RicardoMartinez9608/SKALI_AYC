@@ -1,0 +1,137 @@
+﻿
+@{
+    ViewData["Title"] = "Transacciones_Simples";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Transacciónes simples</div>
+    <div class="panel-body">
+        <div id="mensaje"></div>
+        <ul id="transacciones" class="nav nav-tabs" role="tablist">
+            <li class="active">
+                <a href="#cajas" id="cajas-tab" role="tab" data-toggle="tab" aria-controls="cajas" aria-expanded="true">Transacciones a Cajas</a>
+            </li>
+            <li>
+                <a href="#bancos" id="bancos-tab" role="tab" data-toggle="tab" aria-controls="bancos" aria-expanded="true">Transacciones a bancos</a>
+            </li>
+        </ul>
+        <div id="transaccionesContenido" class="tab-content">
+            <div role="tabpanel" class="tab-pane fade in active" id="cajas" aria-labelledby="cajas-tab">
+                <div class="form-group">
+                    <label for="Id_Agencia"> Agencia</label>
+                    <div id="id_agencia"></div>
+                </div>
+                <div class="form-group">
+                    <label for="Id_Caja">Cajas</label>
+                    <div id="id_caja"></div>
+                </div>
+                <div class="form-group">
+                    <input class="Asignar" name="Asignar" type="radio" value="true" /> Asignar fondos
+                    <input class="Asignar" name="Asignar" type="radio" value="false" /> Recibir fondos
+                </div>
+                <div class="form-group">
+                    <label for="Monto">Monto</label>
+                    <input id="Monto" name="Monto" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <input type="button" id="Aplicar" class="btn btn-default" value="Aplicar" />
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="bancos" aria-labelledby="bancos-tab">
+                <div class="form-group">
+                    <label for="Id_Banco"> Banco</label>
+                    <div id="id_banco"></div>
+                </div>
+                <div class="form-group">
+                    <label for="Monto_Remesa">Monto</label>
+                    <input id="Monto_Remesa" name="Monto_Remesa" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <input type="button" id="Remesar" class="btn btn-default" value="Remesar" />
+                </div>
+            </div>
+        </div>
+        @*<div class="transacciones_boveda_caja"></div>*@
+    </div>
+</div>
+<script>
+    $(function () {
+        Cargar_Agencias();
+        Cargar_Bancos();
+
+        //Buscar_Fecha();
+        //Cargar_Transacciones();
+    });
+
+    //function Buscar_Fecha() {
+    //    $("#Mostrar_Transacciones").click(function () { 
+    //        var fecha = $("#fecha").val();
+    //        Cargar_Transacciones(fecha);
+    //    });
+    //}
+
+
+    @*function Cargar_Transacciones(fecha) {
+        $.get("@Url.Action("Transacciones", "Caja")", { fecha: fecha }, function (transacciones) {
+            $("div.transacciones_boveda_caja").html(transacciones);
+        });
+    }*@
+
+
+    function Cargar_Agencias() { 
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia").html(agencias);
+            Cargar_Cajas();
+        });
+    }
+
+    function Cargar_Cajas() {
+        $("#Id_Agencia").change(function () { 
+            var id_agencia = $("#Id_Agencia").val();
+            $.get("@Url.Action("Cajas_Combo", "Caja_Boveda")?id_agencia="+id_agencia, function (agencias) {
+                $("#id_caja").html(agencias);
+                Executar_Caja();
+            });
+        });
+    }
+
+    function Executar_Caja() {
+        $("#Aplicar").click(function () { 
+            var id_caja = $("#Id_Caja").val();
+            var asignar = $("input[name='Asignar']:checked").val();
+            console.log(asignar);
+            var monto = $("#Monto").val();
+            $.post("@Url.Action("Transaccion_Boveda_Caja","Caja")",
+                { Id_Caja: id_caja, Asignar: asignar, Monto: monto },
+                function (respuesta) {
+                    Mensaje(respuesta);
+                });
+            });
+    }
+
+    function Cargar_Bancos() { 
+        $.get("@Url.Action("Bancos_Combo", "Banco")", function (bovedas) {
+            $("#id_banco").html(bovedas);
+            Executar_Remesa();
+        });
+    }
+
+    @*function Executar_Remesa() { 
+        $("#Remesar").click(function () { 
+            var id_banco = $("#Id_Banco").val();
+            var remesa = $("#Monto_Remesa").val();
+            $.post("@Url.Action("Transaccion_Remesa_Banco", "Caja")",
+                { Id_Banco: id_banco, Monto: remesa },
+                function (respuesta) {
+                    Mensaje(respuesta);
+                });
+        });
+    }*@
+
+    function Mensaje(respuesta) { 
+        $("#mensaje").html("");
+        $("#mensaje").html(respuesta);
+    }
+
+</script>

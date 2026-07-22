@@ -1,0 +1,78 @@
+﻿@model ModelNucleo.Model.ModelView.Impresion
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/reporte_matricial.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Recibo Ahorro</title>
+
+</head>
+
+<body>
+    <br />
+    <br />
+    <table class="matricial" class="ahorro">
+        <tr>
+            <td>Agencia:</td>
+            <td>@Model.Factura.Agencia</td>
+        </tr>
+        <tr>
+            <td>Fecha:</td>
+            <td> @Model.Factura.Fecha</td>
+        </tr>
+        <tr>
+            <td>Cajero:</td>
+            <td> @Model.Factura.Cajero</td>
+            @if (Model.Factura.id_cajero == null)
+            {
+                <td style="text-align: left"> ()</td>
+            }
+            else
+            {
+                <td style="text-align: left"> (@Model.Factura.id_cajero)</td>
+            }
+
+        </tr>
+        <tr>
+            <td>Comprobante:  </td>
+            <td> @Model.Comprobante.NoComprobante</td>
+        </tr>
+        <tr>
+            <td>Cliente:  </td>
+            <td>@Model.Factura.No_Ahorro </td>
+        </tr>
+        <tr>
+            @if (Model.Factura.Concepto == "Depósito de ahorros")
+            {
+                <td>Concepto:  </td>
+                <td>Depósito de Deposito</td>
+            }
+            @if (Model.Factura.Concepto == "Retiro de ahorros")
+            {
+                <td>Concepto:  </td>
+                <td>Retiro de Depósito</td>
+            }
+
+        </tr>
+    
+        <tr>
+            <td>Nombre:  </td>
+            <td>@Model.Factura.Cliente </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>Total Transacción: @Model.Factura.Total.ToString("C")</td>
+        </tr>
+    </table>
+    <br />
+    <br />
+
+</body>
+</html>

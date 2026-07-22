@@ -1,0 +1,63 @@
+﻿@using DevExtreme.AspNet.Mvc
+@{
+    ViewData["Title"] = "Evaluaciones técnicas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Evaluaciones Técnicas de @ViewBag.Nombre_Completo</div>
+    <div class="panel-body panel-body-personalizado">
+
+        @(Html.DevExtreme().DataGrid().ID("Evaluacion_Tecnica")
+                .ShowBorders(false)
+                .DataSource(d => d.Mvc()
+                    .Controller("Evaluacion_Tecnica")
+                    .Key("Id_Evaluacion")
+                    .LoadAction("Evaluaciones")
+                    .LoadParams(new { id_persona = ViewBag.Id_Persona })
+                    .InsertAction("Create"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("Id_Evaluacion").DataType(GridColumnDataType.Number).VisibleIndex(0).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Id_Evaluacion")));
+                        columns.Add().DataField("Id_Persona").DataType(GridColumnDataType.Number).VisibleIndex(2).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Id_Persona")));
+                        columns.Add().DataField("Id_Asesor").DataType(GridColumnDataType.Number).VisibleIndex(3).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Id_Asesor")));
+                        columns.Add().DataField("No_Dias_Buenos").DataType(GridColumnDataType.Number).VisibleIndex(4).FormItem(fi => fi.Editor(e => e.NumberBox().ID("No_Dias_Buenos")));
+                        columns.Add().DataField("No_Dias_Malos").DataType(GridColumnDataType.Number).VisibleIndex(5).FormItem(fi => fi.Editor(e => e.NumberBox().ID("No_Dias_Malos")));
+                        columns.Add().DataField("No_Dias_Descanso").DataType(GridColumnDataType.Number).VisibleIndex(6).FormItem(fi => fi.Editor(e => e.NumberBox().ID("No_Dias_Descanso")));
+                        columns.Add().DataField("Venta_Semanal_Bueno").DataType(GridColumnDataType.Number).VisibleIndex(7).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Venta_Semanal_Bueno")));
+                        columns.Add().DataField("Venta_Semanal_Malo").DataType(GridColumnDataType.Number).VisibleIndex(8).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Venta_Semanal_Malo")));
+                        columns.Add().DataField("Venta_Mensual_Bueno").DataType(GridColumnDataType.Number).VisibleIndex(9).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Venta_Mensual_Bueno")));
+                        columns.Add().DataField("Venta_Mensual_Malo").DataType(GridColumnDataType.Number).VisibleIndex(10).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Venta_Mensual_Malo")));
+                        columns.Add().DataField("Creado_En").DataType(GridColumnDataType.Date).VisibleIndex(11).FormItem(fi => fi.Editor(e => e.DateBox().ID("Creado_En")));
+                        columns.Add().CellTemplate(@<text>
+                            <a href="#" class="enlace_detalle">Detalle</a>
+                        </text>).Visible(true).FormItem(e=>e.Visible(false));
+                    })
+                    .Paging(p => p.Enabled(false))
+                    .Editing(e => e.Mode(GridEditMode.Popup)
+                        .AllowUpdating(true)
+                        .Popup(p => p.Title("Datos generales De evaluación técnica").ID("editarLinea")
+                        .ToolbarItems(a => a.Add()
+                            .Widget(c => c.Button().Type(ButtonType.Default).Text("Guardar").OnClick("GuardaryCerrar")).Location(ToolbarItemLocation.After).Toolbar(Toolbar.Bottom))
+                            .ShowTitle(true)
+                            .Width(780)
+                            .Height(700)
+                            .Position(pos => pos
+                                .My(HorizontalAlignment.Center, VerticalAlignment.Top)
+                                .At(HorizontalAlignment.Center, VerticalAlignment.Top)
+                                .Of(new JS("window")))
+                            ).AllowAdding(true))
+                    .FilterRow(f => f.Visible(false))
+                    .HeaderFilter(f => f.Visible(false))
+                    .GroupPanel(p => p.Visible(false))
+                    .Grouping(g => g.AutoExpandAll(true))
+                    .RemoteOperations(true))
+    </div>
+</div>
+<script>
+        function GuardaryCerrar(e) {
+            var grid = $("#ListaLineaAhorro").dxDataGrid("instance");
+            grid.saveEditData();
+        }
+</script>

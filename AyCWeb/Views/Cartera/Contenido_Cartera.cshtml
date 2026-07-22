@@ -1,0 +1,43 @@
+﻿@model ModelNucleo.Model.Cartera
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Contenido_Cartera" id="detalle">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" id="Id_Agencia" value="@ViewBag.Id_Agencia"/>
+            <div class="form-group">
+                @*<label asp-for="Id_Cartera" class="control-label"></label>*@
+                <input type="hidden" asp-for="Id_Cartera" class="form-control" />
+                <input type="hidden" asp-for="Id_Usuario" class="form-control" value="@Model.Id_Usuario" />
+                <span asp-validation-for="Id_Cartera" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label  asp-for="Id_Usuario" class="control-label">Seleccione Usuario</label>
+                <div class="lista_usuario"></div>
+            </div>
+            <div class="form-group">
+                @*<label asp-for="Colector" class="control-label"></label>*@
+                <input type="hidden" asp-for="Colector" class="form-control" />
+                <span asp-validation-for="Colector" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label">Nombre de Usuario</label>
+                <input asp-for="Nombre" class="form-control"/>
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Por_Defecto"/> @Html.DisplayNameFor(model => model.Por_Defecto)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="button" value="Guardar" class="btn btn-default" id="guardar_edicion_cartera"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+

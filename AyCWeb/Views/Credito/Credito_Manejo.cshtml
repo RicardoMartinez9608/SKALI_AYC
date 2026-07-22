@@ -1,0 +1,278 @@
+﻿@model ModelNucleo.Model.Credito
+<form id="form_credito">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Id_Linea" class="control-label">Línea de crédito</label>
+                @Html.DropDownList("Id_Linea", null, htmlAttributes: new { @class = "form-control" })
+                <span asp-validation-for="Id_Linea" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Monto_pago" class="control-label">Monto</label>
+                <input asp-for="Monto_pago"class="form-control monto_credito_ahorro" />
+                <span asp-validation-for="Monto_pago" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Plazo" class="control-label"></label>
+                <input asp-for="Plazo" class="form-control" />
+                <span asp-validation-for="Plazo" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Id_Periodo" class="control-label">Frecuencia de pago</label>
+                @Html.DropDownList("Id_Periodo", null, htmlAttributes: new { @class = "form-control" })
+                <span asp-validation-for="Id_Periodo" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Id_Comportamiento_Credito" class="control-label">Comportamiento de crédito</label>
+                @Html.DropDownList("Id_Comportamiento_Credito", null, htmlAttributes: new { @class = "form-control" })
+                <span asp-validation-for="Id_Comportamiento_Credito" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Codigo_Credito" class="control-label"></label>
+                <input asp-for="Codigo_Credito" class="form-control" />
+                <span asp-validation-for="Codigo_Credito" class="text-danger"></span>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+               <input asp-for="Credito_Con_Ahorro" class="con_ahorro" id="con_ahorro" type="checkbox"  />
+               <label class="control-label">Crédito Con Ahorro Programado</label>
+            </div>
+        </div>
+
+            <div class="col-md-4" id="porcentajes">
+                  <div class="form-group">
+                          <div id="id_ahorro_credito"></div>
+                   </div>
+            </div>
+            <div class="col-md-4" id="monto_calculado">
+                  <div class="form-group">
+                  <div>
+                    <h6 style="color:darkblue"> 
+                        <strong>Porcentaje: <label id="cantidad_ahorro"></label> </strong>  
+                    </h6>
+                </div>
+                   </div>
+            </div>
+
+    </div>
+    <hr />
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h4>Resultado</h4>
+                </div>
+                <div class="col-lg-6 text-right">
+                    <button type="button" class="btn btn-default" id="Calcular_Cuota">Calcular</button>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Numero_cuotas" class="control-label">Número de cuotas</label>
+                        <input asp-for="Numero_cuotas" class="form-control" />
+                        <span asp-validation-for="Numero_cuotas" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Interes_Comision" class="control-label">Interés más comisión</label>
+                        <input asp-for="Interes_Comision" class="form-control" />
+                        <span asp-validation-for="Interes_Comision" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Cuota_Total" class="control-label">Cuota</label>
+                        <input asp-for="Cuota_Total" class="form-control" />
+                        <span asp-validation-for="Cuota_Total" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Comentario" class="control-label"></label>
+                        <input asp-for="Comentario" class="form-control" />
+                        <span asp-validation-for="Comentario" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input asp-for="Id_Credito" type="hidden" class="form-control" />
+    <input asp-for="Codigo_Credito" type="hidden" class="form-control" />
+    <input asp-for="Id_Persona" type="hidden" class="form-control" />
+    <input asp-for="Id_Acta" type="hidden" class="form-control" />
+    <input asp-for="Id_Cartera" type="hidden" class="form-control" />
+    <input asp-for="Aprobado" type="hidden" />
+    <input asp-for="Liquidado" type="hidden" />
+    <input asp-for="Aprobado_En" type="hidden" class="form-control" />
+    <input asp-for="Liquidado_En" type="hidden" class="form-control" />
+    <input asp-for="Valor_Cuota" type="hidden" class="form-control" />
+    <input asp-for="Interes" type="hidden" class="form-control" />
+    <input asp-for="Valor_IVA" type="hidden" class="form-control" />
+    <input asp-for="Cancelado" type="hidden" />
+    <input asp-for="Vencido" type="hidden" />
+    <input asp-for="Cancelado_En" type="hidden" class="form-control" />
+    <input asp-for="Vencido_En" type="hidden" class="form-control" />
+    <input asp-for="Id_Linea_Credito_Historial" type="hidden" class="form-control" />
+    <input asp-for="Id_Manejo_Refinanciamiento" type="hidden" class="form-control" value="0" />
+    <input asp-for="Monto_Credito_Ahorro" type="hidden" class="form-control" id="monto_credito_ahorro"/>
+    <input asp-for="Id_Porcentaje_Ahorro" type="hidden" class="form-control" id="id_porcentaje_ahorro" />
+
+    <div class="btn-group" role="group" aria-label="...">
+        <button type="button" class="btn btn-default" id="Guardar_Credito">Guardar</button>
+
+        @if (!ViewBag.esNuevo)
+        {
+            @if (Model.Liquidado == false)
+            {
+                <button type="button" class="btn btn-default" id="Enviar_Comite">Enviar a comité</button>
+            }
+            @if (Model.Aprobado)
+            {
+                <a href="@Url.Action("PantallaCredito", "Credito", new { id_credito = Model.Id_Credito })" target="_blank" class="btn btn-default">Liquidar crédito</a>
+            }
+            <a href="#Mantenimiento_Adicional" class="btn btn-default" data-toggle="modal" id="Codeudores">Codeudores</a>
+            <a href="@Url.Action("Revertir_Credito", "Credito", new { id_credito = Model.Id_Credito })" target="_blank" class="btn btn-default">Revertir crédito</a>
+            <a href="#Mantenimiento_Adicional" class="btn btn-default" data-toggle="modal" id="Linea_Credito_Historial_Mostrar">Línea crédito</a>
+            <a href="#Mantenimiento_Adicional" class="btn btn-default" data-toggle="modal" id="Documentos_Legales">Documentos</a>
+            @if (!Model.Liquidado)
+            {
+                <a href="#Mantenimiento_Adicional" class="btn btn-default" data-toggle="modal" id="Refinanciables">Refinanciar</a>
+                <a href="#Mantenimiento_Adicional" class="btn btn-default" data-toggle="modal" id="Reestructura">Reestructura</a>
+
+            }
+            @if (Model.Liquidado)
+            {
+                <a href="#Mantenimiento_Adicional" class="btn btn-default" data-toggle="modal" id="Cambio_Fecha">Cambiar Fecha</a>
+            }
+            @if (Model.Id_Linea == 12)
+            {
+                <a href="#Mantenimiento_Adicional_Grupal" class="btn btn-default" data-toggle="modal" id="Grupos">Agregar Miembros Grupo</a>
+            }
+
+            @*<a href="#Mantenimiento_Adicional" class="btn btn-default" data-toggle="modal" id="congelar">Congelar</a>*@
+        }
+    </div>
+
+</form>
+@if (!ViewBag.esNuevo)
+{
+    <p></p>
+    <hr />
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a href="#cobros_periodicos" aria-controls="cobros_periodicos" data-toggle="tab">
+                        Cobros periodicos
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#deducciones_desembolso" aria-controls="deducciones_desembolso" data-toggle="tab">
+                        Deducciones en el desembolso
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="panel-body">
+            <div id="ramas_linea_credito_propio" class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="cobros_periodicos">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-lg-6">Cobros periodicos</div>
+                                <div class="col-lg-6 text-right">
+                                    <a href="#Mantenimiento_Adicional" data-toggle="modal" id="nuevo_cobro_periodico" data-backdrop="false" class="btn btn-primary">Nuevo cobro periódico</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="cobros_periodicos_lista"></div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="deducciones_desembolso">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-lg-6">Deducciones desembolso</div>
+                                <div class="col-lg-6 text-right">
+                                    <a href="#Mantenimiento_Adicional" data-toggle="modal" id="nueva_deduccion_desembolso" data-backdrop="false" class="btn btn-primary">Nueva Deducción</a>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div id="deducciones_desembolso_lista"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+   $(document).ready(function () {
+        CambiarInterface();
+        Calcular_Porcentaje();
+         $("#porcentajes").css("display", "none");
+         $("#monto_calculado").css("display", "none");
+    });
+
+ function CambiarInterface() {
+        $("#con_ahorro").click(function (evento) {
+            if ($("#con_ahorro").is(":checked")) {
+              Cargar_Porcentaje();
+               $("#porcentajes").css("display", "block");
+               $("#monto_calculado").css("display", "block");
+            }else {
+               $("#porcentajes").css("display", "none");
+               $("#monto_calculado").css("display", "none");
+            }
+        });
+    }
+    function Cargar_Porcentaje() { 
+        $.get("@Url.Action("Porcentaje_Ahorro_Credito", "Componentes")", function (agencias) {
+            $("#id_ahorro_credito").html(agencias);
+            Calcular_Porcentaje();
+        });
+    }
+    function Calcular_Porcentaje() { 
+        $("#Id_Ahorro_Credito").change(function () {
+                var id_porcentaje = $("#Id_Ahorro_Credito").val();
+                var valor_porcentaje = $("#Id_Ahorro_Credito option:selected").text();
+                var monto_credito_ahorro = $(".monto_credito_ahorro").val();
+                var monto_ahorro = valor_porcentaje* monto_credito_ahorro;
+                $("#cantidad_ahorro").text(monto_ahorro);
+                $("#monto_credito_ahorro").val(monto_ahorro);
+                $("#id_porcentaje_ahorro").val(id_porcentaje);
+            });
+    }
+</script>

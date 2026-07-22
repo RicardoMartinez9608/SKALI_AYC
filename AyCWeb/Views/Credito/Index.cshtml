@@ -1,0 +1,1015 @@
+﻿@using DevExtreme.AspNet.Mvc
+@model ModelNucleo.Model.ModelView.CreditoFiltro
+@{
+    ViewData["Title"] = "Créditos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string baseUrl = Html.ViewContext.HttpContext.Request.PathBase.Value.ToString();
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Créditos</h4>
+            </div>
+            <div class="col-lg-6 text-right">
+                <a href="#Mantenimiento" data-toggle="modal" class="btn btn-default nuevo_credito">Nuevo crédito</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body panel-body-personalizado">
+
+        <p></p>
+        <div id="mensajes"></div>
+
+        <p></p>
+
+        <div class="input-group">
+            <input type="text" name="dui_buscar" id="dui_buscar" placeholder="introduzca un DUI válido" class="form-control" />
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="buscarpordui">Buscar</button>
+            </span>
+        </div>
+        <p></p>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <table>
+                    <tr>
+                        <th>ID: </th>
+
+                        <td><span class="id" id="id_persona" />@ViewBag.Id_Persona </td>
+                    </tr>
+                    <tr>
+                        <th>Nombre completo: </th>
+                        <td><span class="nombre_completo" id="nombre">@ViewBag.nombre</span></td>
+                    </tr>
+                    <tr>
+                        <th>DUI: </th>
+                        <td><span class="dui" id="dui_persona">@ViewBag.dui</span></td>
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+        @(Html.DevExtreme().DataGrid().ID("ListaCreditos")
+                .ShowBorders(true)
+                .DataSource(d => d.Mvc()
+                    .Controller("Credito")
+                    .Key("Id_Credito")
+                    .LoadAction("Creditos")
+                    .UpdateAction("Edit")
+                    .InsertAction("Create")
+                    .DeleteAction("Delete")
+                    .LoadParams(new
+                    {
+                        id_persona = Model.id_persona,
+                        porCliente = Model.porCliente,
+                        aprobado = Model.aprobado,
+                        inicio = Model.inicio,
+                        final = Model.final
+                    }))
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("Id_Credito").DataType(GridColumnDataType.Number).Visible(false).VisibleIndex(0).FormItem(c => c.Editor(w => w.NumberBox().Visible(false).ID("Id_CreditoId")).Label(l => l.Visible(false)));
+                    columns.Add().DataField("Id_Persona").DataType(GridColumnDataType.Number).Visible(false).VisibleIndex(1).FormItem(c => c.Editor(w => w.NumberBox().Visible(false).ID("Id_PersonaId")).Label(l => l.Visible(false))).CalculateCellValue("RetornarPersona");
+
+                    columns.Add().DataField("Id_Linea").DataType(GridColumnDataType.Number).VisibleIndex(2)
+    .Lookup(l => l.DataSource(d => d.Mvc().Controller("Linea_Credito").LoadAction("Lineas_Creditos").Key("Id_Linea"))
+    .ValueExpr("Id_Linea").DisplayExpr("Descripcion_linea")).FormItem(d => d.Editor(a => a.Lookup().ID("Id_LineaId")));
+
+                    columns.Add().DataField("Codigo_Credito").DataType(GridColumnDataType.String).VisibleIndex(3).MinWidth(8).FormItem(t => t.Editor(a => a.TextBox().Visible(false).ID("Codigo_CreditoId")).Label(l => l.Visible(false))).Caption("Código");
+                        @*columns.Add().DataField("Interes_Comision").DataType(GridColumnDataType.Number).VisibleIndex(4).FormItem(f => f.Editor(w => w.NumberBox().ID("Interes_ComisionId")).Label(d=>d.Visible(false)));*@
+                    columns.Add().DataField("Monto_pago").DataType(GridColumnDataType.Number).VisibleIndex(5).FormItem(f => f.Editor(w => w.NumberBox().ID("Monto_pagoId")).Label(c => c.Text("Monto")));
+                        @*columns.Add().DataField("Plazo").DataType(GridColumnDataType.Number).VisibleIndex(6).FormItem(f => f.Editor(w => w.NumberBox().ID("PlazoId")));*@
+            //        columns.Add().DataField("Id_Periodo").DataType(GridColumnDataType.Number).VisibleIndex(7)
+            //.Lookup(f => f.DataSource(t => t.Mvc().Controller("Credito").LoadAction("Periodos").Key("Valor"))
+            //            .ValueExpr("Valor").DisplayExpr("Descripcion")).FormItem(h => h.Editor(a => a.Lookup().ID("Forma_pagoId")));
+            //columns.Add().DataField("Numero_cuotas").DataType(GridColumnDataType.Number).VisibleIndex(8).FormItem(f => f.Editor(w => w.NumberBox().ID("Numero_cuotasId").OnFocusIn("ProcesarCuotas")));
+            columns.Add().DataField("Valor_Cuota").DataType(GridColumnDataType.Number).Visible(false).VisibleIndex(9).FormItem(f => f.Editor(w => w.NumberBox().Visible(false).ID("Valor_CuotaId")).Label(l => l.Visible(false)));
+                    columns.Add().DataField("Interes").DataType(GridColumnDataType.Number).VisibleIndex(10).Visible(false).FormItem(f => f.Editor(w => w.NumberBox().Visible(false).ID("InteresId")).Label(l => l.Visible(false)));
+                    columns.Add().DataField("Valor_IVA").DataType(GridColumnDataType.Number).VisibleIndex(11).Visible(false).FormItem(f => f.Editor(w => w.NumberBox().Visible(false).ID("Valor_IVAId")).Label(l => l.Visible(false)));
+                    columns.Add().DataField("Cuota_Total").DataType(GridColumnDataType.Number).VisibleIndex(12).FormItem(f => f.Editor(w => w.NumberBox().ID("Cuota_TotalId"))).Caption("Cuota");
+
+                    columns.Add().DataField("Aprobado").DataType(GridColumnDataType.Boolean).VisibleIndex(13);
+                    columns.Add().DataField("Liquidado").DataType(GridColumnDataType.Boolean).VisibleIndex(14);
+                     columns.Add().DataField("Revertido").DataType(GridColumnDataType.Boolean).VisibleIndex(15);
+                    columns.Add().DataField("Aprobado_En").DataType(GridColumnDataType.Date).VisibleIndex(16);
+                    columns.Add().CellTemplate(@<text>
+                            <a href="@Url.Action("Detalle_Credito","Credito")?id_persona=<%=data.Id_Persona%>&id_credito=<%=data.Id_Credito%>" target="_blank">Detalle</a>
+                        </text>).Caption("Detalle").VisibleIndex(17);
+                    columns.Add().CellTemplate(@<text>
+                            <a href="@Url.Action("Detalle_Condonacion","Condonacion")?id_credito=<%=data.Id_Credito%>" target="_blank">Condonación</a>
+                        </text>).Caption("Condonación").VisibleIndex(18);
+                    columns.Add().CellTemplate(@<text>
+                            <input type="hidden" value="<%=data.Id_Acta%>" class="idActaParaActa" />
+                            <input type="hidden" value="<%=data.Id_Credito%>" class="idCreditoParaActa" />
+                            <a href="#Mantenimiento" data-toggle="modal" class="ver_detalle">Manejar</a>
+                        </text>)
+                    .Caption("No Acta").VisibleIndex(18).FormItem(f => f.Editor(w => w.NumberBox().Visible(false)).Label(l => l.Visible(false)));
+                                                                                    }).OnContentReady("DataGridPreparada")/*.OnCellPrepared("Modificar_Columna")*/
+                    .Paging(p => p.Enabled(true))
+
+                    .FilterRow(f => f.Visible(false))
+                    .HeaderFilter(f => f.Visible(false))
+                    .GroupPanel(p => p.Visible(false))
+                    .Grouping(g => g.AutoExpandAll(true))
+                    .RemoteOperations(true)
+                    .MasterDetail(f =>
+                    {
+                        f.Enabled(true);
+                        f.Template(@<text>
+
+                                @(Html.DevExtreme().DataGrid().ID("ComiteGrid")
+                                                                .ColumnAutoWidth(true)
+                                                                .ShowBorders(true)
+                                                                .Columns(
+                                                                    columns =>
+                                                                    {
+                                                                            columns.Add().DataField("Id_Comite");
+                                                                            columns.Add().DataField("Id_Usuario");
+                                                                            columns.Add().DataField("Fecha_Verificado");
+                                                                            columns.Add().DataField("Ampliado");
+                                                                            columns.Add().DataField("Verificado");
+                                                                            columns.Add().DataField("Aprobado");
+                                                                            columns.Add().DataField("Comentario");
+                                                                        }
+                                                                )
+                                                                .FilterRow(fi => fi.Visible(false))
+                                                                .HeaderFilter(h => h.Visible(false))
+                                                                .GroupPanel(p => p.Visible(false))
+                                                                .Grouping(g => g.AutoExpandAll(true))
+                                                                .RemoteOperations(true)
+                                                                .DataSource(d => d.Mvc()
+                                                                        .Controller("Comite")
+                                                                        .LoadAction("ComitePorCredito").Key("Id_Comite")
+                                                                        .LoadParams(new { id_credito = new JS("data.Id_Credito") })
+                                                                    )
+                                )
+
+                            </text>);
+                    })
+        )
+
+
+        <div class="well">
+            <input type="button" id="nuevaActa" class="btn btn-default" value="Agregar nueva acta" />
+            <input type="button" id="estado_cuenta" class="btn btn-default" value="Estado de Cuenta Prestamos" />
+            <a href="#Mantenimiento_Grupal" class="btn btn-default" data-toggle="modal">Crear Grupo Solidario</a>
+            <div id="MensajeNuevaActa"></div>
+        </div>
+
+        <div class="modal fade" id="Mantenimiento">
+            <div class="modal-dialog" style="width:80%">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <a href="#" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </a>
+                        <h4 class="modal-title">Detalle</h4>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="detalle_credito"></div>
+
+                    </div> <!-- /.modal-body -->
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="Mantenimiento_Adicional">
+            <div class="modal-dialog" style="width:80%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a href="#" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </a>
+                        <h4 class="modal-title" id="titulo_sub_modal">Mantenimiento</h4>
+                    </div>
+                    <div class="modal-body Cargar_Mantenimiento_Adicional">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="Mantenimiento_Adicional_Grupal">
+            <div class="modal-dialog" style="width:50%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a href="#" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </a>
+                        <h4 class="modal-title" id="titulo_sub_modal_grupal">Agregar personas Creditos Grupales</h4>
+                    </div>
+                    <div class="modal-body Cargar_Mantenimiento_Adicional_Grupal">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="Mantenimiento_Grupal">
+            <div class="modal-dialog" style="width:50%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a href="#" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </a>
+                        <h4 class="modal-title" id="titulo_sub_modal_grupal">Agregar Grupo Solidario</h4>
+                    </div>
+                    <div class="modal-body Cargar_Mantenimiento_Grupal">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="Modal_Cambio_Valor" tabindex="-1" role="dialog" style="align-content: center !important">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Cambiar Monto Refinanciamiento</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="detalle_cambio_valor_refil"></div>
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="Modal_Cambio_Valor_Reestructura" tabindex="-1" role="dialog" style="align-content: center !important">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Cambiar Monto Reestructura</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="detalle_cambio_valor_reestructura"></div>
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <link href="~/css/ventanas.css" rel="stylesheet" />
+
+        <script src="~/js/manejo/manejo_comun_credito.js"></script>
+        <script>
+        $(function () {
+            $("#dui_buscar").mask("00000000-0");
+            BuscarPorDui();
+            EstadoCuenta();
+            Agregar_Grupo();
+        });
+        function DataGridPreparada() {
+            Ver_Detalle();
+            Nuevo_Detalle();
+            constructor("@baseUrl");
+
+        }
+
+
+        function BuscarPorDui() {
+            $("#buscarpordui").click(function () {
+                var filtro = $("#dui_buscar").val();
+                $.get("@Url.Action("JDetalle_Persona","Persona")",
+                    { filtro: filtro },
+                    function (detalle) {
+                        $("span.nombre_completo").text(detalle.nombreCompleto);
+                        $("span.dui").text(detalle.dui);
+                        $("span.id").text(detalle.id_Persona);
+                        var id_persona = $("#id_persona").text();
+                        var nombre = $("#nombre").text();
+                        var dui = $("#dui_persona").text();
+                        if (id_persona != null) {
+                            window.location.href = "@Url.Action("Index", "Credito")?id_persona=" + id_persona + "&nombre=" + nombre + "&dui=" + dui;
+                        }
+
+                    }).fail(function (error) {
+                    alertify.error("No se encontró esa identificación");
+                });
+            });
+        }
+
+
+        function Nuevo_Detalle() {
+            $("a.nuevo_credito").click(function () {
+                Refrescar_Modales();
+                $.get("@Url.Action("Credito_Manejo", "Credito")", { esNuevo: true }, function (perfil) {
+                    $("div.detalle_credito").html(perfil);
+                    var id = $("#id_persona").text();
+                    $("#Id_Persona").val(id);
+                    Buscar_Refinanciables();
+                    Eventos_Inicial();
+                });
+            });
+        }
+
+        function Ver_Detalle() {
+            $("a.ver_detalle").each(function (index) {
+                $("a.ver_detalle").eq(index).click(function () {
+                    id_credito = $("input.idCreditoParaActa").eq(index).val();
+                    Refrescar_Modales();
+                    $.get("@Url.Action("Credito_Manejo", "Credito")", { id_credito: id_credito }, function (perfil) {
+                        $("div.detalle_credito").html(perfil);
+                        Buscar_Reestructura();
+                        Buscar_Refinanciables();
+                        Eventos_Inicial();
+                        Cargar_Manejo_Linea_Credito();
+
+                        /*para congelar*/
+                        Mostrar_Fecha_Congelar();
+                    });
+                });
+            });
+        }
+
+
+        function Refrescar_Modales() {
+            $("#Mantenimiento").on("hidden.bs.modal", function (e) {
+                $("div.detalle_credito").html("");
+            });
+            $("#Mantenimiento_Adicional").on("hidden.bs.modal", function (e) {
+                $("div.Cargar_Mantenimiento_Adicional").html("");
+            });
+
+        }
+
+        function lookup_displayExpr(item) {
+            if (!item) {
+                return "";
+            }
+            return item.Nombres + " " + item.Apellidos + " " + item.Dui;
+        }
+
+        function ObtenerPersona(item) {
+            var id_persona = item.selectedItem.Id_Persona;
+            $("#id_persona").val(id_persona);
+        }
+
+        function RetornarPersona(rowData) {
+            var id_persona=@Model.id_persona;
+            if(id_persona>0)
+                return rowData.Id_Persona = @Model.id_persona;
+        }
+
+        function Cargar_Manejo_Linea_Credito() {
+            Cobros_Periodicos();
+            Deducciones_Desembolso();
+            Nueva_Deduccion_Desembolso();
+            Nuevo_Cobro_Periodico();
+            Detalle_Linea_Credito_Historial();//falta probar
+            Documentos_Legales();
+            Codeudores();
+            Cambiar_Fecha();
+            Buscar_Persona_Grupo();
+        }
+
+
+        //para todo lo que es cobros periodicos
+        function Cobros_Periodicos() {
+            var id_credito = $("#form_credito #Id_Credito").val();
+            $.get("@Url.Action("Cobros_Periodicos_Historial","Credito")",
+                {
+                    id_credito: id_credito
+                },
+                function (lista) {
+                    $("#cobros_periodicos_lista").html(lista);
+                    Detalle_Cobro_Periodico();
+                });
+        }
+
+        function Nuevo_Cobro_Periodico() {
+            $("#nuevo_cobro_periodico").click(function () {
+                var id_credito = $("#form_credito #Id_Credito").val();
+                var id_cobro_periodico_historial = 0;
+                Mostrar_Cobro(true, id_cobro_periodico_historial, id_credito);
+            });
+        }
+
+        function Detalle_Cobro_Periodico() {
+            $("a.mostrar_cobro_periodico").each(function (index) {
+                $("a.mostrar_cobro_periodico").eq(index).click(function () {
+                    var id_cobro_periodico_historial = $("input.id_cobro_periodico_historial_valor").eq(index).val();
+                    Mostrar_Cobro(false, id_cobro_periodico_historial, id_credito);
+                });
+            });
+        }
+
+        function Mostrar_Cobro(esNuevo, id_cobro_periodico_historial, id_credito) {
+            Refrescar_Modales();
+            $.get("@Url.Action("Detalle_Cobro_Periodicos_Historial", "Credito")",
+                {
+                    esNuevo: esNuevo,
+                    id_credito: id_credito,
+                    id_cobro_periodico_historial: id_cobro_periodico_historial
+                },
+                function (form) {
+                    $("div.Cargar_Mantenimiento_Adicional").html(form);
+                    Guardar_Cobro(esNuevo);
+                });
+        }
+
+        function Guardar_Cobro(esNuevo) {
+            $("#Guardar_Cobro_Periodico").click(function () {
+                var form_deduccion = $("#form_cobro_periodico").serializeAnything();
+                var direccion = "@Url.Action("Editar_Cobro_Periodico_Historial", "Credito")";
+                if (esNuevo)
+                    direccion = "@Url.Action("Nuevo_Cobro_Periodico_Historial", "Credito")";
+
+                $.post(direccion, form_deduccion, function (resultado) {
+                    alertify.success(resultado);
+                    Finalizar_Operacion_Sub();
+                }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+            });
+        }
+
+        function Finalizar_Operacion_Sub() {
+            $("#Mantenimiento_Adicional").modal("hide");
+            Cobros_Periodicos();
+            Deducciones_Desembolso();
+
+            //estan repetidos mejor
+            ProcesarCuotas();
+            ProcesarCalculo();
+        }
+
+        //para todo lo que es deducciones desembolso
+        function Deducciones_Desembolso() {
+            var id_credito = $("#form_credito #Id_Credito").val();
+            $.get("@Url.Action("Deducciones_Desembolso_Historial", "Credito")",
+                {
+                    id_credito: id_credito
+                },
+                function (lista) {
+                    $("#deducciones_desembolso_lista").html(lista);
+                    Detalle_Deduccion_Desembolso();
+                });
+        }
+
+        function Nueva_Deduccion_Desembolso() {
+            $("#nueva_deduccion_desembolso").click(function () {
+                var id_deduccion_desembolso_historial = 0;
+                var id_credito = $("#form_credito #Id_Credito").val();
+                Mostrar_Deduccion(true, id_deduccion_desembolso_historial, id_credito);
+            });
+        }
+
+        function Detalle_Deduccion_Desembolso() {
+            $("a.mostrar_deduccion_desembolso").each(function (index) {
+                $("a.mostrar_deduccion_desembolso").eq(index).click(function () {
+                    var id_deduccion_desembolso_historial = $("input.id_deduccion_desembolso_valor").eq(index).val();
+                    Mostrar_Deduccion(false, id_deduccion_desembolso_historial, id_credito);
+                });
+            });
+        }
+
+        function Mostrar_Deduccion(esNuevo, id_deduccion_desembolso_historial, id_credito) {
+            Refrescar_Modales();
+            $.get("@Url.Action("Detalle_Deduccion_Desembolso_Historial", "Credito")",
+                {
+                    esNuevo: esNuevo,
+                    id_credito: id_credito,
+                    id_deduccion_desembolso_historial: id_deduccion_desembolso_historial
+                },
+                function (form) {
+                    $("div.Cargar_Mantenimiento_Adicional").html(form);
+                    Guardar_Deduccion_Desembolso_Historial(esNuevo);
+                });
+        }
+
+        function Guardar_Deduccion_Desembolso_Historial(esNuevo) {
+            $("#Guardar_Deduccion_Desembolso").click(function () {
+                var form_deduccion = $("#detalle_deduccion").serializeAnything();
+                var direccion = "@Url.Action("Editar_Deduccion_Desembolso_Historial", "Credito")";
+                if (esNuevo)
+                    direccion = "@Url.Action("Nuevo_Deduccion_Desembolso_Historial", "Credito")";
+
+                $.post(direccion, form_deduccion, function (resultado) {
+                    alertify.success(resultado);
+                    Finalizar_Operacion_Sub();
+                }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+            });
+            }
+        function Cambiar_Fecha() {
+            $("#Cambio_Fecha").click(function () {
+                var id_credito_val = $("#form_credito #Id_Credito").val();
+                $.get("@Url.Action("Cambio_Fecha", "Credito")",
+                    { },
+                    function (form) {
+                        $("div.Cargar_Mantenimiento_Adicional").html(form);
+                        Obtener_Fecha_Diferente(id_credito_val);
+                        C_Fecha(id_credito_val);
+
+                    });
+            });
+            }
+        function Buscar_Persona_Grupo() {
+            $("#Grupos").click(function () {
+                $.get("@Url.Action("Buscar_Integrantes_Grupo", "Credito")",
+                    { },
+                    function (form) {
+                        $("div.Cargar_Mantenimiento_Adicional_Grupal").html(form);
+                    });
+            });
+            }
+        function Agregar_Grupo() {
+            $.get("@Url.Action("Agregar_Grupo_Solidario", "Credito")",
+                    { },
+                    function (form) {
+                        $("div.Cargar_Mantenimiento_Grupal").html(form);
+                });
+            }
+
+            function C_Fecha(id_credito_val) {
+            $("input.Cambiar_Fecha").click(function () {
+                var id_credito = id_credito_val;
+                var fecha = $("#fecha_cambiar").val();
+                $.post("@Url.Action("Cambiar_Fecha_Credito", "Credito")",
+                    {
+                        id_credito: id_credito,
+                        fecha_nueva: fecha
+                    },
+                    function (resultado) {
+                        alertify.success(resultado);
+                    }).fail(function (badrequest) {
+                    alertify.error(badrequest.responseText);
+            });
+            });
+            }
+            function Obtener_Fecha_Diferente(id_credito_val) {
+                        $.get("@Url.Action("Obtener_Fecha_Diferente", "Credito")",
+                            {
+                                id_credito: id_credito_val
+                            },
+                            function (resultado) {
+                                console.log(resultado);
+                               $("#fecha_cambiar").val(resultado);
+                            }).fail(function (badrequest) {
+                            alertify.error(badrequest.responseText);
+                    });
+            }
+        //manejo de codeudores
+            function Codeudores() {
+                $("#Codeudores").each(function (index) {
+                    $("#Codeudores").click(function () {
+
+                        $.get(
+                            "@Url.Action("Nuevo_Codeudor", "Persona")",
+                            function (form_relacion) {
+                                $("div.Cargar_Mantenimiento_Adicional").html(form_relacion);
+                                var id_persona = @ViewBag.Id_Persona;
+                                $("#nueva_relacion_declarado #Id_Sujeto").val(id_persona);
+                                var id_credito = $("#form_credito #Id_Credito").eq(index).val();;
+                                $("#nueva_relacion_declarado #Id_Credito").val(id_credito);
+                                Guardar_Relacion();
+                                Cargar_Codeudores();
+                            });
+                    });
+                });
+            }
+
+        function Cargar_Codeudores() {
+            var id_persona = $("#nueva_relacion_declarado #Id_Sujeto").val();
+            var id_credito = $("#nueva_relacion_declarado #Id_Credito").val();
+            $.get("@Url.Action("Codeudores","Persona")",
+                {
+                    id_persona: id_persona,
+                    id_credito: id_credito
+                },
+                function (lista_codeudores) {
+                    $("#lista_codeudores").html(lista_codeudores);
+                    Activar_Codeudor();
+                });
+        }
+        function Guardar_Relacion() {
+            $("#Guardar_Relacion_Principal").off().on("click",function () {
+                var relacion = $("#nueva_relacion_declarado").serializeAnything();
+                $.post("@Url.Action("Nueva_Relacion","Persona")", relacion, function (resultado) {
+                    alertify.success("Se ha guardado la relación correctamente");
+                    Cargar_Codeudores();
+                }).fail(function () {
+                    alertify.error("No se pudo guardar la relación");
+                });
+            });
+        }
+        function Activar_Codeudor() {
+            $("input.id_relacion_valor").each(function (index) {
+                $("a.activar_codeudor").eq(index).click(function () {
+                    var id_relacion = $("input.id_relacion_valor").eq(index).val();
+                    $.post("@Url.Action("Activar_Codeudor", "Persona")",
+                        { id_relacion: id_relacion },
+                        function (resultado) {
+                            alertify.success(resultado);
+                            Cargar_Codeudores();
+                        }).fail(function (resultado) {
+                        alertify.error(resultado.responseText);
+                    });
+                });
+            });
+            }
+        function Obtener_Predicado(item) {
+            var id_persona = item.selectedItem.Id_Persona;
+            $("#nueva_relacion_declarado #Id_Predicado").val(id_persona);
+            }
+        function lookup_predicado(item) {
+            if (!item) {
+                return "";
+            }
+            return item.Nombres + " " + item.Apellidos + " " + item.Dui;
+        }
+        //manejo documentos
+            function Documentos_Legales() {
+                $("#Documentos_Legales").each(function (index) {
+                    $("#Documentos_Legales").eq(index).click(function () {
+                        var id_credito = $("#form_credito #Id_Credito").eq(index).val();
+                        $.get("@Url.Action("Documentos_Legales", "Documentos_Legales")",
+                            { },
+                            function (form) {
+                                $("div.Cargar_Mantenimiento_Adicional").html(form);
+                                Abrir_Documentos(id_credito);
+
+                            });
+                    });
+                });
+            }
+
+            function Abrir_Documentos(id_credito) {
+            $("a.doc_legal").each(function (index) {
+                $("a.doc_legal").eq(index).click(function () {
+
+                    var id_doc = $("input.id").eq(index).val();
+                    if (id_doc == 1) {
+                        Mostrar();
+                    }
+                    else if (id_doc == 2) {
+                        Mutuo(id_credito);
+                    }
+                    else if (id_doc == 3) {
+                        Pagare(id_credito);
+                    }
+                    else if (id_doc == 22) {
+                        PagareC(id_credito);
+                    }
+                    else if (id_doc == 4) {
+                        Condiciones_Generales(id_credito);
+                    } else if (id_doc == 7) {
+                        Mutuo_Copia();
+                    }
+                    else if (id_doc == 11) {
+                        Carta_Azul(id_credito);
+                    } else if (id_doc == 12) {
+                        PlanAyC(id_credito);
+                    }
+                    else if (id_doc == 15) {
+                            Compartir_DatosFiador(id_credito);
+                    }
+                    else if (id_doc == 14) {
+                        Pantalla(id_credito);
+                    } else if (id_doc == 13) {
+                        Compartir_Datos(id_credito);
+                    }else if (id_doc == 9) {
+                            OrdenDescuendoD(id_credito);
+                    }else if (id_doc == 10) {
+                            OrdenDescuendoF(id_credito);
+                    }else if (id_doc == 8) {
+                            Calendario(id_credito);
+                    }
+                });
+            });
+            }
+
+            function Mutuo(id_credito) {
+                window.open("@Url.Action("Generar_Mutuos","Credito")?id_credito=" + id_credito);
+            }
+            function EstadoCuenta() {
+                $("#estado_cuenta").click(function() {
+                    var id_credito = $("input.idCreditoParaActa").val();
+                    window.open("@Url.Action("Reporte_Estado_Cuenta", "Credito")?id_credito=" + id_credito);
+                });
+            }
+        function Mutuo_Copia() {
+            var id_persona = @Model.id_persona;
+            window.open("@Url.Action("Mutuo_Copia", "Credito")?id_persona=" + id_persona );
+        }
+            function Pagare(id_credito) {
+                window.open("@Url.Action("Generar_Pagare","Credito")?id_credito=" + id_credito );
+            }
+            function PagareC(id_credito) {
+                window.open("@Url.Action("PagareCodeudor","Credito")?id_credito=" + id_credito);
+            }
+            function OrdenDescuendoD(id_credito) {
+                window.open("@Url.Action("OrdenDescuentoDeudor","Credito")?id_credito=" + id_credito);
+            }
+            function OrdenDescuendoF(id_credito) {
+                window.open("@Url.Action("OrdenDescuentoFiador", "Credito")?id_credito=" + id_credito);
+            }
+            function Compartir_DatosFiador(id_credito) {
+                window.open("@Url.Action("Compartir_DatosFiador", "Credito")?id_credito=" + id_credito);
+            }
+            function Compartir_Datos(id_credito) {
+                window.open("@Url.Action("Compartir_Datos","Credito")?id_credito=" + id_credito );
+        }
+            function Condiciones_Generales(id_credito) {
+                window.open("@Url.Action("Generar_Condiciones_Generales", "Credito")?id_credito=" + id_credito);
+            }
+            function Pantalla(id_credito) {
+
+            window.open("@Url.Action("PantallaCredito", "Credito")?id_credito=" + id_credito );
+            }
+            function Calendario(id_credito) {
+
+                window.open("@Url.Action("CalendarioPagos", "Credito")?id_credito=" + id_credito);
+            }
+        function Carta_Azul(id_cre) {
+            var id_credito = id_cre;
+            var id_persona = @Model.id_persona;
+            var id_linea = $("#Id_Linea").val();
+            var monto = $("#Monto_pago").val();
+            var id_periodo = $("#Id_Periodo").val();
+            var plazo = $("#Plazo").val();
+
+            window.open("@Url.Action("Generar_Carpeta_Azul","Credito")?id_persona="+id_persona+"&id_linea=" + id_linea + "&monto=" + monto + "&id_periodo=" + id_periodo + "&plazo=" + plazo + "&id_credito=" + id_credito );
+
+            }
+            function PlanAyC(id_credito) {
+                window.open("@Url.Action("Generar_PlanAyc","Credito")?id_credito="+ id_credito );
+        }
+
+        //manejo de linea_credito_historial
+        function Detalle_Linea_Credito_Historial() {
+            $("#Linea_Credito_Historial_Mostrar").click(function () {
+                var id_credito = $("#form_credito #Id_Credito").val();
+                $.get("@Url.Action("Detalle_Linea_Credito_Historial", "Linea_Credito")",
+                    { id_credito: id_credito },
+                    function (form) {
+                        $("div.Cargar_Mantenimiento_Adicional").html(form);
+                        Editar_Linea_Credito_Historial();
+                    });
+            });
+        }
+
+        function Editar_Linea_Credito_Historial() {
+            $("#Guardar_Linea_Credito_Historial").click(function () {
+                var form = $("#linea_credito_historial_form").serializeAnything();
+                $.post("@Url.Action("Editar_Linea_Credito_Historial", "Linea_Credito")",
+                    form,
+                    function(resultado) {
+                        alertify.success(resultado);
+                        Finalizar_Operacion_Sub();
+                    }).fail(function(error) {
+                    alertify.error(error.responseText);
+                });
+            });
+        }
+
+        function Mostrar() {
+            /*obtener los datos de linea de crédito*/
+            var lineaCredito = $("#Id_Linea").val();
+            var descripcion = $("#Id_Linea option:selected").text();
+            var interes = $("#Interes_Comision").val();
+            var id_linea = lineaCredito;
+            var monto = $("#Monto_pago").val();
+            var id_periodo = $("#Id_Periodo").val();
+            var plazo = $("#Plazo").val();
+            var id_credito = $("#form_credito #Id_Credito").val();
+            var numero_cuotas = $("#Numero_cuotas").val();
+            window.open("@Url.Action("Amortizacion","Reporteria")?id_linea=" + id_linea + "&monto=" + monto + "&id_periodo=" + id_periodo + "&plazo=" + plazo + "&id_credito=" + id_credito + "&numero_cuotas=" + numero_cuotas + "&descripcion_linea=" + descripcion + "&interes=" + interes);
+        }
+        function MostrarAmortizacion() {
+            /*obtener los datos de linea de crédito*/
+            var lineaCredito = $("#Id_Linea").val();
+            location.target = "_blank";
+            var descripcion = $("#Id_Linea option:selected").text();
+            var interes = $("#Interes_Comision").val();
+            var id_linea = lineaCredito;
+            var monto = $("#Monto_pago").val();
+            var id_periodo = $("#Id_Periodo").val();
+            var plazo = $("#Plazo").val();
+            var id_credito = $("#form_credito #Id_Credito").val();
+            var numero_cuotas = $("#Numero_cuotas").val();
+
+            var enlace = document.getElementById("amortizacion_pdf");
+            enlace.href = "@Url.Action("Amortizacion","Reporteria")?id_linea=" + id_linea + "&monto=" + monto + "&id_periodo=" + id_periodo + "&plazo=" + plazo + "&id_credito=" + id_credito+"&numero_cuotas=" + numero_cuotas+"&descripcion_linea="+descripcion+"&interes="+interes;
+            enlace.target = "_blank";
+            }
+
+            function Buscar_Refinanciables() {
+                $("#Refinanciables").click(function () {
+                    $.get("@Url.Action("Buscar_Refinanciables", "Credito")",
+                        function (busqueda) {
+                            $("div.Cargar_Mantenimiento_Adicional").html(busqueda);
+                            Cargar_Detalle_Refinanciable();
+                    });
+                });
+            }
+        function Buscar_Reestructura() {
+            $("#Reestructura").click(function () {
+                $.get("@Url.Action("Buscar_Reestructura", "Credito")",
+                    function (busqueda) {
+                        $("div.Cargar_Mantenimiento_Adicional").html(busqueda);
+                        Cargar_Detalle_Reestructura();
+                    });
+            });
+            }
+        function Cargar_Detalle_Reestructura() {
+            $("#cargar_detalle_reestructura").click(function () {
+                var codigo_credito = $("#codigo_credito_refinanciable").val();
+                var id_credito = $("#form_credito #Id_Credito").val();
+                $.get("@Url.Action("Reestructura", "Credito")",
+                    {
+                        id_credito: id_credito,
+                        codigo_credito: codigo_credito
+                    },
+                    function(detalle) {
+                        $("#detallle_reestructura").html(detalle);
+                        Cargar_Cambiar_Valor_Reestructura();
+                        var value = $("#valor_actual_reestructura").val();
+                        Cargar_Detalle_Cambio_Valor(value,true)
+                        Guardar_Reestructura();
+                    });
+            });
+        }
+
+        function Cargar_Detalle_Refinanciable() {
+            $("#cargar_detalle_refinanciable").click(function() {
+                var codigo_credito = $("#codigo_credito_refinanciable").val();
+                var id_credito = $("#form_credito #Id_Credito").val();
+                $.get("@Url.Action("Refinanciable", "Credito")",
+                    {
+                        id_credito: id_credito,
+                        codigo_credito: codigo_credito
+                    },
+                    function(detalle) {
+                        $("#detallle_refinanciable").html(detalle);
+                        Cargar_Cambiar_Valor();
+                        var value = $("#valor_actual").val();
+                        Cargar_Detalle_Cambio_Valor(value,false);
+                        Guardar_Refinaciable();
+                    }).fail(function (error) {
+                        alertify.error("Algo anda mal, pon el código correcto");
+                });
+            });
+            }
+
+        function Cargar_Cambiar_Valor() {
+            $("#cambiar_valor").click(function () {
+                $('#Modal_Cambio_Valor').modal('show');
+            });
+            }
+            function Cargar_Cambiar_Valor_Reestructura() {
+                $("#cambiar_valor_reestructura").click(function () {
+                    $('#Modal_Cambio_Valor_Reestructura').modal('show');
+                });
+            }
+        function Modificar_Refinanciamiento() {
+            $("#Modificar_Value").click(function() {
+                var movible = true;
+                var monto_nuevo = $("#nuevo_valor_refil").val();
+                Detalle_Refinanciable_Valor_Nuevo(movible,monto_nuevo,false);
+            });
+            }
+            function Modificar_Reestructura() {
+                $("#Modificar_Value").click(function () {
+                    var movible = true;
+                    var monto_nuevo = $("#nuevo_valor_refil").val();
+                    Detalle_Refinanciable_Valor_Nuevo(movible, monto_nuevo,true);
+                });
+            }
+            function Detalle_Refinanciable_Valor_Nuevo(movible, monto_nuevo_refinanciamiento, es_reeestructura = false) {
+                var codigo_credito = $("#codigo_credito_refinanciable").val();
+                var id_credito = $("#form_credito #Id_Credito").val();
+                if (es_reeestructura) {
+                    $.get("@Url.Action("Reestructura", "Credito")",
+                    {
+                        id_credito: id_credito,
+                        codigo_credito: codigo_credito,
+                        movible: true,
+                        monto_nuevo_reestructura: monto_nuevo_refinanciamiento
+                    },
+                        function (detalle) {
+                        $("#detallle_reestructura").html(detalle);
+                        Cargar_Cambiar_Valor_Reestructura();
+                        var value = $("#valor_actual_reestructura").val();
+                        Cargar_Detalle_Cambio_Valor(value,true)
+                        Guardar_Reestructura();
+                        $('#Modal_Cambio_Valor_Reestructura').modal('hide');
+                    });
+                }
+                else {
+                     $.get("@Url.Action("Refinanciable", "Credito")",
+                    {
+                        id_credito: id_credito,
+                        codigo_credito: codigo_credito,
+                        movible: movible,
+                        monto_nuevo_refinanciamiento : monto_nuevo_refinanciamiento
+                    },
+                    function (detalle) {
+                       
+                            $("#detallle_refinanciable").html(detalle);
+                            Cargar_Cambiar_Valor();
+                            var value = $("#valor_actual").val();
+                            Cargar_Detalle_Cambio_Valor(value);
+                            Guardar_Refinaciable();
+                            $('#Modal_Cambio_Valor').modal('hide');
+                    });
+                }
+
+        }
+
+        function Cargar_Detalle_Cambio_Valor(value,es_reeestructura = false) {
+            $.get("@Url.Action("Cambiar_Valor_Refinanciamiento", "Credito")",
+                function (busqueda) {
+                    if (es_reeestructura) {
+                        $("div.detalle_cambio_valor_reestructura").html(busqueda);
+                        $("#valor_Actual_Refil").text(value);
+                        Modificar_Reestructura();
+                    } else {
+                        $("div.detalle_cambio_valor_refil").html(busqueda);
+                        $("#valor_Actual_Refil").text(value);
+                        Modificar_Refinanciamiento();
+                    }
+
+
+                });
+        }
+
+        function Guardar_Refinaciable() {
+            $("#procesar_refinanciado").click(function() {
+                    var reestructura = false;
+                    var movible = false;
+                    var descuento = false;
+                    var detalle = $("#Detalle_Refinanciable").serializeAnything();
+                $.post("@Url.Action("Agregar_Refinanciamiento", "Credito")?reestructura=" + reestructura + "&movible=" + movible +
+                    "&descuento="+descuento,
+                        detalle,
+                        function (resultado) {
+                            alertify.success(resultado);
+                        }).fail(function (error) {
+                            alertify.error(error.responseText);
+                        });
+                });
+            }
+        function Guardar_Reestructura() {
+            $("#procesar_reestructura").click(function () {
+                var reestructura = true;
+                var detalle = $("#detallle_reestructura").serializeAnything();
+                $.post("@Url.Action("Agregar_Refinanciamiento","Credito")?reestructura=" + reestructura,
+                    detalle,
+                    function (resultado) {
+                        alertify.success(resultado);
+                    }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+            });
+            }
+
+            /*todo para congelar*/
+            function Mostrar_Fecha_Congelar() {
+                $("#congelar").click(function () {
+                    Refrescar_Modales();
+                    $.get("@Url.Action("FechaCongelar","Credito")", function (formulario) {
+                        $("div.Cargar_Mantenimiento_Adicional").html(formulario);
+                        Procesar_Congelar();
+                    });
+                });
+            }
+
+            function Procesar_Congelar() {
+                $("#procesar_congelar").click(function () {
+                    console.log("clic dectectado");
+                    var id_credito = $("#Id_Credito").val();
+                    var fecha = $("#fecha_congelar").val();
+                    $.get("@Url.Action("Procesar_Congelar","Credito")",
+                        {
+                            id_credito: id_credito,
+                            fecha:fecha
+                        },
+                        function (success) {
+                            alertify.success(success);
+                        }).fail(function (error) {
+                            alertify.error(error.responseText);
+                        });
+                    $('#Mantenimiento_Adicional').modal('hide');
+                });
+            }
+
+        </script>
+    </div>
+</div>

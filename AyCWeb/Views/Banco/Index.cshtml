@@ -1,0 +1,63 @@
+﻿@model IEnumerable<ModelNucleo.Model.Banco>
+
+@{
+    ViewData["Title"] = "Bancos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Bancos</div>
+    <div class="panel-body">
+
+        @if (ViewBag.ConRespuesta)
+        {
+            <ayc-alerta respuesta="ViewBag.Respuesta"></ayc-alerta>
+        }
+
+        <p>
+            <a asp-action="Crear" class="btn btn-default">Nuevo</a>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        Nombre
+                    </th>
+                    <th>
+                        Cuenta
+                    </th>
+                    <th>
+                        Cuenta contable
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id_Banco)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.No_Cuenta)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Cuenta_Contable)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Editar", "Editar", new { id_banco = item.Id_Banco }) |
+                        @Html.ActionLink("Borrar", "Eliminar", new { id_banco = item.Id_Banco })
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,310 @@
+﻿@model ModelNucleo.Model.ModelView.Estado_Cuenta_Prestamos
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="~/css/margen_redondeado.css" rel="stylesheet" />
+    <link href="~/css/Reporte.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Reporte Estado de Cuenta de Crédito</title>
+
+</head>
+<body>
+<h2 align="center">@ViewBag.nombreEmpresa  </h2>
+<table align="left" style="width: 800px">
+    <tbody>
+    <tr>
+        <td>
+            Fecha de Emisión: @Model.Fecha
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Model.nombre_generado
+        </td>
+    </tr>
+</table>
+<p></p>
+<table align="left" style="width: 800px">
+    <tbody>
+    <tr>
+        <td>
+            Codigo
+        </td>
+        <th>
+            @Model.Codigo
+        </th>
+        <td>
+            @Model.Nombre
+        </td>
+       
+    </tr>
+</table>
+<table align="left" style="width: 800px">
+    <tbody>
+    <tr>
+        <td>
+            @Model.direccion
+        </td>
+        <th>
+            Lugar de Trabajo
+        </th>
+        <td>
+            @Model.Lugar_Trabajo
+        </td>
+    </tr>
+</table>
+<br/>
+<br/>
+<table  align="left" class="round_table">
+    <tbody>
+    <tr>
+        <th> Apertura</th>
+        <th> Vencimiento</th>
+        <th> Ultimo Pago</th>
+    </tr>
+     <tr>
+            <td>@Model.Detalle_Credito.Apertura.ToString("dd/MM/yyyy")</td>
+            <td>@Model.Detalle_Credito.Vencimiento.ToString("dd/MM/yyyy")</td>
+            <td>@Model.Detalle_Credito.Ultimo_Pago.ToString("dd/MM/yyyy")</td>
+     </tr>
+    
+    </tbody>
+</table>
+
+<table align="left" class="round_table">
+    <tbody>
+    <tr>
+        <th> Plazo</th>
+        <th> Cuotas</th>
+        <th> F. Pago</th>
+        <th> Telefonos</th>
+
+        <tr>
+            <td>@Model.Detalle_Credito.Plazo</td>
+            <td>@Model.Detalle_Credito.Cuotas</td>
+            <td>@Model.Detalle_Credito.F_Pago</td>
+            <td>@Model.Detalle_Credito.Telefonos</td>
+        </tr>
+    </tr>
+</table>
+<br/>
+<br/>
+<table  align="left" class="round_table">
+    <tbody>
+    <tr>
+        <th> Monto</th>
+        <th> Saldo</th>
+        <th> Cuota</th>
+    </tr>
+    <tr>
+        <td>@Model.Detalle_Credito.Monto.ToString("0.00")</td>
+        <td>@Model.Detalle_Credito.Saldo.ToString("0.00")</td>
+        <td>@Model.Detalle_Credito.Cuota.ToString("0.00")</td>
+    </tr>
+    
+    </tbody>
+</table>
+
+<table align="left" class="round_table">
+    <tbody>
+    <tr>
+        <th> Dias</th>
+        <th> Acu. Mora</th>
+        <th> Cuot. Mora</th>
+        <th> Asesor</th>
+
+        <tr>
+            <td>@Model.Detalle_Credito.Dias</td>
+            <td>@Model.Detalle_Credito.Acu_Mora</td>
+            <td>@Model.Detalle_Credito.Cuot_Mora</td>
+            <td>@Model.Detalle_Credito.Asesor</td>
+        </tr>
+    </tr>
+</table>
+
+<br/>
+<br/>
+<table class="greyGridTable">
+    <thead>
+    <tr>
+        <th>
+            Fecha
+        </th>
+        <th>
+            Dias
+        </th>
+        <th>
+            Comprobante
+        </th>
+        <th>
+            Valor
+        </th>
+        <th>
+            Abono
+        </th>
+        <th>
+            Intereses Aplicados
+        </th>
+        <th>
+            Intereses Moratorio
+        </th>
+        <th>
+            Deuda
+        </th>
+        <th>
+            Colect.
+        </th>
+        <th>
+            Recargos
+        </th>
+        <th>
+            Pago Anticip
+        </th>
+        <th>
+            Saldo
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Detalle_Transacciones)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaPago)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dias)
+            </td>
+            <td>
+                0.00
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Valor_Cuota)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Abono_capital)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Interes)
+            </td>
+            <td>
+                --
+            </td>
+            <td>
+                --
+            </td>
+            <td>
+                --
+            </td>
+            <td>
+                --
+            </td>
+            <td>
+                --
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Saldo_Capital)
+            </td>
+        </tr>
+       
+    }
+    </tbody>
+</table>
+<table class="greyGridTable">
+
+    <tbody>
+ 
+    <tr>
+        <td style="width: 205px">
+            Totales
+        </td>
+        <td style="width: 55px">
+        @Model.Detalle_Transacciones.Sum(a=>a.Valor_Cuota).ToString("0.00")
+        <td style="width: 53px">
+            @Model.Detalle_Transacciones.Sum(a=>a.Abono_capital).ToString("0.00")
+        </td>
+        <td style="width: 70px">
+            @Model.Detalle_Transacciones.Sum(a=>a.Interes).ToString("0.00")
+        </td>
+        <td style="width: 409px">
+                
+        </td>
+            
+    </tr>
+       
+   
+    </tbody>
+</table>
+    
+<table class="round_table">
+
+    <tr>
+        <th scope="row">Saldo</th>
+        <th>@Model.Totales_Estado_Cuenta.Saldo.ToString("0.00")</th>
+        <th> otra linea</th>
+
+    </tr>
+
+    <tr>
+        <th>Interes a Cobrar</th>
+        <td></td>
+        <td>Cuotas en Mora</td>
+        <td>Cuotas Pendientes de Pago</td>
+    </tr>
+
+    <tr>
+        <th>Normales</th>
+        <td>@Model.Totales_Estado_Cuenta.Normales.ToString("0.00")</td>
+
+    </tr>
+
+    <tr>
+        <th>Pendientes</th>
+
+        <td>@Model.Totales_Estado_Cuenta.Pendientes.ToString("0.00")</td>
+
+    </tr>
+    <tr>
+        <th>Recargos</th>
+
+        <td>@Model.Totales_Estado_Cuenta.Recargos.ToString("0.00")</td>
+
+    </tr>
+    <tr>
+        <th>Cobertura / Deuda</th>
+
+        <td>@Model.Totales_Estado_Cuenta.Cobertura_Deuda.ToString("0.00")</td>
+
+    </tr>
+    <tr>
+        <th>Moratorios</th>
+
+        <td>@Model.Totales_Estado_Cuenta.Moratorios.ToString("0.00")</td>
+
+    </tr>
+    <tr>
+        <th>Recargo por Vencimiento</th>
+
+        <td>@Model.Totales_Estado_Cuenta.Recargo_Vencimiento.ToString("0.00")</td>
+
+        <td></td>
+        <td>P/ al Día</td>
+    </tr>
+    <tr>
+        <th>Total a Pagar</th>
+
+        <td>@Model.Totales_Estado_Cuenta.Total_Pagar.ToString("0.00")</td>
+
+    </tr>
+
+</table>
+
+</body>
+</html>
+
+

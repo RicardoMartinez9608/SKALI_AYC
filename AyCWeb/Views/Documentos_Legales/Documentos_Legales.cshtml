@@ -1,0 +1,25 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Documentos_Legales_Vista>
+
+<div>
+    <h4> Documentos Legales</h4>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.nombre)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <a href="#"  class="doc_legal" id="doc_@item.Id_Documentos_Legales">@item.nombre</a>
+                <input type="hidden" value="@item.Id_Documentos_Legales" class="id"/>
+            </td>
+           
+        </tr>
+}
+    </tbody>
+</table>

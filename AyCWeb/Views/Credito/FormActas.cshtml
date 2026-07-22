@@ -1,0 +1,118 @@
+﻿@using DevExtreme.AspNet.Mvc
+@model ModelNucleo.Model.ModelView.FechasFiltro
+@{
+    ViewData["Title"] = "FormActas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Actas de Créditos</div>
+    <div class="panel-body panel-body-personalizado">
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Filtros <span class="caret"></span>
+        </button>
+        <p></p>
+        <div class="collapse" id="collapseExample">
+            <div class="well">
+                <div class="row">
+                    <div class="col-md-4">
+                        <form asp-action="FormActas">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="inicio" class="control-label"></label>
+                                <input asp-for="inicio" class="form-control" />
+                                <span asp-validation-for="inicio" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="final" class="control-label"></label>
+                                <input asp-for="final" class="form-control" />
+                                <span asp-validation-for="final" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Filtrar" class="btn btn-default" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @(Html.DevExtreme().DataGrid().ID("ActasyCreditos")
+            .ShowBorders(true)
+            .DataSource(d => d.Mvc()
+                .Controller("Credito")
+                .Key("Id_Acta")
+                .LoadAction("ActasYCreditos")
+                .LoadParams(new
+                {
+                    inicio = Model.inicio,
+                    final = Model.final
+                }))
+             .Columns(
+                columns =>
+                {
+                    columns.Add().DataField("Id_Acta").DataType(GridColumnDataType.Number).Visible(true).VisibleIndex(0);
+                    columns.Add().DataField("Fecha_Celebrado").DataType(GridColumnDataType.Date).Visible(true).VisibleIndex(1);
+                }
+            ).Paging(p => p.Enabled(false))
+            .FilterRow(f => f.Visible(false))
+            .HeaderFilter(f => f.Visible(false))
+            .GroupPanel(p => p.Visible(false))
+            .Grouping(g => g.AutoExpandAll(true))
+            .RemoteOperations(true)
+            .MasterDetail(m =>
+            {
+                m.Enabled(true);
+                m.Template(@<text>
+
+                    @(Html.DevExtreme().DataGrid().ID("Creditos")
+                    .ColumnAutoWidth(true)
+                    .ShowBorders(true)
+                    .Columns(
+                        columns =>
+                        {
+                            columns.Add().DataField("Id_Credito").DataType(GridColumnDataType.Number).Visible(false).VisibleIndex(0);
+                            columns.Add().DataField("Id_Persona").DataType(GridColumnDataType.Number).Visible(false).VisibleIndex(1);
+
+                            columns.Add().DataField("Id_Linea").DataType(GridColumnDataType.Number).VisibleIndex(2)
+                            .Lookup(l => l.DataSource(d => d.Mvc().Controller("Linea_Credito").LoadAction("Lineas_Creditos").Key("Id_Linea"))
+                            .ValueExpr("Id_Linea").DisplayExpr("Descripcion_linea"));
+
+                            columns.Add().DataField("Codigo_Credito").DataType(GridColumnDataType.String).VisibleIndex(3);
+                            columns.Add().DataField("Tasa_Interes").DataType(GridColumnDataType.Number).VisibleIndex(4);
+                            columns.Add().DataField("Monto_pago").DataType(GridColumnDataType.Number).VisibleIndex(5);
+                            columns.Add().DataField("Plazo").DataType(GridColumnDataType.Number).VisibleIndex(6);
+                            columns.Add().DataField("Forma_pago").DataType(GridColumnDataType.Number).VisibleIndex(7)
+                            .Lookup(f => f.DataSource(t => t.Mvc().Controller("Credito").LoadAction("Periodos").Key("Valor"))
+                                        .ValueExpr("Valor").DisplayExpr("Descripcion"));
+                            columns.Add().DataField("Numero_cuotas").DataType(GridColumnDataType.Number).VisibleIndex(8);
+                            columns.Add().DataField("Valor_Cuota").DataType(GridColumnDataType.Number).Visible(false).VisibleIndex(9);
+                            columns.Add().DataField("PlanAyC").DataType(GridColumnDataType.Number).VisibleIndex(10).Visible(false);
+                            columns.Add().DataField("Valor_IVA").DataType(GridColumnDataType.Number).VisibleIndex(11).Visible(false);
+                            columns.Add().DataField("Cuota_Total").DataType(GridColumnDataType.Number).VisibleIndex(12);
+
+                            columns.Add().DataField("Aprobado").DataType(GridColumnDataType.Boolean).VisibleIndex(13);
+                            columns.Add().DataField("Aprobado_En").DataType(GridColumnDataType.Date).VisibleIndex(14);
+                        }
+                    )
+                    .FilterRow(fi => fi.Visible(false))
+                    .HeaderFilter(h => h.Visible(false))
+                    .GroupPanel(p => p.Visible(false))
+                    .Grouping(g => g.AutoExpandAll(true))
+                    .RemoteOperations(true)
+                    .DataSource(d => d.Mvc()
+                            .Controller("Credito")
+                            .LoadAction("CreditosPorActa").Key("Id_Credito")
+                            .LoadParams(new { id_acta = new JS("data.Id_Acta") })
+                        )
+                    )
+
+                </text>);
+                    }
+                        )
+        )
+
+
+    </div>
+</div>

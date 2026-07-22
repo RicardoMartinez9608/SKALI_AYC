@@ -1,0 +1,91 @@
+﻿/*para widget de onformación en tablas*/
+
+
+table.widget tr td {
+    font-family:Arial;
+    font-size: 20px;
+}
+
+table.widget-small tr td, tr th {
+    font-family: Arial;
+    font-size: 12px;
+    text-align:left;
+    width:200px;
+}
+
+table.widget-small {
+    border-style:solid;
+    border-width:1px;
+}
+
+
+div.Para_Firma {
+    display: block;
+    border-style: solid;
+    border-width: 1px;
+    width:100%;
+    height:40px;
+}
+
+
+table.greyGridTable {
+    border: 1px solid #000;
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+table.greyGridTable td, table.greyGridTable th {
+    border: 1px solid #000;
+    padding: 3px 4px;
+}
+
+table.greyGridTable tbody td {
+    font-size: 13px;
+}
+
+table.greyGridTable td:nth-child(even) {
+    background: #ffffff;
+}
+
+table.greyGridTable thead {
+    background: #FFFFFF;
+    border-bottom: 2px solid #333333;
+}
+
+    table.greyGridTable thead th {
+        font-size: 12px;
+        font-weight: bold;
+        color: #333333;
+        text-align: center;
+        border-left: 2px solid #ffffff;
+        background: #EBEBEB;
+    }
+
+table.greyGridTable thead th {
+    border : none;
+   
+}
+
+    table.greyGridTable tfoot {
+        font-size: 14px;
+        font-weight: bold;
+        color: #FFFFFF;
+        border-top: 4px solid #FFFFFF;
+    }
+
+table.greyGridTable tfoot td {
+    font-size: 14px;
+}
+table.space {
+    border-collapse: separate;
+    border-spacing: 10px 5px;
+}
+
+
+
+
+
+
+
+

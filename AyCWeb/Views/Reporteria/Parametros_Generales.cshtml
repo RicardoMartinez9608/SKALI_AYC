@@ -1,0 +1,58 @@
+﻿
+@{
+    ViewData["Title"] = "Parámetros Generales";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Parámetros para ejecutar generales</div>
+    <div class="panel-body panel-body-personalizado">
+        <form action="@Url.Action("Generales_Credito","Reporteria")" method="get" target="_blank">
+            <!--enviar el nombre de la agencia-->
+            <input type="hidden" name="Nombre_Agencia" id="Nombre_Agencia"/>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        Agencia:
+                        <div id="id_agencia_combo" class="form-group"></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        Fecha Inicio:
+                        <input type="date" name="inicio" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        Fecha Final:
+                        <input type="date" name="final" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input type="submit" class="form-control btn btn-primary" value="Cargar" id="CargarGrid" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia_combo").html(agencias);
+            Obtener_Nombre_Agencia();
+        });
+
+        function Obtener_Nombre_Agencia() {
+            $("#Id_Agencia").change(function () {
+                var nombre_agencia = $("#Id_Agencia").find('option:selected').text();
+                $("#Nombre_Agencia").val(nombre_agencia);
+            });
+        }
+
+    });
+</script>

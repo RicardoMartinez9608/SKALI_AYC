@@ -1,0 +1,21 @@
+﻿@model IEnumerable<ModelNucleo.Model.Categoria_Acceso_Directo>
+
+<ol>
+    @foreach (var item in Model) 
+    {
+    <li>
+        <input type="hidden" value="@item.Id_Categoria_Acceso_Directo" class="id_categoria" />
+        <h5>@item.Nombre_Categoria <a href="#" class="eliminar_categoria">Eliminar</a></h5>
+        <ul>
+            @foreach (var contenido in item.Acceso_Directos)
+            {
+                <li>
+                    <input type="hidden" value="@contenido.Id_Acceso_Directo" class="id_acceso_directo" />
+                    @contenido.Nombre
+                    <a href="#" class="eliminar_atajo">Eliminar</a>
+                </li>
+            }
+        </ul>
+    </li>
+    }
+</ol>

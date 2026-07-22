@@ -1,0 +1,136 @@
+﻿@model ModelNucleo.Model.ModelView.FechasFiltro
+
+@{
+    ViewData["Title"] = "Filtro_Credito_Colocado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .inline-buttons {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Espaciado entre los botones */
+    }
+</style>
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        Reporte de Créditos Colocados
+    </div>
+    <div class="panel-body panel-body-personalizado">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Creditos_Colocados" method="get" target="_blank">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="inicio" class="control-label"></label>
+                        <input asp-for="inicio" class="form-control" />
+                        <span asp-validation-for="inicio" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="final" class="control-label"></label>
+                        <input asp-for="final" class="form-control" />
+                        <span asp-validation-for="final" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label  class="control-label">Agencia</label>
+                        @Html.DropDownList("Id_Agencia", null, htmlAttributes: new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group">
+                        <label  class="control-label">Comportamiento</label>
+                        @Html.DropDownList("Id_Comportamiento_Credito", null, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                    <div class="form-group inline-buttons">
+                        <input type="submit" value="Filtrar" class="btn btn-default" />
+                        <a href="#modal_detalle" id="mostrar_filtro_liquidez" class="list-group-item" data-backdrop="false" data-toggle="modal">Facturar Refinanciamientos</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="modal fade" id="modal_detalle">
+    <div class="modal-dialog" style="width:50%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="btn-group pull-right" role="group" aria-label="...">
+                    <button class="btn btn-danger" data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span> Cerrar
+                    </button>
+                </div>
+                <h4 class="modal-title" id="titulo_disposicion"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="detalle"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+   
+        Mostrar_Filtro_Facturacion();
+    });
+    /*Mostrar la liquidez*/
+    function Mostrar_Filtro_Facturacion() {
+        $("#mostrar_filtro_liquidez").click(function (e) {
+     
+            e.preventDefault();
+            $.ajax({
+                url: "@Url.Action("MostrarRefinanciamientoFacturar", "Credito")",
+                data: {
+                    inicio: $("input[name='inicio']").val(),
+                    final: $("input[name='final']").val(),
+                    Id_Agencia: $("#Id_Agencia").val(),
+                    Id_Comportamiento_Credito: $("#Id_Comportamiento_Credito").val()
+                },
+                success: function (response) {
+                    $("div.detalle").html(response);
+                    $("#titulo_disposicion").text("Facturar Refinanciamientos");
+                    $("#modal_detalle").modal("show");
+                },
+                error: function () {
+                    alert("Error al cargar los datos.");
+                }
+            });
+        });
+    }
+    $(document).on("click", "#btnFacturar", function () {
+        // Obtener los valores de los totales
+        var totalGravados = parseFloat($("#totalGravados").text());
+        var totalExcentos = parseFloat($("#totalExcentos").text());
+        var idAgencia = $("#Id_Agencia").val();
+
+        // Validar si no son números o si ambos son cero
+        if (isNaN(totalGravados) || isNaN(totalExcentos) || isNaN(idAgencia)) {
+            alertify.error("Faltan datos para facturar.");
+            return;
+        }
+
+        if (totalGravados === 0 && totalExcentos === 0) {
+            alertify.error("No se puede facturar valores 0.00");
+            return;
+        }
+        document.getElementById("customBlockUI").style.display = "block";
+        // Enviar la solicitud AJAX
+        $.ajax({
+            url: "@Url.Action("Ejecutar_facturaRefinanciamientos", "Credito")",
+            type: "POST",
+            data: {
+                totalGravados: totalGravados,
+                totalExcentos: totalExcentos,
+                IdAgencia: idAgencia
+            },
+            success: function (response) {
+                document.getElementById("customBlockUI").style.display = "none";
+                alertify.success(response);
+            },
+            error: function () {
+                document.getElementById("customBlockUI").style.display = "none";
+                alertify.error("Ocurrió un error al generar el DTE.");
+            }
+        });
+    });
+</script>

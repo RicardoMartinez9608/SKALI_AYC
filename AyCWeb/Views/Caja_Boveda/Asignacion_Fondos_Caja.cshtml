@@ -1,0 +1,212 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Detalle_Efectivo_Vista>
+
+    @{
+        ViewData["Title"] = "Asignacion_Fondos_Caja";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    <p></p>
+    <div class="panel panel-default">
+        <div class="panel-heading panel-heading-personalizado">Asignación de Fondos a Caja</div>
+        <div class="panel-body">
+            <div id="mensaje"></div>
+
+            <div class="form-group">
+                <label for="Id_Caja">Cajas</label>
+                <div id="id_caja"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="Monto">Monto a Asignar</label>
+                <input id="Monto" name="Monto" class="form-control" />
+            </div>
+
+        </div>
+
+
+        <hr />
+
+        <div class="row prueba">
+            <div class="col-md-6">
+                <div class="well">
+                    Billetes
+                </div>
+                <table class="table table-striped">
+                    <tr>
+                        <th></th>
+                        <th>Cantidad</th>
+                        <th></th>
+                        <th>Valor</th>
+                    </tr>
+                    @foreach (var item in Model.Where(c => c.Denominacion.tipo == "Billete"))
+                    {
+                        <tr>
+                            <th scope="col" style="height: 50px; text-align: right">
+                                @item.Denominacion.denominacion.ToString("C")
+                            </th>
+                            <td style="width: 225px">
+                                <input type="hidden" class="denominacion" name="denominacion[]" value="@item.Denominacion.Id_denominacion" />
+                                <input type="hidden" class="valor_denominiacion" value="@item.Denominacion.denominacion" />
+                                <input id="Billete_Cantidad_@item.Denominacion.denominacion" name="cantidad[]" class="form-control cantidad" style="border-radius: 5px; border: 1px solid black" />
+                            </td>
+                            <th style="text-align: center">
+                                -
+                            </th>
+                            <td style="width: 225px">
+                                <span id="Billete_Valor_@item.Denominacion.denominacion" class="form-control valor" style="border-radius: 5px; border: 1px solid black"></span>
+
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+
+            <div class="col-md-6">
+                <div class="well">
+                    Monedas
+                </div>
+                <table class="table table-striped">
+                    <tr>
+                        <th></th>
+                        <th>Cantidad</th>
+                        <th></th>
+                        <th>Valor</th>
+                    </tr>
+                    @foreach (var item in Model.Where(c => c.Denominacion.tipo == "Moneda"))
+                    {
+                        <tr>
+                            <td style="text-align: right">
+                                @item.Denominacion.denominacion.ToString("C")
+                            </td>
+                            <td style="width: 225px">
+                                <input type="hidden" class="denominacion" name="denominacion[]" value="@item.Denominacion.Id_denominacion" />
+                                <input type="hidden" class="valor_denominiacion" value="@item.Denominacion.denominacion" />
+                                <input id="Moneda_Cantidad_@item.Denominacion.denominacion" name="cantidad[]" class="form-control cantidad" style="border-radius: 5px; border: 1px solid black" />
+                            </td>
+                            <td style="text-align: center">
+                                -
+                            </td>
+                            <td style="width: 225px">
+                                <span id="Moneda_Valor_@item.Denominacion.denominacion" class="form-control valor" style="border-radius: 5px; border: 1px solid black"></span>
+
+                            </td>
+                        </tr>
+                    }
+
+                    <tr>
+                        <td style="text-align: right">
+                        </td>
+                        <td style="width: 225px">
+                            Total En Efectivo
+                        </td>
+                        <td style="text-align: center">
+                            -
+                        </td>
+                        <td style="width: 225px">
+                            <span id="efectivo_total" class="form-control" style="border-radius: 5px; border: 1px solid black"></span>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <div class="form-group">
+                                <input type="button" id="Aplicar" class="btn btn-default" value="Aplicar" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+    <script>
+    $(function () {
+        Cargar_Cajas();
+        CalcularDenominacion();
+
+    });
+
+    function CalcularDenominacion() {
+        $("input.cantidad").each(function(index) {
+            $("input.cantidad").eq(index).keyup(function () {
+                var cantidad = Number($("input.cantidad").eq(index).val());
+                var denominacion = Number($("input.valor_denominiacion").eq(index).val());
+                var valor = cantidad * denominacion;
+                $("span.valor").eq(index).text(valor.toFixed(2));
+                TotalEfectivo();
+            });
+        });
+    }
+        function Calcular() {
+            var denominaciones = [];
+            $("input.cantidad").each(function (index) {
+                var cantidad = Number($("input.cantidad").eq(index).val());
+                var denominacion = Number($("input.valor_denominiacion").eq(index).val());
+                var valor = cantidad * denominacion;
+                var id = Number($("input.denominacion").eq(index).val());
+                denominaciones.push({ "Valor":valor, "Cantidad":cantidad,"Id_Denominacion": id, "Denominacion":denominacion });
+            });
+            var json_denominaciones = JSON.stringify(denominaciones);
+            console.log(denominaciones);
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ReporteAsignacionFondos", "Caja_Boveda")",
+                data: {ids: json_denominaciones}
+                 });
+        }
+    function TotalEfectivo() {
+        var total = 0;
+        $("span.valor").each(function(index) {
+            var valor = Number($("span.valor").eq(index).text());
+            total += valor;
+        });
+        $("#efectivo_total").text(total.toFixed(2));
+    }
+    function Cargar_Agencias() {
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia").html(agencias);
+            Cargar_Cajas();
+        });
+    }
+
+    function Cargar_Cajas() {
+
+            $.get("@Url.Action("Cajas_Combo_Agencia", "Caja_Boveda")",function (agencias) {
+                $("#id_caja").html(agencias);
+                Executar_Caja();
+            });
+
+    }
+
+    function Executar_Caja() {
+        $("#Aplicar").click(function () {
+            var cantidad_insertada = $("#Monto").val();
+            var cantidad_procesada = document.getElementById("efectivo_total").innerText;
+         //   var cantidad_redondeada = cantidad_insertada.toFixed(2);
+            if (cantidad_insertada != cantidad_procesada) {
+                alertify.error("Error los fondos a asignar no cuadran")
+            } else {
+                  var id_caja = $("#Id_Caja").val();
+                  var asignar = true;
+                  var monto = $("#Monto").val();
+                $.post("@Url.Action("Transaccion_Boveda_Caja","Caja")",
+                    { Id_Caja: id_caja, Asignar: asignar, Monto: monto },
+                    function (respuesta) {
+                        Calcular();
+                        alertify.success(respuesta);
+                        window.open("@Url.Action("ReporteAsignacionFondos", "Caja_Boveda")");
+                    });
+                }
+            });
+    }
+
+
+
+    function Mensaje(respuesta) {
+        $("#mensaje").html("");
+        $("#mensaje").html(respuesta);
+    }
+
+    </script>

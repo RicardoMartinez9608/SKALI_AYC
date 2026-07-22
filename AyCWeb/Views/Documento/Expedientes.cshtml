@@ -1,0 +1,195 @@
+﻿@model ModelNucleo.Model.ModelView.Expediente
+@using DevExtreme.AspNet.Mvc
+@{
+    ViewData["Title"] = "Expedientes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        Expedientes
+    </div>
+    <div class="panel-body panel-body-personalizado">
+        <form action="@Url.Action("Expedientes","Documento")" method="get">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+
+                        <input type="text" name="dui" class="form-control" placeholder="Buscar por DUI">
+                        <span class="input-group-btn">
+                            <input type="submit" class="btn btn-default" value="Buscar" />
+                        </span>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    @if (Model.Socio != null)
+    {
+        <p>
+            <dl class="dl-horizontal">
+                <dt>
+                    Nombre de socio
+                </dt>
+                <dd>
+                    @Model.Socio.NombreCompleto
+                </dd>
+                <dt>
+                    DUI
+                </dt>
+                <dd>
+                    @Model.Socio.Dui
+                </dd>
+                <dt>
+                    NIT
+                </dt>
+                <dd>
+                    @Model.Socio.Nit
+                </dd>
+            </dl>
+        </p>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                    </th>
+                    <th>
+                        Descripción
+                    </th>
+                    <th>
+                        Fecha
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Documentos_Clasificados)
+                {
+                    <tr>
+                        <td>
+                            @if (item.Agregado)
+                            {
+                                <span class="glyphicon glyphicon-ok-circle" style="color: green;"></span>
+                            }
+                            else
+                            {
+                                <span class="glyphicon glyphicon-remove-circle" style="color: red;"></span>
+                            }
+                        </td>
+                        <th>@item.Descripcion</th>
+                        <td>@item.Fecha</td>
+                        <td>
+
+                            @if (item.Agregado)
+                            {
+                                <input type="hidden" class="valor_id_documento" value="@item.Id_Documento" />
+                                <input type="hidden" class="contenido_img" value="@item.Archivo_Base64" />
+                                <input type="hidden" class="contenido_pdf" value="@item.Es_PDF" />
+                                <a href="#" class="for_doc_persona">Mostrar documento</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div id="archivoPop" style="display:none">
+            <div class="contenido_imagen"></div>
+            
+        </div>
+
+        @section Scripts{
+            <script>
+                $(function () {
+
+                    $.get("@Url.Action("Descripciones_Documento","Componentes")",
+                    { id_descripcion_documento_seleccionado:@ViewBag.Id_Descripcion_Documento},
+                    function (componente) {
+                        $("div.descripcion_documento").html(componente);
+                        CargarDescripcion();
+                    });
+
+                    DataGridPreparada();
+                });
+
+                function CargarDescripcion() {
+                    $("select.Id_Descripcion_Documento").on("change",function () {
+                    
+                            var Id_Descripcion_Documento = $(this).val();
+                           location.href = "@Url.Action("Expedientes","Documento")?dui=@Model.Socio.Dui&id_descripcion_documento=" + Id_Descripcion_Documento;
+                        });
+                }
+
+                function DataGridPreparada() {
+                    $("a.for_doc_persona").each(function (index) {
+                        $(this).click(function () {
+                            var id_documento = $("input.valor_id_documento").eq(index).val();
+                            var contenido_img = $("input.contenido_img").eq(index).val();
+                            var contenido_pdf = $("input.contenido_pdf").eq(index).val();
+                            /*si es pdf se verifica*/
+                            if (Boolean(contenido_pdf)) {
+                                location.href = "@Url.Action("Detalle", "Documento")?id_documento=" + id_documento;
+                            }
+
+                            $("#archivoPop").dxPopup({
+                                title: "Documento",
+                                height: 700
+                            });
+                            $("#archivoPop").dxPopup("toggle", true);
+
+                            $("div.contenido_imagen").html("<img style='margin:0 auto;display: block;' alt='Embedded Image' class='img_shown' height='600px' src='data:image/png;base64," + contenido_img + "'/>");
+                        });
+                     });
+                }
+            </script>
+        }
+
+    }
+    else
+    {
+        <div class="panel panel-info">
+            <div class="panel-heading">Información</div>
+            <div class="panel-body">
+                Escriba un DUI existente para que aparezca los archivos recolectados.
+            </div>
+        </div>
+    }
+</div>
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Subir nuevo documento</div>
+    <div class="panel-body panel-body-personalizado">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    Descripción:
+                    <div class="descripcion_documento"></div>
+                </div>
+                <div class="form-group">
+                    @if (Model.Socio != null)
+                    {
+                        @(Html.DevExtreme().FileUploader()
+                                    .ID("File_Uploader")
+                                    .Name("Documento")
+                                    .Multiple(false)
+                                    .Accept("*")
+                                    .UploadMode(FileUploadMode.Instantly)
+                                    .UploadButtonText("Subir archivo")
+                                    .SelectButtonText("Subir archivo")
+                                    .LabelText("Soltar archivo")
+                                    .UploadUrl(Url.Action("Nuevo", "Documento",
+                                        new
+                                        {
+                                            id_persona = Model.Socio.Id_Persona,
+                                            id_descripcion_documento = ViewBag.Id_Descripcion_Documento
+                                        })))
+                    }
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>

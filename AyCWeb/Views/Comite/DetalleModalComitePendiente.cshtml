@@ -1,0 +1,263 @@
+﻿@model ModelNucleo.Model.ModelView.DetalleComite
+<p></p>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <ul id="myTabs" class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#cliente" data-toggle="tab" aria-controls="cliente">Información Cliente</a>
+            </li>
+            <li role="presentation">
+                <a href="#credito"  data-toggle="tab" aria-controls="credito">Crédito</a>
+            </li>
+           @* <li role="presentation">
+                <a href="#comite"  data-toggle="tab" aria-controls="comite">Comité</a>
+            </li>*@
+            <li role="presentation">
+                <a href="#aprobacion"  data-toggle="tab" aria-controls="aprobacion" >Aprobación</a>
+            </li>
+        </ul>
+    </div>
+    <div class="panel-body" >
+        <div id="tab_contenido_linea" class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="cliente" aria-labelledBy="cliente-tab">
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Cliente.Nombres" class="control-label">Nombres</label>
+                            <input asp-for="Cliente.Nombres" class="form-control" readonly />
+                            <span asp-validation-for="Cliente.Nombres" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Cliente.Apellidos" class="control-label">Apellidos</label>
+                            <input asp-for="Cliente.Apellidos" class="form-control" readonly />
+                            <span asp-validation-for="Cliente.Apellidos" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Cliente.Dui" class="control-label">DUI</label>
+                            <input asp-for="Cliente.Dui" class="form-control" readonly />
+                            <span asp-validation-for="Cliente.Dui" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Cliente.Domicilio" class="control-label">Domicilio</label>
+                            <input asp-for="Cliente.Domicilio" class="form-control" readonly />
+                            <span asp-validation-for="Cliente.Domicilio" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Cliente.FechaNacimiento" class="control-label">Fecha de Nacimiento</label>
+                            <input asp-for="Cliente.FechaNacimiento" class="form-control" readonly />
+                            <span asp-validation-for="Cliente.FechaNacimiento" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Cliente.EstadoFamiliar" class="control-label">Estado Familiar</label>
+                            <input asp-for="Cliente.EstadoFamiliar" class="form-control" readonly />
+                            <span asp-validation-for="Cliente.EstadoFamiliar" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Cliente.Ocupacion" class="control-label">Ocupacion</label>
+                            <input asp-for="Cliente.Ocupacion" class="form-control" readonly />
+                            <span asp-validation-for="Cliente.Ocupacion" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Cliente.Profesion" class="control-label">Profesion</label>
+                            <input asp-for="Cliente.Profesion" class="form-control" readonly />
+                            <span asp-validation-for="Cliente.Profesion" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Cliente.Cartera.Colector" class="control-label">Colector</label>
+                            <input asp-for="Cliente.Cartera.Colector" class="form-control" readonly />
+                            <span asp-validation-for="Cliente.Cartera.Colector" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+              
+            </div>
+           
+                <div role="tabpanel" class="tab-pane" id="aprobacion" aria-labelledBy="aprobacion-tab">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input type="hidden" asp-for="ComiteActivo.Id_Comite" />
+
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input asp-for="ComiteActivo.Aprobado" /> @Html.DisplayNameFor(model => model.ComiteActivo.Aprobado)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ComiteActivo.Comentario" class="control-label"></label>
+                                <textarea asp-for="ComiteActivo.Comentario" class="form-control"></textarea>
+                                <span asp-validation-for="ComiteActivo.Comentario" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Guardar" class="btn btn-default actualizarComite" />
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Enviar a Comité Ampliado" class="btn btn-default CrearAmpliado" />
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        $(".actualizarComite").click(function (event) {
+                            event.preventDefault();
+                            var id_comite = $("#ComiteActivo_Id_Comite").val();
+                            var aprobado = $("#ComiteActivo_Aprobado").is(":checked");
+                            var comentario = $("#ComiteActivo_Comentario").val();
+                            $.post("@Url.Action("AprobacionComite", "Comite")",
+                                {
+                                    id_comite: id_comite,
+                                    aprobado: aprobado,
+                                    comentario: comentario
+                                },
+                                function (resultado) {
+                                    alertify.success(resultado);
+                                    window.location.href = "@Url.Action("ComitesPendientes", "Comite")?verificado=" + false;
+                                }).fail(function (error) {
+                                    alertify.error(error.responseText);
+                                });
+                            
+                        });
+                        $(".CrearAmpliado").click(function (event) {
+                            event.preventDefault();
+                            var id_credito = $("#idcredito").val();
+                            $.post("@Url.Action("CrearComiteAmpliado", "Comite")",
+                                {
+                                    id_credito: id_credito
+                                },
+                                function (resultado) {
+                                    alertify.success("Crédito Sometido a Comite Ampliado");
+                                  
+                                }).fail(function (error) {
+                                    alertify.error(error.responseText);
+                                });
+                        });
+                    </script>
+                </div>
+
+                <div role="tabpanel" class="tab-pane fade" id="credito" aria-labelledBy="credito-tab">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Credito.Codigo_Credito" class="control-label">Código Crédito</label>
+                            <input asp-for="Credito.Codigo_Credito" class="form-control" readonly />
+                            <span asp-validation-for="Credito.Codigo_Credito" class="text-danger"></span>
+                              <input type="hidden" asp-for="Credito.Id_Credito" id="idcredito" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Credito.Interes" class="control-label">Interes</label>
+                            <input asp-for="Credito.Interes" class="form-control" readonly />
+                            <span asp-validation-for="Credito.Interes" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Credito.Monto_pago" class="control-label">Monto</label>
+                            <input asp-for="Credito.Monto_pago" class="form-control" readonly />
+                            <span asp-validation-for="Credito.Monto_pago" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Credito.Periodo.Descripcion" class="control-label">Periodo</label>
+                            <input asp-for="Credito.Periodo.Descripcion" class="form-control" readonly />
+                            <span asp-validation-for="Credito.Periodo.Descripcion" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Credito.Plazo" class="control-label">Plazo</label>
+                            <input asp-for="Credito.Plazo" class="form-control" readonly />
+                            <span asp-validation-for="Credito.Plazo" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Credito.Numero_cuotas" class="control-label">Número de Cuotas</label>
+                            <input asp-for="Credito.Numero_cuotas" class="form-control" readonly />
+                            <span asp-validation-for="Credito.Numero_cuotas" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="Credito.Linea_Credito_Historial.Descripcion_linea" class="control-label">Linea de Crédito</label>
+                            <input asp-for="Credito.Linea_Credito_Historial.Descripcion_linea" class="form-control" readonly />
+                            <span asp-validation-for="Credito.Linea_Credito_Historial.Descripcion_linea" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                  
+                </div>
+                   
+                </div>
+               @* <div role="tabpanel" class="tab-pane fade" id="comite" aria-labelledBy="comite-tab">
+                    <div class="list-group">
+                        @foreach (var item in Model.Comites)
+                        {
+                            <p class="list-group-item">
+                                Usuario: @item.Id_Usuario <br />
+                                @item.Fecha_Verificado<br />
+                                @item.Comentario
+                                @if (item.Verificado)
+                                {
+                                    @if (item.Aprobado)
+                                    {
+                                        @string.Format("Aprobado")
+                                    }
+                                    else
+                                    {
+                                        @string.Format("Desaprobado")
+                                    }
+                                }
+                                else
+                                {
+                                    @string.Format("Sin verificar")
+                                }
+                            </p>
+                        }
+
+                    </div>
+                </div>*@
+         
+    </div>
+    
+    </div>
+</div>

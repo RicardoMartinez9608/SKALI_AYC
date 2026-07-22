@@ -1,0 +1,1055 @@
+﻿@using DevExtreme.AspNet.Mvc
+@using DocumentFormat.OpenXml.Wordprocessing
+@using ModelNucleo.Model
+@{
+    ViewData["Title"] = "Clientes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string baseUrl = Html.ViewContext.HttpContext.Request.PathBase.Value.ToString();
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Perfiles</h4>
+            </div>
+            <div class="col-lg-6 text-right">
+                <a href="#modal_detalle" data-toggle="modal" class="btn btn-default nuevo_perfil">
+                    <span class="glyphicon glyphicon-plus"></span> Nuevo perfil
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body panel-body-personalizado">
+        @(Html.DevExtreme().DataGrid().ID("ListaPersona")
+                        .ShowBorders(false).HoverStateEnabled(true)
+                        .DataSource(w => w.Mvc()
+                        .Controller("Persona")
+                        .Key("Id_Persona")
+                        .LoadAction("Personas"))
+                            .SearchPanel(
+                                con => con
+                                    .Placeholder("Búsqueda")
+                                    .Width(500)
+                                    .Text(ViewBag.DUI)
+                                    .Visible(true))
+                        .Columns(
+                            columns =>
+                            {
+                                columns.Add().DataField("Id_Persona").DataType(GridColumnDataType.Number).VisibleIndex(0).Visible(false);
+                                columns.Add().DataField("Id_Cartera").VisibleIndex(1).Visible(false);
+
+                                columns.Add().Fixed(true).DataField("Nombres").VisibleIndex(2);
+                                columns.Add().Fixed(true).DataField("Apellidos").VisibleIndex(3);
+
+                                columns.Add().Fixed(true).DataField("Dui").VisibleIndex(4);
+
+                                columns.Add().Fixed(true).DataField("Estado_Socio").VisibleIndex(5).Lookup(d => d.DataSource(Html.GetEnumSelectList<Estado_Socio>()
+                                .Select(i => new { Value = int.Parse(i.Value), Text = i.Text })).ValueExpr("Value").DisplayExpr("Text"));
+
+                                columns.Add().Fixed(true).VisibleIndex(6).CellTemplate(@<text>
+                                    <input type="hidden" class="identificacionPersona" value="<%=data.Id_Persona%>" />
+                                    <input type="hidden" class="NombreyApellidoParaPopUp" value="<%=data.Nombres%> <%=data.Apellidos%>" />
+
+                                    <div class="btn-group" role="group" aria-label="...">
+                                        <a href="#modal_detalle" class="ver_detalle btn btn-default" data-backdrop="false" data-toggle="modal" title="Ficha">
+                                            <span class="glyphicon glyphicon-edit"></span>
+                                        </a>
+                                        <a class="btn btn-default" href="@Url.Action("Index","Evaluacion_Tecnica")?id_persona=<%=data.Id_Persona%>&nombre_completo=<%=data.Nombres%> <%=data.Apellidos%>" title="Evaluaciones técnicas" target="_blank">
+                                            <span class="glyphicon glyphicon-fire"></span>
+                                        </a>
+                                        <a class="btn btn-default" href="@Url.Action("Expedientes","Documento")?dui=<%=data.Dui%>" target="_blank" title="Documentos escaneados">
+                                            <span class="glyphicon glyphicon-picture"></span>
+                                        </a>
+                                        @*<a class="btn btn-default" href="@Url.Action("Relaciones","Persona")?id_persona=<%=data.Id_Persona%>&nombre_completo=<%=data.Nombres%> <%=data.Apellidos%>" target="_blank" title="Relaciones">
+                                            <span class="glyphicon glyphicon-registration-mark"></span>
+                                        </a>*@
+                                    </div>
+
+                                </text>);
+                                columns.Add().Fixed(true).DataField("NombreCompleto").Visible(false).VisibleIndex(7);
+                            }).OnContentReady("DataGridPreparada")
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        .RemoteOperations(true).OnContentReady("DataGridPreparada")
+        )
+
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" id="modal_detalle">
+    <div class="modal-dialog" style="width:80%">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div class="btn-group pull-right" role="group" aria-label="...">
+
+                    <button class="btn btn-default" id="Guardar_Perfil_Principal" aria-hidden="true">
+                        <span class="glyphicon glyphicon-floppy-disk"></span> Guardar
+                    </button>
+
+                    <button class="btn btn-default" id="Generar_Usuario" aria-hidden="true">
+                        <span class="glyphicon glyphicon-user"></span> Generar Usuario
+                    </button>
+                    <button class="btn btn-default" id="Generar_Usuario_existente" aria-hidden="true">
+                        <span class="glyphicon glyphicon-user"></span> Cambiar Contraseña Usuario
+                    </button>
+                    <div class="btn-group" role="group" id="cargar_impresiones">
+
+                    </div>
+
+                    <button class="btn btn-danger " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span> Cerrar
+                    </button>
+                </div>
+               
+                <h4 class="modal-title" id="titulo_socio">Solicitud</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="detalle_perfil"></div>
+
+            </div> 
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="Mantenimiento">
+    <div class="modal-dialog" style="width:80%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title" id="titulo_sub_modal">Mantenimiento</h4>
+            </div>
+            <div class="modal-body Cargar_Mantenimiento">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="Mantenimiento_Adicional">
+    <div class="modal-dialog" style="width:80%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title" id="titulo_sub_modal">Mantenimiento</h4>
+            </div>
+            <div class="modal-body Cargar_Mantenimiento_Adicional">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="~/css/ventanas.css" rel="stylesheet" />
+
+@if (ViewBag.Nuevo_Socio)
+{
+    <script>
+        $(function () {
+            $("#modal_detalle").modal('show');
+            Nuevo_Cliente_Form();
+        });
+    </script>
+}
+
+<script src="~/js/manejo/manejo_comun_credito.js"></script>
+<script>
+
+    $(document).on('show.bs.modal', '.modal', function (event) {
+        var zIndex = 1040 + (10 * $('.modal:visible').length);
+        $(this).css('z-index', zIndex);
+        //$(this).css('margin-top', "-20%");
+        setTimeout(function () {
+            $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+        }, 0);
+    });
+
+    function DataGridPreparada() {
+        Ver_Detalle();
+        /*nuevo perfil*/
+        Cargar_Formulario_Nuevo_Usuario();
+        constructor("@baseUrl");
+    }
+
+
+    function Cargar_Formulario_Nuevo_Usuario() {
+        $("a.nuevo_perfil").click(function () {
+            Refrescar_Modales();
+            Nuevo_Cliente_Form();
+        });
+    }
+
+    function Nuevo_Cliente_Form() {
+        $.get("@Url.Action("Manejo_Persona", "Persona")", { esNuevo: true }, function (perfil) {
+            $("div.detalle_perfil").html(perfil);
+            Ocultar_Conjunto_Impresiones();
+            Init_Maestro_Detalle();
+        });
+    }
+
+    function MostrarEntidadesHijas() {
+        $("#accordion2").css("display","block");
+    }
+
+    function Init_Maestro_Detalle() {
+
+        ObtenerMapa();
+
+        Departamentos_Municipios();
+        ColocarMascara();
+        Verificar_Dui();
+
+        Encender_Datos_Empleado();
+        Encender_Datos_Comerciante();
+
+        Action_Encender_Empleado();
+        Action_Encender_Comerciante();
+
+        Guardar_Perfil_Principal();
+        Generar_Socio();
+        Generar_Socio_Existente();
+        Nueva_Referencia_Familiar_Form();
+        Nueva_Refencia_Amistad_Form();
+        Nueva_Refencia_Beneficiarios_Form();
+        Nueva_Referencia_Bancaria_Form();
+        Nueva_Accion_Form();
+        Cargar_Acciones();
+
+        Cargar_Referencias_Bancarias();
+        Cargar_Cuentas_Ahorro();
+        Cargar_Cuentas_Credito();
+        ListaReferencia($("#referencias_familiares_tablas"), 1);
+        ListaReferencia($("#referencias_amistad_tablas"), 2);
+        ListaReferencia($("#referencias_beneficiarios_tablas"), 1, true);
+
+        Verificar_Inputs_Conjunto();
+
+    }
+
+    function Mostrar_Conjunto_Impresiones() {
+        var html = $("#conjunto_impresiones").html();
+        $("#cargar_impresiones").html(html);
+        Cargar_Select_Estado_Persona();
+
+    }
+
+    function Ocultar_Conjunto_Impresiones() {
+        $("#cargar_impresiones").html("");
+        $("#titulo_socio").text("Nuevo Socio");
+    }
+
+
+    function Action_Encender_Empleado() {
+        $("#Es_Empleado").click(function () {
+            Encender_Datos_Empleado();
+        });
+    }
+
+    function Action_Encender_Comerciante() {
+        $("#Es_Comerciante").click(function () {
+            Encender_Datos_Comerciante();
+        });
+    }
+
+    function Encender_Datos_Empleado() {
+        if ($("#Es_Empleado").is(':checked')) {
+            $("#empleado").css("display", "block");
+        }
+        else {
+            $("#empleado").css("display", "none");
+        }
+    }
+
+    function Encender_Datos_Comerciante() {
+        if ($("#Es_Comerciante").is(':checked')) {
+            $("#comerciante").css("display", "block");
+        } else {
+            $("#comerciante").css("display", "none");
+        }
+    }
+
+    function Refrescar_Modales() {
+        $("#modal_detalle").on("hidden.bs.modal", function (e) {
+            $("div.detalle_perfil").html("");
+        });
+
+        $("#Mantenimiento").on("hidden.bs.modal", function (e) {
+            $("div.Cargar_Mantenimiento").html("");
+        });
+    }
+
+    function Ver_Detalle() {
+        $("a.ver_detalle").each(function (index) {
+            $("a.ver_detalle").eq(index).off().on("click", function () {
+             
+                id_persona = $("input.identificacionPersona").eq(index).val();
+                var nombre = $("input.NombreyApellidoParaPopUp").eq(index).val();
+                Refrescar_Modales();
+               
+                $.get("@Url.Action("Manejo_Persona", "Persona")", { id_persona: id_persona }, function (perfil) {
+                    $("div.detalle_perfil").html(perfil);
+                    $("#titulo_socio").text("Editar Socio " + nombre);
+                    socio();
+                    Init_Maestro_Detalle();
+                    Mostrar_Conjunto_Impresiones();
+                    MostrarEntidadesHijas();
+                });
+            });
+        });
+    }
+    function socio() {
+        var usuario = $(".usuario_socio").val();
+        if (usuario == "") {
+            $("#Generar_Usuario").show();
+            $("#Generar_Usuario_existente").hide();
+        } else {
+         
+            $("#Generar_Usuario").hide();
+            $("#Generar_Usuario_existente").show();
+        }
+    }
+    function Verificar_Dui() {
+        $("#Dui").keyup(function () {
+            if ($("#Dui").val().length == 10) {
+                var dui = $("#Dui").val();
+                $.get("@Url.Action("Persona_Existe", "Persona")",
+                { dui: dui },
+                function (resultado) {
+                    if (resultado=="true") {
+                        alertify.error("Ya existe un cliente con el mismo DUI");
+                    }
+                });
+            }
+        });
+    }
+
+    function ColocarMascara() {
+        $("#Dui").mask("00000000-0");
+        $("#Nit").mask("0000-000000-000-0");
+       /* $("#Domicilio").mask('ZZ', { translation: { 'Z': { pattern: /[áéíóúüàèa-zA-Z\s]/, recursive: true } } });*/
+    }
+
+    function Departamentos_Municipios() {
+        Municipios($("#Id_Departamento_Pais_Nacimiento"), $("#Id_Municipio_Departamento_Nacimiento"));
+        Municipios($("#Id_Departamento_Pais_Domicilio"), $("#Id_Municipio_Departamento_Domicilio"));
+        Municipios($("#Id_Departamento_Pais_Direccion_Negocio"), $("#Id_Municipio_Departamento_Direccion_Negocio"));
+        Municipios($("#Id_Departamento_Pais_Direccion_Trabajo"), $("#Id_Municipio_Departamento_Direccion_Trabajo"));
+    }
+
+    function Municipios($selector_origen, $selector_destino) {
+        $selector_origen.change(function () {
+            var id_departamento=$selector_origen.val();
+            $.get("@Url.Action("Municipios_Opciones", "Persona")",
+            { id_departamento: id_departamento },
+            function (options) {
+                $selector_destino.html(options);
+            });
+        });
+    }
+
+    function Modificar_Columna(e) {
+        if (e.rowType === "data" && e.column.command === "edit") {
+            $editLink = e.cellElement.find(".dx-link:contains(Edit)");
+            $editLink.text("Detalle");
+        }
+    }
+
+    function GuardaryCerrar(e) {
+        var grid = $("#ListaPersona").dxDataGrid("instance");
+        grid.saveEditData();
+    }
+
+
+/*manejo de persona*/
+    function Nueva_Referencia_Familiar_Form() {
+        $("#Nueva_Referencia_Familiar_Modal").click(function () {
+            Cargar_Model_Referencias($("#referencias_familiares_tablas"), 1);
+            $("#titulo_sub_modal").text("Nueva referencia familiar");
+            Encender_Datos_Estudiante_Empleado_Referencia();
+        });
+    }
+
+    function Cargar_Model_Referencias($selector_referencia,tipo,beneficiario=false) {
+        var id_persona = $("#Id_Persona").val();
+        $.get("@Url.Action("DetalleReferencia", "Persona")",
+        { id_referencia: 0, id_persona: id_persona, esNuevo: true,tipo:tipo,beneficiario:beneficiario },
+            function (html) {
+                $("div.Cargar_Mantenimiento").html(html);
+                Nueva_Referencia($selector_referencia, tipo, beneficiario);
+        });
+    }
+
+    function Nueva_Refencia_Amistad_Form() {
+        $("#Nueva_Referencia_Amistad_Modal").click(function () {
+            Cargar_Model_Referencias($("#referencias_amistad_tablas"), 2);
+            $("#titulo_sub_modal").text("Nueva referencia amistad");
+        });
+    }
+
+    function Nueva_Referencia($selector_referencia, tipo,beneficiario=false) {
+        $(".guardarReferencia").click(function () {
+            var id_persona = $("#Id_Persona").val();
+            var dataReferencia = $("#formReferenciaContent").serializeAnything();
+
+            $.post("@Url.Action("CrearReferencia", "Persona")?id_persona=" + id_persona, dataReferencia , function (respuesta) {
+                //var id_persona = $("#Id_Persona").val();
+                $("#Mantenimiento").modal("hide");
+                ListaReferencia($selector_referencia, tipo, beneficiario);
+                $("div.Cargar_Mantenimiento").html("");
+                alertify.success(respuesta);
+            }).fail(function (error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+
+    function Editar_Referencia($selector_referencia, tipo, beneficiario = false) {
+        $(".guardarReferencia").click(function () {
+            var id_persona = $("#Id_Persona").val();
+            var dataReferencia = $("#formReferenciaContent").serializeAnything();
+            $.post("@Url.Action("EditarReferencia", "Persona")?id_persona=" + id_persona, dataReferencia , function (resultado) {
+                //var id_persona = $("#Id_Persona").val();
+                $("#Mantenimiento").modal("hide");
+             //   ListaReferencia($selector_referencia, tipo, beneficiario);
+                $("div.Cargar_Mantenimiento").html("");
+                alertify.success(resultado);
+                ListaReferencia($("#referencias_beneficiarios_tablas"), 1, true);
+            }).fail(function (error) {
+                alertify.error(error.responseText);
+                });
+        });
+    }
+    function BorrarReferencia() {
+
+         $(".borrarReferencia").each(function (index) {
+             $(".borrarReferencia").eq(index).click(function () {
+                $.post("@Url.Action("EliminarReferencia","Persona")",
+                    { idreferencia: $("input.id_referencia").eq(index).val() },
+                    function (resultado) {
+                        ListaReferencia($("#referencias_beneficiarios_tablas"), 1, true);
+                        alertify.success(resultado);
+                    });
+            });
+        });
+    }
+    function Editar_Referencia_Form($selector_referencia, tipo, beneficiario) {
+        $selector_referencia.find("a.detalleReferencia").each(function (index) {
+            $selector_referencia.find("a.detalleReferencia").eq(index).click(function () {
+                var id_referencia = $selector_referencia.find("input.id_ReferenciaValor").eq(index).val();
+                var id_persona = $("#Id_Persona").val();
+                //$("#Mantenimiento").modal("show");
+                $.get(
+                "@Url.Action("DetalleReferencia", "Persona")",
+                {
+                    id_referencia: id_referencia,
+                    id_persona: id_persona,
+                    esNuevo: false,
+                    tipo: tipo,
+                    beneficiario: beneficiario
+                },
+                function (detalle_form) {
+                    $("div.Cargar_Mantenimiento").html(detalle_form);
+
+                    if(tipo==2)
+                        $("#titulo_sub_modal").text("Editar referencia amistad");
+                    if (tipo == 1)
+                        $("#titulo_sub_modal").text("Editar referencia familiar");
+                    if (beneficiario)
+                        $("#titulo_sub_modal").text("Editar beneficiario");
+                    Editar_Referencia($selector_referencia, tipo, beneficiario);
+                    BorrarReferencia();
+                    Encender_Datos_Estudiante_Empleado_Referencia();
+
+                    Cargar_Referencia_Adicional_Lista();
+                });
+            });
+        });
+    }
+
+    function ListaReferencia($selector_referencia,tipo,beneficiario=false) {
+        var id_persona = $("#Id_Persona").val();
+        $.get("@Url.Action("Referencias", "Persona")",
+        {
+            id_persona: id_persona,
+            tipo: tipo,
+            beneficiario: beneficiario
+            }, function (referencias) {
+
+                $selector_referencia.html(referencias);
+                VerificarListas($("[aria-controls='referencias_familiares']"), $("#referencias_familiares_tablas"));
+                VerificarListas($("[aria-controls='referencia_amistad']"), $("#referencias_amistad_tablas"));
+                VerificarListas($("[aria-controls='referencias_beneficiarios']"), $("#referencias_beneficiarios_tablas"));
+
+                /*otras listas agragadas*/
+                VerificarListas($("[aria-controls='referencias_bancarias']"), $("#referencias_bancaria_tablas"));
+                VerificarListas($("[aria-controls='acciones']"), $("#tabla_acciones"));
+                VerificarListas($("[aria-controls='cuenta_ahorro']"), $("#cuentas_ahorro_tablas"));
+                VerificarListas($("[aria-controls='creditos']"), $("#cuentas_credito_tablas"));
+            BorrarReferencia();
+            Editar_Referencia_Form($selector_referencia, tipo, beneficiario = false);
+        });
+    }
+
+    function VerificarListas($selector_verificado, $contenido_tabla) {
+        var cuenta_fila = $contenido_tabla.find("table tr").size();
+        if (cuenta_fila > 1)
+            Convertir_Verificado($selector_verificado);
+    }
+
+
+    function Convertir_Verificado($selector) {
+        $selector
+        .find("span.glyphicon")
+            .removeClass("glyphicon-menu-hamburger")
+        .addClass("glyphicon-ok-circle")
+        .css("color", "green");
+    }
+
+
+    function Guardar_Perfil_Principal() {
+        $("#Guardar_Perfil_Principal").off().on("click",function (e) {
+            e.preventDefault();
+            var id_persona_colocado = $("#Id_Persona").val();
+            if (id_persona_colocado > 0) {
+                $.post("@Url.Action("EditarPersona", "Persona")",
+                $("#perfil_principal").serialize(),
+                    function (resultado) {
+
+                    alertify.success(resultado);
+                    Verificar_Inputs_Conjunto();
+                }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+             } else {
+                    $.post("@Url.Action("CrearPersona", "Persona")",
+                        $("#perfil_principal").serialize(),
+                        function (id_persona) {
+                            /*pendiente que devuelva el id de la persona guardada*/
+                            $("#Id_Persona").val(id_persona);
+                            //alertify.message(id_persona);
+                            if (parseInt(id_persona) > 0) {
+                                alertify.success("El cliente se ha guardado correctamente");
+                                MostrarEntidadesHijas();
+                            }
+                            /*cambiamos los check*/
+                            Verificar_Inputs_Conjunto();
+                    }).fail(function (error) {
+                        alertify.error(error.responseText);
+                });
+            }
+        });
+    }
+    function Generar_Socio() {
+        $("#Generar_Usuario").off().on("click", function (e) {
+            var id_persona = $("#Id_Persona").val();
+            if (id_persona > 0) {
+                window.open("@Url.Action("Generar_Usuario_Socio","Persona")?id_persona=" + id_persona );
+            }
+        });
+    }
+    function Generar_Socio_Existente() {
+        $("#Generar_Usuario_existente").off().on("click", function (e) {
+            var id_persona = $("#Id_Persona").val();
+            if (id_persona > 0) {
+                window.open("@Url.Action("Generar_Usuario_Socio","Persona")?id_persona=" + id_persona );
+            }
+        });
+    }
+    function Verificar_Inputs_Conjunto() {
+        Verificar_Inputs($("[aria-controls='informacion_personal']"));
+        Verificar_Inputs($("[aria-controls='informacion_identificacion']"));
+        Verificar_Inputs($("[aria-controls='informacion_laboral_economica']"));
+
+        Verificar_Inputs($("[aria-controls='domicilios']"));
+        Verificar_Inputs($("[aria-controls='informacion_peps']"));
+        Verificar_Inputs($("[aria-controls='comentarios']"));
+    }
+
+    function Verificar_Inputs($selector) {
+        var $elementos = $selector.parent("h4")
+        .parent("div")
+        .parent("div")
+        .find("div.panel-body input");
+        var cuenta_input = $elementos.size();
+        var contando = 0;
+        $elementos.each(function () {
+            var valor = $(this).val().length;
+            if (valor > 0)
+            contando += 1;
+        });
+        if (contando == cuenta_input)
+            Convertir_Verificado($selector);
+    }
+
+    /*manejo de los beneficiarios para una cuenta de ahorro*/
+    function Nueva_Refencia_Beneficiarios_Form() {
+        $("#Nueva_Referencia_Beneficiario_Modal").click(function () {
+            Cargar_Model_Referencias($("#referencias_beneficiarios_tablas"), 1, true);
+            $("#titulo_sub_modal").text("Nuevo beneficiario");
+        });
+    }
+
+    /*manejo de referencia bancaria */
+    function Nueva_Referencia_Bancaria_Form() {
+        $("#Nueva_Referencia_Bancaria_Modal").click(function () {
+            var id_persona = $("#Id_Persona").val();
+            $.get("@Url.Action("Nueva_Referencia_Bancaria", "Persona")",
+            {   id_persona: id_persona },
+            function (html) {
+                $("div.Cargar_Mantenimiento").html(html);
+                $("#titulo_sub_modal").text("Nueva referencia bancaria");
+                /*el clic sobre boton nueva referencia*/
+                Nueva_Referencia_Bancaria();
+            });
+        });
+    }
+
+    function Editar_Referencia_Bancaria_Form() {
+        $("a.editar_referencia_bancaria").each(function (index) {
+            $("a.editar_referencia_bancaria").eq(index).click(function (e) {
+                //e.preventDefault();
+                var id_referencia_bancaria = $("input.id_referencia_bancaria").eq(index).val();
+                $.get("@Url.Action("Detalle_Referencia_Bancaria", "Persona")",
+                { id_referencia_bancaria: id_referencia_bancaria },
+                function (form) {
+                    $("#Mantenimiento").modal("show");
+                    $("div.Cargar_Mantenimiento").html(form);
+                    $("#titulo_sub_modal").text("Editar referencia bancaria");
+                    /*el clic sobre boton editar referencia*/
+                    Editar_Referencia_Bancaria();
+                });
+            });
+        });
+    }
+
+    function Editar_Referencia_Bancaria() {
+        $("#guardar_edicion_referencia_bancaria").click(function () {
+            var referencia = $("#FormRefenciaBancariaDetalle").serializeAnything();
+            var direccion = "@Url.Action("Editar_Referencia_Bancaria", "Persona")";
+            $.post(direccion, referencia,
+                function (resultado) {
+                $("#Mantenimiento").modal("hide");
+                alertify.success(resultado);
+                Cargar_Referencias_Bancarias();
+            });
+        });
+    }
+
+    function Nueva_Referencia_Bancaria() {
+        $("input.guardar_referencia_bancaria").click(function () {
+        $.post("@Url.Action("Nueva_Referencia_Bancaria", "Persona")",
+            $("#FormReferenciaBancaria").serializeAnything(),
+            function (resultado) {
+            /*manejo de resultado*/
+                alertify.success(resultado);
+                $("#Mantenimiento").modal("hide");
+                Cargar_Referencias_Bancarias();
+            });
+        });
+    }
+
+    function Cargar_Referencias_Bancarias() {
+        var id_persona = $("#Id_Persona").val();
+        $.get("@Url.Action("Referencias_Bancarias", "Persona")",
+        {id_persona:id_persona},
+        function (tabla) {
+            $("#referencias_bancaria_tablas").html(tabla);
+            Editar_Referencia_Bancaria_Form();
+        });
+    }
+
+    /*funciones para la lista de acciones */
+    function Nueva_Accion_Form() {
+        $("#Nueva_Accion_Modal").click(function () {
+            var id_persona = $("#Id_Persona").val();
+            $.get("@Url.Action("Detalle", "Accion")",
+            { id_persona: id_persona },
+            function (detalle) {
+                $("div.Cargar_Mantenimiento").html(detalle);
+                $("#titulo_sub_modal").text("Nueva acción");
+                Guardar_Nueva_Accion();
+            });
+        });
+    }
+
+    function Guardar_Nueva_Accion() {
+        $("#Guardar_Nueva_Accion").click(function () {
+            $.post("@Url.Action("Guardar", "Accion")",
+            $("#detalle_accion").serializeAnything(),
+            function (resultado) {
+                /*manejo de resultado*/
+                $("#Mantenimiento").modal("hide");
+                Cargar_Acciones();
+            });
+        });
+    }
+
+    function Cargar_Acciones() {
+        var id_persona = $("#Id_Persona").val();
+        $.get("@Url.Action("Acciones", "Accion")",
+        { id_persona: id_persona },
+        function (lista) {
+            $("#tabla_acciones").html(lista);
+        });
+    }
+
+    /*funciones para cuentas de ahorros*/
+    function Cargar_Cuentas_Ahorro() {
+        var id_persona = $("#Id_Persona").val();
+        $.get("@Url.Action("Ahorros_Manual", "Ahorro")",
+        { id_persona: id_persona },
+            function (tabla) {
+            $("#cuentas_ahorro_tablas").html(tabla);
+            /*ver las transacciones*/
+            Cargar_Transacciones_Ahorro();
+        });
+    }
+
+    function Cargar_Transacciones_Ahorro() {
+        $("a.ver_transacciones_ahorro").each(function (index) {
+            $("a.ver_transacciones_ahorro").eq(index).click(function () {
+                var id_ahorro = $("input.id_ahorro_valor").eq(index).val();
+                $.get("@Url.Action("Transacciones", "Ahorro")",
+                { id_ahorro: id_ahorro },
+                function (tabla) {
+                    $("div.Cargar_Mantenimiento").html(tabla);
+                    $("#Mantenimiento").modal("show");
+                });
+            });
+        });
+    }
+
+    /*funciones para las cuentas de credito*/
+    function Cargar_Cuentas_Credito() {
+        var id_persona = $("#Id_Persona").val();
+        $.get("@Url.Action("Creditos_Manual", "Credito")",
+        { id_persona: id_persona },
+        function (tabla) {
+            $("#cuentas_credito_tablas").html(tabla);
+            /*ver las transacciones*/
+            Cargar_Transacciones_Credito();
+            Detalle_Credito();
+            Detalle_Codeudores();
+        });
+    }
+
+    function Cargar_Transacciones_Credito() {
+        $("a.ver_transacciones_credito").each(function (index) {
+            $("a.ver_transacciones_credito").eq(index).click(function () {
+                var id_credito = $("input.id_credito_valor").eq(index).val();
+                $.get("@Url.Action("Transacciones_Efectuadas", "Credito")",
+                { id_credito: id_credito },
+                function (tabla) {
+                    $("div.Cargar_Mantenimiento").html(tabla);
+                    $("#Mantenimiento").modal("show");
+                });
+            });
+        });
+    }
+
+    /*codigo para saber a que se dedica una referencia familiar */
+    function Encender_Datos_Estudiante_Empleado_Referencia() {
+
+        $("#Esta_Estudiando").click(function () {
+            Toma_decision_Referencia();
+        });
+
+        $("#Esta_Trabajando").click(function () {
+            Toma_decision_Referencia();
+        });
+    }
+
+
+    function Toma_decision_Referencia() {
+        if ($("#Esta_Estudiando").is(":checked")) {
+            $("#contenido_estudiante").css("display", "block");
+            //$("#contenido_empleo").css("display", "none");
+            $("#Esta_Trabajando").checked = false;
+        } else {
+            $("#contenido_estudiante").css("display", "none");
+            //$("#contenido_empleo").css("display", "block");
+        }
+
+        if ($("#Esta_Trabajando").is(":checked")) {
+            $("#contenido_empleo").css("display", "block");
+            //$("#contenido_estudiante").css("display", "none");
+            $("#Esta_Estudiando").checked = false;
+        } else {
+            $("#contenido_empleo").css("display", "none");
+            //$("#contenido_estudiante").css("display", "block");
+        }
+    }
+
+
+    /*Referencia adicional manejando sobre*/
+    function Cargar_Referencia_Adicional_Lista() {
+        var id_referencia = $("#formReferenciaContent #Id_Referencia").val();
+        $.get("@Url.Action("ReferenciasAdicionales","Persona")",
+            {
+                id_referencia: id_referencia,
+                tipo: 1,
+                beneficiario: false
+            },
+            function (lista) {
+                $("#referencia_adicional_lista").html(lista);
+                Activar_Nueva_Referencia_Adicional();
+            });
+    }
+
+
+    function Activar_Nueva_Referencia_Adicional() {
+        $("#detalle_referencia_adicional_nueva").click(function () {
+            Detalle_Referencia_Adicional(true,0);
+        });
+
+        $("a.detalleReferencia_adicional").each(function (index) {
+            $("a.detalleReferencia_adicional").eq(index).click(function () {
+                id_referencia_adicional = $("input.id_ReferenciaAdicionalValor").eq(index).val();
+                Detalle_Referencia_Adicional(false,id_referencia_adicional);
+            });
+        });
+    }
+
+
+    function Detalle_Referencia_Adicional(esNuevo = false, id_referencia_adicional=0) {
+        var id_referencia = $("#formReferenciaContent #Id_Referencia").val();
+            $.get("@Url.Action("DetalleReferenciaAdicional","Persona")",
+                {
+                    id_referencia_adicional:id_referencia_adicional,
+                    id_referencia: id_referencia,
+                    esNuevo: esNuevo,
+                    tipo: 1,
+                    beneficiario: false
+                },
+                function (contenido) {
+                    $("div.Cargar_Mantenimiento_Adicional").html(contenido);
+                    Guardar_Referencia_Adicional(esNuevo);
+            });
+    }
+
+    function Guardar_Referencia_Adicional(esNuevo) {
+        $("button.guardarReferencia_adicional").click(function () {
+            var referencia_adicional = $("#formReferenciaAdicionalContent").serializeAnything();
+            var metodo = "";
+            if (esNuevo)
+                metodo = "@Url.Action("CrearReferenciaAdicional", "Persona")";
+            else
+                metodo = "@Url.Action("EditarReferenciaAdicional", "Persona")";
+
+            $.post(
+                metodo,
+                referencia_adicional,
+                function (resultado) {
+                    alertify.success("La referencia adicional ha sido guardado");
+                    Cargar_Referencia_Adicional_Lista();
+                }).fail(function (error) {
+                    alertify.error("No se pudo guardar esta referencia adicional");
+                });
+        });
+    }
+
+    /*para que se pueda cambiar el estado de socio*/
+    function Cargar_Select_Estado_Persona() {
+        $("a.mostrar_select_estado").click(function () {
+            var id_estado = $("#perfil_principal #Estado_Socio").val();
+            $.get("@Url.Action("Cambiar_Estado_Persona_Select", "Persona")", { estado_socio: id_estado }, function (form) {
+                $("div.Cargar_Mantenimiento").html(form);
+                Cambiar_EsTado_Socio();
+            });
+        });
+    }
+
+    function Cambiar_EsTado_Socio() {
+        $("#Cambiar_Estado_Socio").click(function () {
+            var id_persona = $("#perfil_principal #Id_Persona").val();
+            var estado = $("#Estado_Socio_Lista option:selected").val();
+            $.post("@Url.Action("Cambiar_Estado_Persona", "Persona")",
+                {
+                    id_persona: id_persona,
+                    estado: estado
+                }, function () {
+                    alertify.success("Se ha cambiado el estado de socio");
+                }).fail(function () {
+                    alertify.error("No se pudo cambiar el estado de socio o no tiene permisos");
+                });
+        });
+    }
+
+    /*manejo de crédito que se pueda tener uno nuevo*/
+    function Detalle_Credito() {
+        $("#Nueva_Cuenta_Credito_Modal").click(function () {
+            $.get("@Url.Action("Credito_Manejo", "Credito")", { esNuevo: true }, function (perfil) {
+                $("div.Cargar_Mantenimiento").html(perfil);
+                $("#titulo_sub_modal").text("Solicitud de crédito");
+                var id = $("#Id_Persona").val();
+                $("#form_credito #Id_Persona").val(id);
+                Eventos_Inicial();
+            });
+        });
+    }
+    
+    @*//manejo de codeudores
+    function Detalle_Codeudores() {
+        $("a.ver_codeudores").each(function (index) {
+            $("a.ver_codeudores").eq(index).click(function () {
+            $.get(
+                "@Url.Action("Nuevo_Codeudor", "Persona")",
+                function (form_relacion) {
+                    $("#titulo_sub_modal").text("Codeudores");
+                    $("div.Cargar_Mantenimiento").html(form_relacion);
+                    var id_persona = $("#perfil_principal #Id_Persona").val();
+                    $("#nueva_relacion_declarado #Id_Sujeto").val(id_persona);
+                    var id_credito = $("input.id_credito_valor").eq(index).val();
+                    $("#nueva_relacion_declarado #Id_Credito").val(id_credito);
+                    Guardar_Relacion();
+                    Cargar_Codeudores();
+                });
+            });
+        });
+    }
+
+    function Guardar_Relacion() {
+        $("#Guardar_Relacion_Principal").off().on("click",function () {
+            var relacion = $("#nueva_relacion_declarado").serializeAnything();
+            $.post("@Url.Action("Nueva_Relacion","Persona")", relacion, function (resultado) {
+                alertify.success("Se ha guardado la relación correctamente");
+                Cargar_Codeudores();
+            }).fail(function () {
+                alertify.error("No se pudo guardar la relación");
+            });
+        });
+    }
+
+    function Cargar_Codeudores() {
+        var id_persona = $("#nueva_relacion_declarado #Id_Sujeto").val();
+        var id_credito = $("#nueva_relacion_declarado #Id_Credito").val();
+        $.get("@Url.Action("Codeudores","Persona")",
+            {
+                id_persona: id_persona,
+                id_credito: id_credito
+            },
+            function (lista_codeudores) {
+                $("#lista_codeudores").html(lista_codeudores);
+                Activar_Codeudor();
+        });
+    }
+
+    function Activar_Codeudor() {
+        $("input.id_relacion_valor").each(function (index) {
+            $("a.activar_codeudor").eq(index).click(function () {
+                var id_relacion = $("input.id_relacion_valor").eq(index).val();
+                $.post("@Url.Action("Activar_Codeudor", "Persona")",
+                    { id_relacion: id_relacion },
+                    function (resultado) {
+                        alertify.success(resultado);
+                        Cargar_Codeudores();
+                    }).fail(function (resultado) {
+                        alertify.error(resultado.responseText);
+                });
+            });
+        });
+    }
+
+    function Obtener_Predicado(item) {
+        var id_persona = item.selectedItem.Id_Persona;
+        console.log(id_persona);
+        $("#nueva_relacion_declarado #Id_Predicado").val(id_persona);
+    }
+
+    function lookup_predicado(item) {
+        if (!item) {
+            return "";
+        }
+        return item.Nombres + " " + item.Apellidos + " " + item.Dui;
+    }*@
+
+</script>
+
+<script>
+
+    function Mapa() {
+        $("div.Cargar_Mantenimiento").html("");
+        $("div.Cargar_Mantenimiento").append("<div id='map' style='width: 714px; height: 400px;'></div>");
+    }
+
+    function ObtenerMapa() {
+        $("#mapa_coordenadas_domicilio").click(function () {
+            Mapa();
+            Cargar_Mapa($("#Latitud_Domicilio"), $("#Longitud_Domicilio"));
+        });
+        $("#mapa_coordenadas_direccion_trabajo").click(function () {
+            Mapa();
+            Cargar_Mapa($("#Latitud_Direccion_Trabajo"), $("#Longitud_Direccion_Trabajo"));
+        });
+        $("#mapa_coordenadas_direccion_negocio").click(function () {
+            Mapa();
+            Cargar_Mapa($("#Latitud_Direccion_Negocio"), $("#Longitud_Direccion_Negocio"));
+        });
+    }
+
+    function Cargar_Mapa($lat, $long) {
+        latitud_domicilio = $lat.val();
+        longitud_domicilio = $long.val();
+        var coordenadas = new Array();
+        if (latitud_domicilio.length > 0 && longitud_domicilio.length > 0) {
+            coordenadas = [latitud_domicilio, longitud_domicilio];
+        } else {
+            coordenadas = [13.979440968359626, -89.68839574121091];
+        }
+        var mymap = L.map('map', {
+            center: coordenadas,
+            minZoom: 2,
+            zoom: 13,
+            maxZoom: 18
+        });
+
+        setTimeout(function () { mymap.invalidateSize(true) }, 300);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            //maxZoom: 18,
+            attribution: 'Map data © <href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+            id: 'mapbox.streets',
+            format:"jpg70"
+        }).addTo(mymap);
+        //mymap.setView(coordenadas,12);
+        var marker = L.marker(coordenadas, { draggable: true });
+        marker.on('dragend', function (e) {
+            $lat.val(marker.getLatLng().lat);
+            $long.val(marker.getLatLng().lng);
+        });
+        marker.addTo(mymap);
+
+        //mymap.fireEvent('load');
+        
+    }
+    function MostrarAmortizacion() {
+        /*obtener los datos de linea de crédito*/
+        var lineaCredito = $("#Id_Linea").val();
+        location.target = "_blank";
+        var descripcion = $("#Id_Linea option:selected").text();
+        var interes = $("#Tasa_Interes").val();
+        var id_linea = lineaCredito;
+        var monto = $("#Monto_pago").val();
+        var id_periodo = $("#Id_Periodo").val();
+        var plazo = $("#Plazo").val();
+        var id_credito = $("#form_credito #Id_Credito").val();
+        var numero_cuotas = $("#Numero_cuotas").val();
+
+        var enlace = document.getElementById("amortizacion_pdf");
+        enlace.href = "@Url.Action("Amortizacion","Reporteria")?id_linea=" + id_linea + "&monto=" + monto + "&id_periodo=" + id_periodo + "&plazo=" + plazo + "&numero_cuotas=" + numero_cuotas+"&descripcion_linea="+descripcion+"&interes="+interes;
+        enlace.target = "_blank";
+       // enlace.click();
+    }
+
+</script>

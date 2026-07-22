@@ -1,0 +1,138 @@
+﻿@model IEnumerable<ModelNucleo.Model.Amortizacion>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+
+
+
+<html>
+<head>
+    <link href="~/css/Reporte.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Amortización</title>
+
+</head>
+<body>
+<h2 align="center">@ViewBag.nombreEmpresa  </h2>
+<table align="center" >
+    <tbody>
+    <tr>
+        <td>
+            Cliente:
+        </td>
+        <th>
+            @ViewBag.Cliente
+        </th>
+        <td>
+            Linea de Crédito:
+        </td>
+        <th>
+            @ViewBag.linea
+        </th>
+        <td>
+            Monto:
+        </td>
+        <th>
+            @ViewBag.monto
+        </th>
+    </tr>
+  
+    <tbody>
+    <tr>
+        <td>
+            Código 
+        </td>
+        <th>
+            @ViewBag.Codigo
+        </th>
+        <td>
+            Interes
+        </td>
+        <th>
+            @ViewBag.interes
+        </th>
+        <td>
+            Fecha de Consulta:
+        </td>
+        <th>
+            @ViewBag.fecha
+        </th>
+    </tr>
+    </tbody>
+</table>
+    @*<h4 align="center"> Linea de Crédito: @ViewBag.linea  ~  Monto Solicitado: @ViewBag.monto </h4>
+    <h4 align="center">  Interes: @ViewBag.interes  ~  Fecha de Consulta: @ViewBag.fecha</h4>*@
+
+<table class="greyGridTable">
+        <thead>
+            <tr>
+                <th>
+                    No
+                </th>
+                <th>
+                    Fecha
+                </th>
+                <th>
+                    Abono Capital
+                </th>
+                <th>
+                    Saldo Capital
+                </th>
+                <th>
+                    Interés
+                </th>
+                <th>
+                    Dias
+                </th>
+                <th>
+                    Plan AyC
+                </th>
+
+                <th>
+                    Cuota
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.No)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaPago)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Abono_capital)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Saldo_Capital)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Interes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Dias)
+                </td>
+                <td>
+                   @{
+                        decimal planAyC = Math.Round(item.Comision /*+ item.IvaSobreComision*/,2);
+                    }
+                    @planAyC
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Valor_Cuota)
+                </td>
+                
+            </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

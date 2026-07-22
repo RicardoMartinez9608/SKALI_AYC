@@ -1,0 +1,14 @@
+﻿@model ModelNucleo.Model.Categoria_Acceso_Directo
+
+
+<div id="NuevaCategoria">
+    <input type="hidden" asp-for="Id_Categoria_Acceso_Directo" class="form-control" />
+    <input type="hidden" asp-for="Id_Usuario" class="form-control" />
+    <div class="input-group">
+        <input asp-for="Nombre_Categoria" class="form-control" />
+        <span class="input-group-btn">
+            <button class="btn btn-default" id="Agregar_Nueva_Categoria" type="button">Agregar</button>
+        </span>
+    </div><!-- /input-group -->
+
+</div>

@@ -1,0 +1,59 @@
+﻿@model ModelNucleo.Model.Configuracion_Calificacion
+
+
+    <div class="row">
+        <div class="col-md-4">
+            <form id="Nueva_Calificacion">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @*<div class="form-group">
+                <label asp-for="Id_Configuracion" class="control-label"></label>
+                <input asp-for="Id_Configuracion" type="hidden" value="0" class="form-control" />
+                <span asp-validation-for="Id_Configuracion" class="text-danger"></span>
+            </div>*@
+                <div class="form-group">
+                    <label  class="control-label">Buro</label>
+                    <div id="buro_select"></div>
+                    <span asp-validation-for="Id_Buro" class="text-danger"></span>
+
+                </div>
+                <div class="form-group">
+                    <label class="control-label"> Calificación</label>
+                    <input asp-for="Calificacion" class="form-control" />
+                    <span asp-validation-for="Calificacion" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label"> Inicio</label>
+                    <input asp-for="Dia_Inicio" class="form-control" />
+                    <span asp-validation-for="Dia_Inicio" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label  class="control-label">Fin</label>
+                    <input asp-for="Dia_Fin" class="form-control" />
+                    <span asp-validation-for="Dia_Fin" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Saneamiento" class="control-label"></label>
+                    <input asp-for="Saneamiento" class="form-control" />
+                    <span asp-validation-for="Saneamiento" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="button" value="Guardar" id="guardar_nueva_configuracion" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script>
+    $(function () {
+        Cargar_Buro();
+    });
+
+    function Cargar_Buro() {
+        $.get("@Url.Action("Buros_Combo", "Configuracion_Calificaciones")",
+            function(buros) {
+                $("#buro_select").html(buros);
+            });
+    }
+
+</script>
+

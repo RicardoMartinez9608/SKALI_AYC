@@ -1,0 +1,28 @@
+﻿@model IEnumerable<ModelNucleo.Model.Categoria_Acceso_Directo>
+@{ 
+    string baseUrl = Html.ViewContext.HttpContext.Request.PathBase.Value.ToString();
+}
+
+@foreach (var item in Model)
+{
+
+    <div class="col-xs-4 col-md-4">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">@item.Nombre_Categoria</div>
+            <div class="panel-body" style="background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(243,243,243,1) 50%,rgba(237,237,237,1) 51%,rgba(255,255,255,1) 100%);">
+
+                <ul class="list-group">
+
+                    @foreach (var atajo in item.Acceso_Directos) { 
+                        <li class="list-group-item">
+                            <a href="@baseUrl/@atajo.Url">@atajo.Nombre</a>
+                        </li>
+                    }
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+}

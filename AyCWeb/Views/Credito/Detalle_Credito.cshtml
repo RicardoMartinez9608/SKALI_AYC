@@ -1,0 +1,657 @@
+﻿@model ModelNucleo.Model.ModelView.DetalleCreditoVista
+@{
+    ViewData["Title"] = "Detalle_Credito";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+   
+    <div class="panel-heading panel-heading-personalizado">
+
+        
+        <div class="row">
+            <div class="col-md-4">
+                <span> Deudor: @Html.DisplayFor(model => model.Credito.Persona.NombreCompleto)</span>
+            </div>
+
+            <div class="col-md-8">
+                <div class="btn-group pull-right" role="group">
+                    <a href="#Mantenimiento" class="btn btn-warning disminuir_capital" data-toggle="modal">Disminuir Capital</a>
+                    <a href="#" class="btn btn-default" id="regenerar_amortizacion">Regenerar Amortización</a>
+                    <a href="#Mantenimiento" class="btn btn-default ver_detalle" data-toggle="modal">Amortización</a>
+                    <a href="@Url.Action("Detalle_Credito", "Credito", new {id_persona = Model.Credito.Id_Persona, id_credito = Model.Credito.Id_Credito, paginar = true, siguiente = false})" class="btn btn-default">Anterior</a>
+                    <a href="@Url.Action("Detalle_Credito", "Credito", new {id_persona = Model.Credito.Id_Persona, id_credito = Model.Credito.Id_Credito, paginar = true, siguiente = true})" class="btn btn-default">Siguiente</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @if (Model.Credito.Liquidado)
+    {
+        <div class="panel-body panel-body-personalizado">
+        <div class="panel panel-default" style="align-content:center">
+            <div class="panel-body">
+                <div>
+                    <h4 style="color:darkblue"> 
+                        <strong>Código: @Html.DisplayFor(model => model.Credito.Codigo_Credito)</strong>  
+                    </h4>
+                </div>
+                <div class="datos_al_dia">
+
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Credito.Cancelado == true)
+        {
+            <div class="alert alert-warning" role="alert">
+                <b>Crédito Cancelado</b>
+            </div>
+        }
+        else
+        {
+            @if (Model.Credito.Vencido == true)
+            {
+                <div class="alert alert-danger" role="alert">
+                    <b>Crédito Vencido</b>
+                </div>
+            }
+            else if (Model.Credito.Congelado == true)
+            {
+                <div class="alert alert-info" role="alert">
+                    <b>Crédito Congelado</b>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-success" role="alert">
+                    <b>Crédito Activo</b>
+                </div>
+            }
+        }
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <ul id="detalle" class="nav nav-tabs" role="tablist">
+                    <li class="active">
+                        <a href="#datos_credito" id="datos_credito-tab" role="tab" data-toggle="tab" aria-controls="datos_credito" aria-expanded="true">Datos del crédito</a>
+                    </li>
+                    <li>
+                        <a href="#linea_credito" id="linea_credito-tab" role="tab" data-toggle="tab" aria-controls="linea_credito" aria-expanded="true">Otros Detalles</a>
+                    </li>
+                    <li>
+                        <a href="#datos_persona" id="datos_persona-tab" role="tab" data-toggle="tab" aria-controls="datos_persona" aria-expanded="true">Datos del Deudor</a>
+                    </li>
+                    <li>
+                        <a href="#datos_codeudor" id="datos_codeudor-tab" role="tab" data-toggle="tab" aria-controls="datos_persona" aria-expanded="true">Datos del Codeudor</a>
+                    </li>
+                </ul>
+
+
+                <div id="detalle_contenido" class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade in active" id="datos_credito" aria-labelledby="datos_credito-tab">
+                        <div class="row" style="background:#ddd8d8">
+                            <div class="col-md-3">
+                                <b>Aprobado en</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Aprobado_En)
+                            </div>
+                            <div class="col-md-3">
+                                <b>Fecha de Vencimiento</b>:<br />
+                                @Model.Credito.Vencido_En.ToString("dd/MM/yyyy")
+                            </div>
+                            <div class="col-md-3">
+                                <b>Último Movimiento</b>:<br />
+                                @if (Model.Credito.Transacciones_Creditos.Any())
+                                {
+                                    @Model.Credito.Transacciones_Creditos.Max(a => a.FechaPago).ToString("dd/MM/yyyy")
+                                }
+                                else
+                                {
+                                    <label>Fecha no disponible</label>
+                                }
+
+                            </div>
+                            <div class="col-md-3">
+                                <b>Primer Pago</b>:<br />
+                                @if (Model.Credito.Transacciones_Creditos.Any())
+                                {
+                                    @Model.Credito.Transacciones_Creditos.Min(a => a.FechaPago).ToString("dd/MM/yyyy")
+                                }
+                                else
+                                {
+                                    <label>Fecha no disponible</label>
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <b>Código crédito</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Codigo_Credito)
+
+                            </div>
+                            <div class="col-md-3">
+                                <b>Aprobado</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Aprobado)
+                            </div>
+                            <div class="col-md-3">
+                                <b>Liquidado en</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Liquidado_En)
+                            </div>
+                            <div class="col-md-3">
+                                <b>Comentario</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Comentario)
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-3">
+                                <b>Tasa interés</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Interes_Comision)
+                            </div>
+                            <div class="col-md-3">
+                                <b>Monto del crédito</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Monto_pago)
+                            </div>
+                            <div class="col-md-3">
+                                <b>Plazo</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Plazo)
+                            </div>
+                            <div class="col-md-3">
+                                <b>No cuotas</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Numero_cuotas)
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-3">
+                                <b>Forma de pago</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Periodo.Descripcion)
+                            </div>
+                            <div class="col-md-3">
+                                <b>Valor de la cuota</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Valor_Cuota)
+                            </div>
+                            @{
+                                decimal planAyC = Model.Credito.Interes_Comision - Model.Credito.Interes;
+                            }
+                            <div class="col-md-3">
+                                <b>Valor Plan AyC</b>:<br />
+                                @planAyC.ToString("0.00")
+                            </div>
+                            <div class="col-md-3">
+                                <b>Valor IVA</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Valor_IVA)
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <b>Cuota Total</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Cuota_Total)
+                            </div>
+                            <div class="col-md-3">
+                                <b>Total a Pagar</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Valor_IVA)
+                            </div>
+                            <div class="col-md-3">
+                                <b>Total Pagado</b>:<br />
+                                @Model.Credito.Transacciones_Creditos.Sum(a => a.Valor_Cuota).ToString("0.00")
+                            </div>
+                            <div class="col-md-3 ucuota">
+                                <b>Ultima Cuota</b>:<br />
+                                <span class="ucuota"></span>
+                            </div>
+                        </div>
+
+
+                        <p></p>
+
+                    </div>
+
+                    <div id="linea_credito" class="tab-pane">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <b>Asesor</b>:<br />
+                                    @Model.Credito.Cartera.Id_Cartera - @Model.Credito.Cartera.Id_Usuario
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <b>Código línea crédito</b>:<br />
+                                    @Model.Credito.Linea_Credito_Historial.Codigo
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Descripción de la Línea</b>:<br />
+                                @Model.Credito.Linea_Credito_Historial.Descripcion_linea
+                            </div>
+                            <div class="col-md-4">
+                                <b>Tasa de la línea de crédito</b>:<br />
+                                @Model.Credito.Linea_Credito_Historial.Interes.ToString("0.00")
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <b>Tasa por mora</b>:<br />
+                                @Model.Credito.Linea_Credito_Historial.Tasa_Mora.ToString("0.00")
+                            </div>
+                            <div class="col-md-4">
+                                <b>Días gracia</b>:<br />
+                                @Model.Credito.Linea_Credito_Historial.Dia_Gracia
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div id="datos_persona" class="tab-pane">
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <b>Nombre del Deudor</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Persona.NombreCompleto)
+                            </div>
+                            <div class="col-md-4">
+                                <b>DUI</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Persona.Dui)
+                            </div>
+                            <div class="col-md-4">
+                                <b>NIT</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Persona.Nit)
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <b>Residencia</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Persona.Residencia)
+                            </div>
+                            <div class="col-md-4">
+                                <b>Teléfono</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Persona.Telefono)
+                            </div>
+                            <div class="col-md-4">
+                                <b>Dirección Domicilio</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Persona.Domicilio)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <b>Dirección Trabajo</b>:<br />
+                                @Html.DisplayFor(model => model.Credito.Persona.Direccion_Trabajo)
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div id="datos_codeudor" class="tab-pane">
+                        @if (ViewBag.Codeudor != null)
+                        {
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <b>Nombre del Codeudor</b>:<br />
+                                    @Model.Codeudor.NombreCompleto
+                                </div>
+                                <div class="col-md-4">
+                                    <b>DUI</b>:<br />
+                                    @Model.Codeudor..Dui
+                                </div>
+                                <div class="col-md-4">
+                                    <b>NIT</b>:<br />
+                                    @Model.Codeudor.Nit
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <b>Residencia</b>:<br />
+                                    @Model.Codeudor.Residencia
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Teléfono</b>:<br />
+                                    @Model.Codeudor.Telefono
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Dirección Domicilio</b>:<br />
+                                    @Model.Codeudor.Domicilio
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <b>Dirección Trabajo</b>:<br />
+                                    @Model.Codeudor.Direccion_Trabajo
+                                </div>
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <b>Nombre del Codeudor</b>:<br />
+
+                                </div>
+                                <div class="col-md-4">
+                                    <b>DUI</b>:<br />
+
+                                </div>
+                                <div class="col-md-4">
+                                    <b>NIT</b>:<br />
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <b>Residencia</b>:<br />
+
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Teléfono</b>:<br />
+
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Dirección Domicilio</b>:<br />
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <b>Dirección Trabajo</b>:<br />
+
+                                </div>
+
+                            </div>
+                        }
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+     <table class="table table-responsive table-striped">
+        <thead>
+        <tr>
+            <th>
+                Fecha pago
+            </th>
+            <th>
+                Comprobante
+            </th>
+            <th>
+                Valor
+            </th>
+            <th>
+                Interés
+            </th>
+            <th>
+                Plan A&C
+            </th>
+            
+            <th>
+                Recargo
+            </th>
+            <th>
+                Caja
+            </th>
+            <th>
+                Abono Capital
+            </th>
+ 
+            <th>
+                Saldo Capital
+            </th>
+            <th>
+                Días
+            </th>
+        </tr>
+        </thead>
+        @if (Model.Transacciones != null)
+        {
+            <tbody>
+            @foreach (var item in Model.Transacciones)
+            {
+                <tr>
+                    <td>
+                        @item.Transacciones.FechaPago.ToString("d")
+                    </td>
+                    <td>
+                        @{
+                            string comprobante = "00000";
+                            if (item.Transaccion_Caja != null)
+                                comprobante = item.Transaccion_Caja.No_Comprobante;
+                        }
+                        @comprobante
+                    </td>
+                    <td>
+                        @item.Transacciones.Valor_Cuota.ToString("0.00")
+                    </td>
+                    
+                    <td>
+                        @item.Transacciones.Interes_Comision.ToString("0.00")
+                    </td>
+                    <td>
+                            @{
+                                decimal comision = item.Transacciones.Interes + item.Transacciones.IvaSobreComision;
+                            }
+                            @comision.ToString("0.00")
+                    </td>
+                    <td>
+                        @item.Transacciones.Recargo.ToString("0.00")
+                    </td>
+                    <td>
+                        @if(item.Caja!=null)
+                            @item.Caja.Id_Caja
+                        else
+                            @string.Format("26")
+                    </td>
+                    <td>
+                        @item.Transacciones.Abono_capital.ToString("0.00")
+                    </td>
+                
+                    <td>
+                        @item.Transacciones.Saldo_Capital.ToString("0.00")
+                    </td>
+                    <td>
+                        @item.Transacciones.Dias
+                    </td>
+                </tr>
+            }
+            </tbody>
+        }
+        else
+        {
+            <tbody>
+
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+
+                </tr>
+
+            </tbody>
+        }
+
+        </table>
+    }
+    else
+    {
+         <div class="panel panel-default" style="align-content:center">
+            <div class="panel-body">
+                <div>
+                    <h4 style="color:red"> 
+                        <strong>Código: @Html.DisplayFor(model => model.Credito.Codigo_Credito) Crédito NO LIQUIDADO</strong>  
+                    </h4>
+                </div>
+               
+            </div>
+        </div>
+    }
+
+
+
+   
+
+</div>
+
+<div class="modal fade" id="Mantenimiento">
+    <div class="modal-dialog" style="width:80%">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title">Detalle</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="detalle_credito"></div>
+
+            </div> <!-- /.modal-body -->
+
+        </div>
+    </div>
+</div>
+
+<style>
+</style>
+
+<script>
+    $(function () {
+        Pago_Al_Dia();
+        Ver_Amortizacion();
+        Fecha_Amortizacion();
+        RegenerarAmortizacion();
+        Disminuir_Capital();
+    });
+
+    function RegenerarAmortizacion()
+    {
+        $("#regenerar_amortizacion").click(function(){
+            var id_credito=@Model.Credito.Id_Credito;
+            $.get("@Url.Action("RegenerarAmortizacion","Credito")",
+            {id_credito:id_credito},
+            function(resultado){
+                alertify.success(resultado);
+            }).fail(function (error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+
+    function Ver_Amortizacion() {
+        $("a.ver_detalle").each(function (index) {
+            $("a.ver_detalle").eq(index).click(function () {
+                var id_linea = @Model.Credito.Id_Linea;
+                var monto = @Model.Credito.Monto_pago;
+                var id_periodo = @Model.Credito.Id_Periodo;
+                var plazo = @Model.Credito.Plazo;
+                var id_credito = @Model.Credito.Id_Credito;
+                var numero_cuotas = @Model.Credito.Numero_cuotas;
+                $.get("@Url.Action("Credito_Amortizacion", "Credito")", {id_linea : id_linea,monto:monto,id_periodo : id_periodo, plazo: plazo, id_credito: id_credito, numero_cuotas:numero_cuotas }, function (perfil) {
+                    $("div.detalle_credito").html(perfil);
+                    Eventos_Inicial();
+                    Cargar_Manejo_Linea_Credito();
+                });
+            });
+        });
+        }
+    function Fecha_Amortizacion() {
+                var id_linea = @Model.Credito.Id_Linea;
+                var monto = @Model.Credito.Monto_pago;
+                var id_periodo = @Model.Credito.Id_Periodo;
+                var plazo = @Model.Credito.Plazo;
+                var id_credito = @Model.Credito.Id_Credito;
+                var numero_cuotas = @Model.Credito.Numero_cuotas;
+                $.get("@Url.Action("Ultima_Fecha_Amortizacion", "Credito")", { id_linea: id_linea, monto: monto, id_periodo: id_periodo, plazo: plazo, id_credito: id_credito, numero_cuotas: numero_cuotas },
+                    function (perfil) {
+                    $("span.ucuota").html(perfil);
+                });
+    }
+
+    function Pago_Al_Dia() {
+        $.get("@Url.Action("ConsultaPagoAhora", "Credito")",
+            {
+                id_credito: "@Model.Credito.Id_Credito",
+                id_linea : "@Model.Credito.Id_Linea",
+                monto : "@Model.Credito.Monto_pago",
+                id_periodo : "@Model.Credito.Id_Periodo",
+                plazo : "@Model.Credito.Plazo"
+            }, function (datos) {
+                $("div.datos_al_dia").html(datos);
+                Reajuste_Saldo();/*revisar es cola solo cuando es el último pago, espero*/
+        });
+    }
+
+    function Reajuste_Saldo() {
+        $("#ajustar_saldo").click(function () {
+            $.get("@Url.Action("Reajuste_Saldo", "Credito")",
+                {
+                    id_credito: "@Model.Credito.Id_Credito"
+                },
+                function (resultado) {
+                    alertify.success(resultado);
+                }
+            ).fail(function (error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+
+    /*para disminuir capital*/
+    function Disminuir_Capital() {
+        $("a.disminuir_capital").click(function () {
+            $.get("@Url.Action("Disminuir_Capital", "Credito")",
+                function (formulario) {
+                    $("div.detalle_credito").html(formulario);
+                    Procesar_Disminuir_Capital();
+                });
+        });
+    }
+
+    function Procesar_Disminuir_Capital() {
+        $("#procesar_disminucion_capital").click(function () {
+            var monto=$("#monto_disminuir_capital").val();
+            $.get("@Url.Action("Procesar_Disminuir_Capital", "Credito")",
+                {
+                    id_credito: "@Model.Credito.Id_Credito",
+                    monto: monto
+                },
+                function (resultado) {
+                    alertify.success(resultado);
+                }
+            ).fail(function (error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+
+</script>

@@ -1,0 +1,42 @@
+﻿@model ModelNucleo.Model.ModelView.Faltante_Caja
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            Saldo Físico
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Saldo_Fisico)
+        </dd>
+        <dt>
+            Saldo Electrónico
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Saldo_Electronico)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Diferencia)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Diferencia)
+        </dd>
+        <dt>
+            Faltante Físico
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Faltante_Fisico)
+        </dd>
+        <dt>
+            Faltante Electrónico
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Faltante_Electronico)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Correcto)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Correcto)
+        </dd>
+    </dl>
+</div>

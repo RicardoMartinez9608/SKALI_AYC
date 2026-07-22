@@ -1,0 +1,249 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Detalle_Efectivo_Vista>
+@{
+    ViewData["Title"] = "Caja";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Flujo de efectivo</div>
+    <div class="panel-body panel-body-personalizado">
+        <form id="form_flujo_efectivo">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="well">
+                        Saldo anterior
+                    </div>
+                    $<span id="saldo_anterior"></span>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="well">
+                        Billetes
+                    </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th></th>
+                            <th>Cantidad</th>
+                            <th></th>
+                            <th>Valor</th>
+                        </tr>
+                        @foreach (var item in Model.Where(c => c.Denominacion.tipo == "Billete"))
+                        {
+                            <tr>
+                                <th scope="col" style="height: 50px; text-align: right">
+                                    @item.Denominacion.denominacion.ToString("C")
+                                </th>
+                                <td style="width: 225px">
+                                    <input type="hidden" class="denominacion" name="denominacion[]" value="@item.Denominacion.Id_denominacion" />
+                                    <input type="hidden" class="valor_denominiacion" value="@item.Denominacion.denominacion" />
+                                    <input id="Billete_Cantidad_@item.Denominacion.denominacion" name="cantidad[]" class="form-control cantidad" style="border-radius: 5px; border: 1px solid black" value="0.0"/>
+                                </td>
+                                <th style="text-align: center">
+                                    -
+                                </th>
+                                <td style="width: 225px">
+                                    <span id="Billete_Valor_@item.Denominacion.denominacion" class="form-control valor" style="border-radius: 5px; border: 1px solid black"></span>
+
+                                </td>
+                            </tr>
+                        }
+
+                    </table>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="well">
+                        Monedas
+                    </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th></th>
+                            <th>Cantidad</th>
+                            <th></th>
+                            <th>Valor</th>
+                        </tr>
+                        @foreach (var item in Model.Where(c => c.Denominacion.tipo == "Moneda"))
+                        {
+                            <tr>
+                                <td style="text-align: right">
+                                    @item.Denominacion.denominacion.ToString("C")
+                                </td>
+                                <td style="width: 225px">
+                                    <input type="hidden" class="denominacion" name="denominacion[]" value="@item.Denominacion.Id_denominacion" />
+                                    <input type="hidden" class="valor_denominiacion" value="@item.Denominacion.denominacion" />
+                                    <input id="Moneda_Cantidad_@item.Denominacion.denominacion" name="cantidad[]" class="form-control cantidad" style="border-radius: 5px; border: 1px solid black" />
+                                </td>
+                                <td style="text-align: center">
+                                    -
+                                </td>
+                                <td style="width: 225px">
+                                    <span id="Moneda_Valor_@item.Denominacion.denominacion" class="form-control valor" style="border-radius: 5px; border: 1px solid black"></span>
+
+                                </td>
+                            </tr>
+                        }
+
+                        <tr>
+                            <td style="text-align: right">
+                            </td>
+                            <td style="width: 225px">
+                                Total En Efectivo
+                            </td>
+                            <td style="text-align: center">
+                                -
+                            </td>
+                            <td style="width: 225px">
+                                <span id="efectivo_total" class="form-control" style="border-radius: 5px; border: 1px solid black"></span>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+
+            @*-----------------------------------Operaciones-----------------------------------------------------------------*@
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="well">Cheques</div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Número</th>
+                            <th>Cantidad</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input id="numero_cheque" name="numero_cheque" class="form-control" style="border-radius: 5px; border: 1px solid black" />
+                            </td>
+                            <td>
+                                <input id="cantidad_cheque" name="cantidad_cheque" class="form-control" style="border-radius: 5px; border: 1px solid black" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="well">Bolsa AKI</div>
+                    <table class="table table-striped">
+                        <tr>
+                            <td>
+                                Cantidad
+                            </td>
+                            <td>
+                                <input id="cantidad_aki" name="cantidad_aki" class="form-control" style="border-radius: 5px; border: 1px solid black" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Evaluar y Procesar</div>
+                <div class="panel-body">
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                            Validar
+                        </button>
+                        <button type="button" class="btn btn-default" id="procesar">
+                            <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+                            Procesar
+                        </button>
+                        <button type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-save-file" aria-hidden="true"></span>
+                            Reporte
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="Modal_Resultado" tabindex="-1" role="dialog" aria-labelledby="Modal_ResultadoLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Resultado del Flujo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="resultado_flujo"></div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function() {
+        CalcularDenominacion();
+        ProcesarEfectivo();
+        Saldo_Anterior();
+        valores();
+    });
+
+    function valores() {
+        $("input.cantidad").each(function (index) {
+            $('input.cantidad').eq(index).val(0.00);
+            $('#numero_cheque').eq(index).val(0.00);
+            $('#cantidad_cheque').eq(index).val(0.00);
+            $('#cantidad_aki').eq(index).val(0.00);
+            $('input.cantidad').eq(index).focus(function() {
+                $('input.cantidad').eq(index).val("");
+            });
+        });
+    }    
+    
+    function CalcularDenominacion() {
+        $("input.cantidad").each(function(index) {
+            $("input.cantidad").eq(index).keyup(function () {
+                var cantidad = Number($("input.cantidad").eq(index).val());
+                var denominacion = Number($("input.valor_denominiacion").eq(index).val());
+                var valor = cantidad * denominacion;
+                $("span.valor").eq(index).text(valor.toFixed(2));
+                TotalEfectivo();
+            });
+        });
+    }
+
+    function TotalEfectivo() {
+        var total = 0;
+        $("span.valor").each(function(index) {
+            var valor = Number($("span.valor").eq(index).text());
+            total += valor;
+        });
+        $("#efectivo_total").text(total.toFixed(2));
+    }
+
+    function ProcesarEfectivo() {
+        $("#procesar").click(function () {
+            var form = $("#form_flujo_efectivo").serializeAnything();
+            console.log(form);
+            $.post("@Url.Action("Procesar_Efectivo","Caja")", form, function (respuesta) {
+                $('#Modal_Resultado').modal('show');
+                $('div.resultado_flujo').html(respuesta);
+            }).fail(function (error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+
+    function Saldo_Anterior() {
+        $.get("@Url.Action("Saldo_Anterior","Caja")", function (respuesta) {
+            $("#saldo_anterior").text(respuesta);
+        }).fail(function (error) {
+            alertify.error(error.responseText);
+        });
+    }
+</script>

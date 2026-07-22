@@ -1,0 +1,182 @@
+﻿
+@{
+    ViewData["Title"] = "Meta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Ingreso de Metas por Asesor</h4>
+            </div>
+            <div class="col-lg-6 text-right">
+                <a href="#Mantenimiento" data-toggle="modal" class="btn btn-default nueva_meta">Nueva Meta</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="well">
+            <div class="row">
+                <form class="form-inline">
+                <div class="form-group" id="agencias">
+                    <div class="form-group">
+                        <div id="id_agencia"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3" id="mes">
+                        <div id="seleccionar" class="form-group">
+                            <select id="mes_seleccion" class="form-control">
+                                <option value="0">Seleccione el mes</option>
+                                <option value="1">Enero</option>
+                                <option value="2">Febrero</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Mayo</option>
+                                <option value="6">Junio</option>
+                                <option value="7">Julio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select>
+                        </div>
+                    </div>
+                   
+                </div>
+
+                <div class="form-group">
+                     <div class="col-md-3" id="anio">
+                        <div id="seleccionar" class="form-group">
+                            <select id="anio_seleccion" class="form-control">
+                                <option value="0">Año</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                               
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                 
+                <div class="form-group">
+                    <input type="button" value="Filtrar Metas" id="Filtra_Metas" class="btn btn-default" />
+                </div>
+                <p></p>
+
+            </form>
+            </div>
+            
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">Metas Creadas</div>
+            <div class="panel-body">
+                <div id="listametas"></div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<div class="modal fade" id="Mantenimiento">
+    <div class="modal-dialog" style="width:80%">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title">Meta</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="agregar_meta"></div>
+
+            </div> <!-- /.modal-body -->
+
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        Nueva_Meta();
+        Cargar_Agencias();
+        Cargar_Tabla();
+    });
+    function Nueva_Meta() {
+        $("a.nueva_meta").click(function () {
+            $.get("@Url.Action("Crear_Meta", "Tablero")",
+                {
+                }, function (perfil) {
+                $("div.agregar_meta").html(perfil);
+
+            });
+        });
+    }
+    function Cargar_Agencias() {
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+                $("#id_agencia").html(agencias);;
+            });
+    }
+
+    function Cargar_Tabla() {
+        $("#Filtra_Metas").click(function () {
+            var id_agencia = $("#Id_Agencia").val();
+            var mes = $("#mes_seleccion").val();
+            var anio = $("#anio_seleccion").val();
+            data(id_agencia,mes,anio);
+        });
+    }
+    function data(id_agencia,mes,anio) {
+        $.get("@Url.Action("Metas_Por_Agencia", "Tablero")",
+            {
+                id_agencia: id_agencia,
+                mes:mes,
+                anio:anio
+            },
+            function (lista) {
+                $("#listametas").html(lista);
+                Cargar_Editar_Meta();
+            });
+    }
+
+    function Cargar_Editar_Meta() {
+        $("a.editar_meta").each(function (index) {
+            $("a.editar_meta").eq(index).click(function () {
+                var id_meta = $("input.id_meta").eq(index).val();
+                $.get("@Url.Action("Editar_Meta", "Tablero")",
+                    {
+                        id_meta: id_meta
+                },
+                function (form) {
+                    $("div.agregar_meta").html(form);
+                    Ejecutar_Meta();
+                });
+            });
+        });
+    }
+
+    function Ejecutar_Meta() {
+        $("#guardar_editar_meta").click(function () {
+            var edicion = $("#editar_form_meta").serializeAnything();
+            $.post("@Url.Action("Editar_Meta", "Tablero")",
+                edicion,
+                function(resultado) {
+                    alertify.success(resultado);
+                    Cargar_Tabla();
+                    $('#Mantenimiento').modal('hide');
+                }).fail(function(error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+
+</script>

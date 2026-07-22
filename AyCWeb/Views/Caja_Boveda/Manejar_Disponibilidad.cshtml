@@ -1,0 +1,284 @@
+﻿@{
+    ViewData["Title"] = "Manejar Disponibilidad";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        Manejar Disponibilidad
+    </div>
+    <div class="panel-body panel-body-personalizado">
+        <div class="list-group">
+            <a href="#modal_detalle" class="list-group-item" id="mostrar_bolsa_tercero" data-backdrop="false" data-toggle="modal">Ingresar Bolsa  AKI</a>
+            <a href="#modal_detalle" class="list-group-item" id="mostrar_ingresar_ingresar_cheque" data-backdrop="false" data-toggle="modal">Ingresar cheques</a>
+            <a href="#modal_detalle" class="list-group-item" id="mostrar_remesa_bancaria" data-backdrop="false" data-toggle="modal">Ingresos remesas</a>
+            <a href="#modal_detalle" id="mostrar_factura_servicio" class="list-group-item" data-backdrop="false" data-toggle="modal">Facturas y pagos</a>
+            <a href="#" class="list-group-item">Pronto pago</a>
+            <a href="#modal_detalle" class="list-group-item" id="mostrar_traslado_abono" data-backdrop="false" data-toggle="modal">Traslados de Abonos</a>
+            @*<a href="@Url.Action("Filtrar_Flujo_Efectivo","Reporteria")" target="_blank" class="list-group-item">Reporte</a>*@
+            <a href="#modal_detalle" id="mostrar_filtro_flujo" class="list-group-item" data-backdrop="false" data-toggle="modal">Filtro Flujo Efectivo</a>
+            <a href="#modal_detalle" id="mostrar_filtro_liquidez" class="list-group-item" data-backdrop="false" data-toggle="modal">Filtro Liquidez</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_detalle">
+    <div class="modal-dialog" style="width:50%">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div class="btn-group pull-right" role="group" aria-label="...">
+                    <button class="btn btn-danger " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span> Cerrar
+                    </button>
+                </div>
+
+                <h4 class="modal-title" id="titulo_disposicion"></h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="detalle"></div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        Cargar_Bolsa_Tercero();
+        Cargar_Remesa();
+        Mostrar_Factura_Servicio();
+        Mostrar_Cheque();
+        Mostrar_Filtro_Flujo();
+        Transaldos_Abonos();
+        Mostrar_Filtro_Liquidez();
+    });
+
+
+
+    /*bolsa de terceros*/
+    function Cargar_Bolsa_Tercero() {
+        $("#mostrar_bolsa_tercero").click(function () {
+            $.get("@Url.Action("Bolsa_Tercero","Caja_Boveda")", function (form) {
+                $("div.detalle").html(form);
+                $("#titulo_disposicion").text("Bolsa de Terceros");
+                Guardar_Bolsa_Tercero();
+            });
+        });
+    }
+
+    function Guardar_Bolsa_Tercero() {
+        $("#registrar_monto_tercero").click(function () {
+            var monto = $("#monto_tercero").val();
+            $.post("@Url.Action("Guardar_Bolsa_Tercero", "Caja_Boveda")",
+                { monto_tercero: monto },
+                function (resultado) {
+                    alertify.success(resultado);
+                }).fail(function (badrequest) {
+                    alertify.error(badrequest.responseText);
+                });
+        });
+    }
+
+    /*solo para el manejo de las remesas*/
+    function Cargar_Remesa() {
+        $("#mostrar_remesa_bancaria").click(function () {
+            $.get("@Url.Action("Remesa_Bancaria", "Caja_Boveda")", function (form) {
+                $("div.detalle").html(form);
+                $("#titulo_disposicion").text("Remesa Bancaria");
+                Cargar_Bancos();
+            });
+            Refrescar_Modales();
+        });
+    }
+
+    function Refrescar_Modales() {
+        $("#modal_detalle").on("hidden.bs.modal", function (e) {
+            $("div.detalle").html("");
+        });
+    }
+
+    function Cargar_Bancos() {
+        $.get("@Url.Action("Bancos_Combo", "Banco")", function (bovedas) {
+            $("#id_banco").html(bovedas);
+            Executar_Remesa();
+        });
+    }
+
+    function Executar_Remesa() {
+        $("#Remesar").click(function () {
+            var id_banco = $("#Id_Banco").val();
+            var remesa = $("#Monto_Remesa").val();
+            var referencia = $("#Referencia_Remesa").val();
+            var razon_movimiento = $("#Razon_Movimiento").val();
+            $.post("@Url.Action("Transaccion_Remesa_Banco", "Caja_Boveda")",
+                {
+                    Id_Banco: id_banco,
+                    Monto: remesa,
+                    Referencia: referencia,
+                    razon_movimiento: razon_movimiento
+                },
+                function (resultado) {
+                    alertify.success(resultado);
+                    CerrarModal();
+                }).fail(function (badrequest) {
+                    alertify.error(badrequest.responseText);
+                });
+        });
+    }
+
+    function CerrarModal() {
+        $('#modal_detalle').modal('hide');
+    }
+    /*termina el manejo de las remesas*/
+
+    function Mostrar_Factura_Servicio() {
+        $("#mostrar_factura_servicio").click(function () {
+            $.get("@Url.Action("Nueva_Factura_Servicio", "Caja_Boveda")", function (servicio) {
+                $("div.detalle").html(servicio);
+                $("#titulo_disposicion").text("Facturas y pagos de servicios");
+                $('div.telefono_oculto').hide();
+                $('div.tipo_oculto').hide();
+                Cargar_Conceptos();
+                
+            });
+        });
+    }
+
+    function obtener_valor() {
+        $("select[name=Id_Factura_Servicio]").change(function(){
+            var valor = $('select[name=Id_Factura_Servicio]').val();
+            if (valor == 5) {
+                $('div.telefono_visto').hide();
+                $('div.telefono_oculto').show();
+            }else {
+                $('div.telefono_visto').show();
+                $('div.telefono_oculto').hide();
+            }
+            if (valor == 3) {
+                $('div.tipo_oculto').show();
+            } else {
+                $('div.tipo_oculto').hide();
+            }
+        });
+    }
+
+    function Cargar_Conceptos() {
+        $.get("@Url.Action("Concepto_Factura_Servicio", "Componentes")",
+            function(concepto) {
+                $("#concepto").html(concepto);
+                obtener_valor();
+                Cargar_Conceptos_Servicios_Basicos();
+                Procesar_Factura_Servicio();
+            });
+    }
+     function Cargar_Conceptos_Servicios_Basicos() {
+        $.get("@Url.Action("Concepto_Factura_Servicios_Basicos", "Componentes")",
+            function(concepto) {
+                $("#concepto_servicio_basico").html(concepto);
+                obtener_valor();
+            });
+    }
+
+    function Procesar_Factura_Servicio() {
+        $("#Guardar_Factura").click(function() {
+            var fecha = $("#fecha_concepto").val();
+            var no_comprobante = $("#no_comprobante_concepto").val();
+            var detalle_factura_servicio = $("#detalle_factura_servicio").val();
+            var id_factura_servicio = $("#Id_Factura_Servicio").val();
+            var id_factura_servicio_basico = $("#Id_Factura_Servicio_Basico").val();
+            var monto = $("#Monto_Concepto").val();
+            var monto_telefono = $("#Monto_telefono").val();
+            var monto_internet = $("#Monto_internet").val();
+            var es_credito_fiscal = $("#es_credito_fiscal_concepto").val();
+            var primer_monto;
+            var segundo_monto ;
+            if (id_factura_servicio == 5) {
+                primer_monto = monto_telefono;
+                segundo_monto = monto_internet;
+            } else {
+                primer_monto = monto;
+                segundo_monto = 0.00;
+            }
+            $.post("@Url.Action("Procesar_Factura_Servicio", "Caja_Boveda")",
+                {
+                    fecha: fecha,
+                    no_comprobante: no_comprobante,
+                    id_factura_servicio: id_factura_servicio,
+                    monto: primer_monto,
+                    monto_telefonia: segundo_monto,
+                    es_credito_fiscal: es_credito_fiscal,
+                    detalle_factura_servicio: detalle_factura_servicio,
+                    id_factura_servicio_basico: id_factura_servicio_basico
+                }, function (resultado) {
+                    alertify.success(resultado);
+                    CerrarModal();
+                }).fail(function (badrequest) {
+                alertify.error(badrequest.responseText);
+            });
+        });
+    }
+
+
+    function Mostrar_Cheque() {
+        $("#mostrar_ingresar_ingresar_cheque").click(function () {
+            $.get("@Url.Action("Nuevo_Cheque", "Caja_Boveda")", function (form) {
+                $("div.detalle").html(form);
+                $("#titulo_disposicion").text("Ingresar Cheques");
+                Ingresar_Cheque();
+            });
+            Refrescar_Modales();
+        });
+    }
+
+    function Ingresar_Cheque() {
+        $("#Guardar_Ingreso_Cheque").click(function () {
+            var form_cheque = $("#form_ingreso_cheque").serializeAnything();
+            $.post("@Url.Action("Nuevo_Cheque", "Caja_Boveda")",
+                form_cheque,
+                function (resultado) {
+                    alertify.success(resultado);
+                    CerrarModal();
+                }).fail(function (badrequest) {
+                    alertify.error(badrequest.responseText);
+                });
+        });
+    }
+
+    /*ver traslados*/
+    function Transaldos_Abonos() {
+        $("#mostrar_traslado_abono").click(function () {
+            $.get("@Url.Action("Traslado_Abono", "Credito")", function (form) {
+                $("div.detalle").html(form);
+            });
+        });
+    }
+
+    /*mostrar filtro de flujo de efectivo*/
+    function Mostrar_Filtro_Flujo() {
+        $("#mostrar_filtro_flujo").click(function () {
+            $.get("@Url.Action("Filtrar_Flujo_Efectivo", "Reporteria")", function (form) {
+                $("div.detalle").html(form);
+                $("#titulo_disposicion").text("Filtro de Flujo de Efectivo");
+                Ingresar_Cheque();
+            });
+            Refrescar_Modales();
+        });
+    }
+
+    /*Mostrar la liquidez*/
+    function Mostrar_Filtro_Liquidez() {
+        $("#mostrar_filtro_liquidez").click(function () {
+            $.get("@Url.Action("Filtrar_Liquidez", "Caja")", function (form) {
+                $("div.detalle").html(form);
+                $("#titulo_disposicion").text("Filtro Liquidez");
+
+            });
+        });
+    }
+
+</script>

@@ -1,0 +1,90 @@
+﻿@model IEnumerable<ModelNucleo.Model.Persona_Relaciones>
+
+@{
+    ViewData["Title"] = "Relaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Relaciones de @ViewBag.Nombre_Completo</div>
+    <div class="panel-body">
+        <a class="btn btn-default" data-toggle="modal" id="nueva_relacion" href="#modal_detalle">Nuevo</a>
+        <ul>
+            @foreach (var item in Model)
+            {
+                <li>
+                    <a href="@Url.Action("Index","Persona",new { dui=item.Sujeto.Dui})" target="_blank">@item.Sujeto.NombreCompleto</a> tiene como
+                    @item.Tipo_Relacion.Tipo_Relacion_Definicion a
+                    <a href="@Url.Action("Index","Persona",new { dui=item.Predicado.Dui})" target="_blank">@item.Predicado.NombreCompleto</a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_detalle">
+    <div class="modal-dialog" style="width:50%">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div class="btn-group pull-right" role="group" aria-label="...">
+                    <button class="btn btn-default" id="Guardar_Relacion_Principal" aria-hidden="true">
+                        <span class="glyphicon glyphicon-floppy-disk"></span> Guardar
+                    </button>
+                    <button class="btn btn-danger " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span> Cerrar
+                    </button>
+                </div>
+
+                <h4 class="modal-title" id="titulo_socio">Nueva relación</h4>
+            </div>
+
+            <div class="modal-body detalle_perfil">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $("#nueva_relacion").click(function () {
+        $.get(
+            "@Url.Action("Nueva_Relacion", "Persona", new { id_persona = ViewBag.Id_Persona, nombre_completo = ViewBag.Nombre_Completo })",
+            function (form_relacion) {
+                $("div.detalle_perfil").html(form_relacion);
+                Guardar_Relacion();
+        });
+    });
+
+    function Guardar_Relacion() {
+        $("#Guardar_Relacion_Principal").off().on("click",function () {
+            var relacion = $("#nueva_relacion_declarado").serializeAnything();
+            $.post("@Url.Action("Nueva_Relacion","Persona")", relacion, function (resultado) {
+                alertify.success("Se ha guardado la relación correctamente");
+            }).fail(function () {
+                alertify.error("No se pudo guardar la relación");
+            });
+        });
+    }
+
+    function Obtener_Sujeto(item) {
+        var id_persona = item.selectedItem.Id_Persona;
+        console.log(id_persona);
+        $("#Id_Sujeto").val(id_persona);
+    }
+
+    function Obtener_Predicado(item) {
+        var id_persona = item.selectedItem.Id_Persona;
+        console.log(id_persona);
+        $("#Id_Predicado").val(id_persona);
+    }
+
+    function lookup_displayExpr(item) {
+        if (!item) {
+            return "";
+        }
+        return item.Nombres + " " + item.Apellidos + " " + item.Dui;
+    }
+</script>

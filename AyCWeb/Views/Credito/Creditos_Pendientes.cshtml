@@ -1,0 +1,52 @@
+﻿@model IEnumerable<ModelNucleo.Model.Credito>
+
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+
+        </th>
+        <th>
+            Código
+        </th>
+        <th>
+            Nombre
+        </th>
+        <th>
+            Monto
+        </th>
+        <th>
+            Linea
+        </th>
+        <th>
+            Liquidar
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Credito)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Codigo_Credito)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Persona.NombreCompleto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Monto_pago)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Linea_Credito.Descripcion_linea)
+            </td>
+            <td>
+                @Html.ActionLink("Liquidar", "PantallaCredito", new { id_credito = item.Id_Credito }, new { target = "_blank" })
+
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

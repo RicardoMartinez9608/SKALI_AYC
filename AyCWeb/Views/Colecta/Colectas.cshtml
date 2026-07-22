@@ -1,0 +1,398 @@
+﻿@model ModelNucleo.Model.Colecta_Diaria
+@{
+    ViewData["Title"] = "Colectas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Detalle de la colecta seleccionada</div>
+    <div class="panel-body">
+
+        @if (ViewBag.ConRespuesta)
+        {
+            <ayc-alerta respuesta="ViewBag.Respuesta"></ayc-alerta>
+        }
+
+        <dl class="dl-horizontal">
+            <dt>
+                Id
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Id_Colecta_Diaria)
+            </dd>
+            <dt>
+                Usuario
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Id_Usuario)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Fecha)
+            </dd>
+            <dt>
+                No comprobante Inicial
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.No_Comprobante_Inicio)
+            </dd>
+            <dt>
+                No comprobante Final
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.No_Comprobante_Final)
+            </dd>
+        </dl>
+
+        <div class="well row">
+            <div class="col-md-2">
+                <div class="input-group">
+                    <div class="input-group-btn nueva">
+                        <a href="@Url.Action("Nueva_Colecta","Colecta",new { id_colecta_diaria=Model.Id_Colecta_Diaria})" class="btn btn-default">Nueva Colecta</a>
+                    </div>
+                    @*<div class="input-group-btn">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ingresar_comprobante">
+                Ingresar No Comprobantes
+            </button>
+        </div>*@
+                    <div class="input-group-btn informe">
+                        <a href="@Url.Action("Informe_Colecta_Diaria","Colecta",new { id_colecta_diaria=Model.Id_Colecta_Diaria}) " target="_blank" class="btn btn-default">Informe Colecta</a>
+                    </div>
+                    @if (Model.Verificado == false && Model.Procesado_Total == false)
+                    {
+                    <div class="input-group-btn verificar">
+                        <a href="@Url.Action("Verificar_Colecta","Colecta",new {id_colecta_diaria=Model.Id_Colecta_Diaria})" class="btn btn-default">Verificar</a>
+                    </div>
+                        <div class="input-group-btn procesar">
+                            <a href="@Url.Action("Procesar_Colecta","Colecta",new {id_colecta_diaria=Model.Id_Colecta_Diaria})" disabled="true" class="btn btn-default">Procesar</a>
+                        </div>
+                        <div class="input-group-btn facturar">
+                            <a href="@Url.Action("Mostrar_Detalle_Factura_Creditos_Colecta","Colecta",new { id_colecta_diaria=Model.Id_Colecta_Diaria})" disabled="true" target="_blank" class="btn btn-default">Facturar Créditos</a>
+                        </div>
+                        <div class="input-group-btn recibo">
+                            <a href="@Url.Action("Mostrar_Detalle_Factura_Ahorro_Colecta","Colecta",new { id_colecta_diaria=Model.Id_Colecta_Diaria})" disabled="true"target="_blank" class="btn btn-default">Recibo Ahorros</a>
+                        </div>
+                    }else if (Model.Verificado == true && Model.Procesado_Total == false)
+                    {
+                        <div class="input-group-btn verificar">
+                            <a href="@Url.Action("Verificar_Colecta","Colecta",new {id_colecta_diaria=Model.Id_Colecta_Diaria})"disabled="true" class="btn btn-default">Verificar</a>
+                        </div>
+                        <div class="input-group-btn procesar">
+                            <a href="@Url.Action("Procesar_Colecta","Colecta",new {id_colecta_diaria=Model.Id_Colecta_Diaria})"  class="btn btn-default">Procesar</a>
+                        </div>
+                        <div class="input-group-btn facturar">
+                            <a href="@Url.Action("Mostrar_Detalle_Factura_Creditos_Colecta","Colecta",new { id_colecta_diaria=Model.Id_Colecta_Diaria})" disabled="true" target="_blank" class="btn btn-default">Facturar Créditos</a>
+                        </div>
+                        <div class="input-group-btn recibo">
+                            <a href="@Url.Action("Mostrar_Detalle_Factura_Ahorro_Colecta","Colecta",new { id_colecta_diaria=Model.Id_Colecta_Diaria})" disabled="true"target="_blank" class="btn btn-default">Recibo Ahorros</a>
+                        </div>
+                    }else if (Model.Verificado == true && Model.Procesado_Total == true)
+                    {
+                        <div class="input-group-btn verificar">
+                            <a href="@Url.Action("Verificar_Colecta","Colecta",new {id_colecta_diaria=Model.Id_Colecta_Diaria})"disabled="true" class="btn btn-default">Verificar</a>
+                        </div>
+                        <div class="input-group-btn procesar">
+                            <a href="@Url.Action("Procesar_Colecta","Colecta",new {id_colecta_diaria=Model.Id_Colecta_Diaria})"disabled="true"  class="btn btn-default">Procesar</a>
+                        </div>
+                        <div class="input-group-btn facturar">
+                            <a href="@Url.Action("Mostrar_Detalle_Factura_Creditos_Colecta","Colecta",new { id_colecta_diaria=Model.Id_Colecta_Diaria})"  target="_blank" class="btn btn-default">Facturar Créditos</a>
+                        </div>
+                        <div class="input-group-btn recibo">
+                            <a href="@Url.Action("Mostrar_Detalle_Factura_Ahorro_Colecta","Colecta",new { id_colecta_diaria=Model.Id_Colecta_Diaria})" target="_blank" class="btn btn-default">Recibo Ahorros</a>
+                        </div>
+                    }
+
+
+
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <table class="table table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        DUI Cliente
+                    </th>
+                    <th>
+                        Cliente
+                    </th>
+                    <th>
+                        Cuenta
+                    </th>
+                    <th>
+                        Monto
+                    </th>
+                    <th>
+                        Comprobante
+                    </th>
+                    <th>
+                        Procesado
+                    </th>
+
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Colectas)
+                {
+                    @if (Model.Colectas.Any(a=>a.Procesado) != true )
+                    {
+                        <tr style="background-color: #F1B9B1">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id_Colecta)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DUI)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Nombre_Completo)
+                            </td>
+                            <td>
+                                @if (item.Id_Ahorro > 0)
+                                {
+                                    @string.Format("Cuenta Ahorro: {0}", item.Codigo_AHorro)
+                                }
+                                @if (item.Id_Credito > 0)
+                                {
+                                    @string.Format("Cuenta Crédito: {0}", item.Codigo_Credito)
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Monto)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.No_Comprobante)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Procesado)
+                            </td>
+                            <td>
+                                @Html.ActionLink("Editar", "Editar_Colecta", new { id_colecta = item.Id_Colecta }) |
+                                @Html.ActionLink("Borrar", "Borrar_Colecta", new { id_colecta = item.Id_Colecta, id_colecta_diaria = item.Id_Colecta_Diaria })
+                               |
+                            </td>
+                            <td>
+                                <a href ="#Subir_Fotografia_Colecta"  data-toggle="modal" class="subir_foto">Subir Fotografía</a>
+                                <input type="hidden" value="@Html.DisplayFor(modelItem => item.Id_Colecta)" class="id_colecta_foto">
+                                <input type="hidden" value="@Html.DisplayFor(modelItem => item.Id_Cliente)" class="id_cliente">
+                                <input type="hidden" value="@Html.DisplayFor(modelItem => item.Nombre_Completo)" class="nombre_cliente">
+                                
+                            </td>
+                            <td>
+                                <a href="#Detalle_Fotografia_Colecta" data-toggle="modal" class="ver_detalle">Validar Fotografía</a>
+                                <input type="hidden" value="@Html.DisplayFor(modelItem => item.Id_Colecta)" class="id_colecta">
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id_Colecta)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DUI)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Nombre_Completo)
+                            </td>
+                            <td>
+                                @if (item.Id_Ahorro > 0)
+                                {
+                                    @string.Format("Cuenta Ahorro: {0}", item.Codigo_AHorro)
+                                }
+                                @if (item.Id_Credito > 0)
+                                {
+                                    @string.Format("Cuenta Crédito: {0}", item.Codigo_Credito)
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Monto)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.No_Comprobante)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Procesado)
+                            </td>
+                            <td>
+                                @Html.ActionLink("Editar", "Editar_Colecta", new { id_colecta = item.Id_Colecta }) |
+                                @Html.ActionLink("Borrar", "Borrar_Colecta", new { id_colecta = item.Id_Colecta, id_colecta_diaria = item.Id_Colecta_Diaria })
+                            </td>
+                        </tr>
+                    }
+                   
+
+                    
+                }
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        Total
+                    </td>
+                    <td>
+                        @Model.Colectas.Sum(i => i.Monto).ToString("0.00")
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+  
+
+ <div class="modal fade" id="Detalle_Fotografia_Colecta">
+            <div class="modal-dialog" style="width:50%" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a href="#" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </a>
+                        <h4 class="modal-title" id="titulo_sub_modal_grupal">Detalle Fotografía</h4>
+                    </div>
+                    <div class="modal-body Detalle">
+
+                    </div>
+                </div>
+            </div>
+</div>
+<div class="modal fade" id="Subir_Fotografia_Colecta">
+    <div class="modal-dialog" style="width:50%; height:600px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                @*<h4 class="modal-title" id="titulo_sub_modal_grupal">Subir Fotografía</h4>*@
+            </div>
+            <div class="modal-body Detalle_SubirFoto">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ingresar_comprobante" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Ingresar No Comprobantes</h4>
+            </div>
+            <div class="modal-body">
+                <label>No Comprobante Inicial</label>
+                <input type="text" name="no_comprobante_inicial" id="no_comprobante_inicial" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary">Guardar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+    $(document).ready(function () {
+        BotonesAsesores();
+        Abrir_Documentos(); 
+        Abrir_Subir_Foto()
+        $("#archivoPop").hide();
+    });
+      function BotonesAsesores() {
+          var rol_quote = "@ViewBag.Rol";
+          var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+  
+          if (rol !== "Administrador" && rol !== "Jefe" && rol !== "Asistente" ) {
+              $('.verificar').hide();
+              $('.procesar').hide();
+              $('.facturar').hide();
+              $('.recibo').hide();
+              $('.ver_detalle').hide();
+          }
+          if (rol == "Jefe" || rol == "Asistente")
+          {
+              $('.subir_foto').hide();
+          }
+    }
+      function Abrir_Documentos() {
+                    $("a.ver_detalle").each(function (index) {
+           
+                    $("a.ver_detalle").eq(index).click(function () {
+                             var id_colecta = $("input.id_colecta").eq(index).val();
+
+                            $.get("@Url.Action("Detalle_Fotografia_Comprobante", "Colecta")",
+                            { id_colecta: id_colecta },
+                                function (perfil) {
+                            $("div.Detalle").html(perfil);
+                            });
+                            
+                        });
+                     });
+      }
+    function Abrir_Subir_Foto() {
+        $("a.subir_foto").each(function (index) {
+
+            $("a.subir_foto").eq(index).click(function () {
+                var id_colecta = $("input.id_colecta_foto").eq(index).val();
+                var id_cliente = $("input.id_cliente").eq(index).val();
+                var nombre = $("input.nombre_cliente").eq(index).val();
+                $.get("@Url.Action("Dev_Foto", "Colecta")",
+                    { id_colecta: id_colecta },
+                    function (perfil) {
+                        $("div.Detalle_SubirFoto").html(perfil);
+                    
+                    });
+
+            });
+        });
+    }
+    @*function deshabilitar() {
+        $('.procesar').hide();
+        $('.facturar').hide();
+        $('.recibo').hide();
+    }
+   
+
+    function VerificarColecta() {
+        $("div.verificar").click(function () {
+            var id_colecta_diaria = @Model.Id_Colecta_Diaria;
+            $.get("@Url.Action("Verificar", "Colecta")",
+                { id_colecta_diaria: id_colecta_diaria },
+                function (perfil) {
+                    if (perfil.length == 23) {
+                        $('.procesar').show();
+                    }
+                });
+        });
+    }
+    function ProcesarColecta() {
+        $("div.procesar").click(function () {
+            var id_colecta_diaria = @Model.Id_Colecta_Diaria;
+            $.get("@Url.Action("Procesar", "Colecta")",
+                { id_colecta_diaria: id_colecta_diaria },
+                function (perfil) {
+                    if (perfil.length == 22) {
+                        $('.facturar').show(); 
+                        $('.recibo').show(); 
+                    }
+                });
+        });
+    }
+      
+    *@
+</script>
+

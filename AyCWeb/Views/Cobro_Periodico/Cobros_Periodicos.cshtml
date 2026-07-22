@@ -1,0 +1,31 @@
+﻿@model IEnumerable<ModelNucleo.Model.Cobro_Periodico>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Valor)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Valor)
+            </td>
+            <td>
+                <input type="hidden" value="@item.Id_Cobro_Periodico" class="id_cobro_periodico_valor"/>
+                <a href="#Mantenimiento_Adicional" data-toggle="modal" class="ver_detalle_cobro_periodico">Detalle</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

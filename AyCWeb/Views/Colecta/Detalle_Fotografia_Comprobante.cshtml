@@ -1,0 +1,49 @@
+﻿<div class="row" style="text-align:center"> 
+         <div class="col-md-9"> 
+             <input type="hidden" id="id_fotografia" value="@ViewBag.id_fotografia_comprobante"/>
+             <img src="data:image/png;base64,@ViewBag.foto"/>
+               
+         </div>
+         <div class="col-md-3" > 
+              @if(ViewBag.estado_fotografia == false )
+                 {
+                    <div class="alert alert-warning" role="alert" style="text-align:center">
+                           <b>Fotografía no validada</b>
+                    </div>
+                  }
+              else
+                 {
+                   <div class="alert alert-success" role="alert" style="text-align:center">
+                       <b>Fotografía validada</b>
+                   </div>
+                  }
+              <div style="text-align:center">
+                  <input type="button" value="Verificar Fotografía"  class="btn btn-primary verificar_fotografia" />
+              </div>
+          
+         </div>
+     </div>
+
+<script>
+    $(document).ready(function () {
+        VerificarFotografia();
+    });
+
+    function VerificarFotografia() {
+           $("input.verificar_fotografia").click(function() {
+               var id_fotografia = $("#id_fotografia").val();
+              $.post("@Url.Action("Validar_Fotografia", "Colecta")",
+                { id_fotografia_imagen: id_fotografia },
+                function (perfil) {
+                    alertify.success(perfil);
+                    MOModal_Abono_Ahorro_Hide();
+                }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+            });
+        }
+function MOModal_Abono_Ahorro_Hide() {
+    $('#Detalle_Fotografia_Colecta').modal('hide');
+}
+         
+</script>

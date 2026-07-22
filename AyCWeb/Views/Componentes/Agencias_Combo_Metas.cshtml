@@ -1,0 +1,9 @@
+﻿@model IEnumerable<ModelNucleo.Model.Agencia>
+
+<select name="Id_Agencia_Meta" id="Id_Agencia_Meta" class="form-control">
+    <option value="0">Seleccione una Agencia</option>
+    @foreach (var item in Model)
+    {
+        <option value="@item.Id_Agencia">@item.Nombre</option>
+    }
+</select>

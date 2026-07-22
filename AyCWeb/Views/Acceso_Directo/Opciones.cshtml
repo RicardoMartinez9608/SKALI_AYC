@@ -1,0 +1,51 @@
+﻿@model IEnumerable<ModelNucleo.Model.Menu_Categoria_vista>
+@{ 
+    int primero = Model.Min(d => d.Id_Menu_Categoria_Vista);
+}
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+    @foreach (var item in Model)
+    {
+        string estado = "";
+        @if (item.Id_Menu_Categoria_Vista == primero)
+            estado = "collapse in";
+        else
+            estado = "collapse";
+
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="heading_@item.Id_Menu_Categoria_Vista">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_@item.Id_Menu_Categoria_Vista" aria-expanded="true" aria-controls="collapse_@item.Id_Menu_Categoria_Vista">
+                        @item.Titulo
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse_@item.Id_Menu_Categoria_Vista" class="panel-collapse @estado" role="tabpanel" aria-labelledby="heading_@item.Id_Menu_Categoria_Vista">
+                <div class="panel-body">
+                    <table class="table">
+                        <tr>
+                            <td>Enlace</td>
+                            <td>Manejar</td>
+                        </tr>
+                        @if (item.Menu_Contenido != null)
+                        {
+                            @foreach (var contenido in item.Menu_Contenido)
+                            {
+                                <tr>
+                                    <td>@contenido.Titulo</td>
+                                    <td>
+                                        <input type="hidden" class="url" value="@string.Format("{0}/{1}", contenido.Controller, contenido.Action)" />
+                                        <input type="hidden" class="nombre" value="@contenido.Titulo" />
+                                        <a href="#" class="crear_atajo">Crear Atajo</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    }
+
+</div>

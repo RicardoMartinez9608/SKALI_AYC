@@ -1,0 +1,14 @@
+﻿@model IEnumerable<ModelNucleo.Model.Cartera>
+
+<select name="Id_Cartera" id="Id_Cartera" class="form-control Id_Cartera">
+    <option value="0">Seleccione una Cartera</option>
+    @foreach (var item in Model)
+    {
+        if (item.Id_Cartera == ViewBag.Seleccionado)
+        {
+            <option value="@item.Id_Cartera" selected="selected">@item.Nombre</option> }
+        else
+        {
+            <option value="@item.Id_Cartera">@item.Nombre</option>}
+    }
+</select>

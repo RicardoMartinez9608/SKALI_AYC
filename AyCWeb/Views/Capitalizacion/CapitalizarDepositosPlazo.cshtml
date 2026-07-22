@@ -1,0 +1,278 @@
+﻿@{
+    ViewData["Title"] = "Capitalizaçión";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Capitalización Depositos a Plazo</div>
+    <div class="panel-body panel-body-personalizado">
+
+        <p></p>
+        <div class="row">
+            <div class="col-md-4">
+                Fecha:
+                <input type="date" id="fecha" class="form-control" />
+            </div>
+           
+            <div class="col-md-4">
+                <br />
+                <input type="button" class="btn btn-default" value="Mostrar" id="CargarGrid" />
+                <input type="button" class="btn btn-default" id="EjecutarCapitalizacion" value="Ejecutar" />
+                <input type="button"
+                       class="btn btn-default"
+                       id="GenerarPdf"
+                       value="PDF" />
+            </div>
+
+        </div>
+
+        <p></p>
+
+        <p id="grid_ahorro_capitalizar">
+
+        </p>
+    </div>
+</div>
+<div id="blockUI" style="display:none;">
+    <div class="blockui-overlay"></div>
+    <div class="blockui-content">
+        <div class="spinner"></div>
+        <p>Procesando, por favor espere...</p>
+    </div>
+</div>
+<div class="modal fade" id="modalAlertas">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-warning">
+
+                <h4>
+
+                    ⚠ Depósitos próximos a vencer
+
+                </h4>
+
+            </div>
+
+            <div class="modal-body" id="contenidoAlertas">
+            </div>
+
+            <div class="modal-footer">
+
+                <button class="btn btn-primary"
+                        data-dismiss="modal">
+
+                    Aceptar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<style>
+    .blockui-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 9998;
+    }
+
+    .blockui-content {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #fff;
+        padding: 25px 40px;
+        border-radius: 8px;
+        text-align: center;
+        z-index: 9999;
+        box-shadow: 0 0 15px rgba(0,0,0,.3);
+        font-weight: bold;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 10px auto;
+        border: 4px solid #ccc;
+        border-top: 4px solid #007bff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+<script>
+     $(document).ready(function () {
+
+         // Cargar grid
+         $("#CargarGrid").click(function () {
+
+             var fecha = $("#fecha").val();
+
+             if (!fecha) {
+                 alertify.warning("Debe seleccionar una fecha");
+                 return;
+             }
+
+                $.ajax({
+                        url: "@Url.Action("ConsultarListaCapitalizacion", "Capitalizacion")",
+                        method: "GET",
+                        data: { fecha: fecha },
+
+                        beforeSend: function () {
+                            blockUI("Cargando lista de capitalización...");
+                        },
+
+                        success: function (lista) {
+                            $("#grid_ahorro_capitalizar").html(lista);
+                            alertify.success("Lista cargada correctamente");
+                            $("#EjecutarCapitalizacion").prop("disabled", false);
+                        },
+
+                        error: function (xhr) {
+                            $("#grid_ahorro_capitalizar").html(
+                                "<div class='alert alert-danger'>" + xhr.responseText + "</div>"
+                            );
+                        },
+
+                        complete: function () {
+                            unblockUI();
+                        }
+                    });
+         });
+
+         // Ejecutar capitalización
+         $("#EjecutarCapitalizacion").click(function () {
+
+             var fechaSeleccionada = $("#fecha").val();
+
+             if (!fechaSeleccionada) {
+                 alertify.warning("Debe seleccionar una fecha");
+                 return;
+             }
+
+             var lista_pagos = [];
+                
+             $("table tbody tr").each(function () {
+
+                 var id = parseInt($(this).data("id")) || 0;
+                 var valor = parseFloat($(this).find(".valor-capitalizar").val()) || 0;
+                var IdDepositoPlazo = parseFloat($(this).find(".iddep").val()) || 0;
+
+                 if (id > 0) {
+                     lista_pagos.push({
+                         IdAhorro: id,
+                         Valor: valor,
+                         Fecha: fechaSeleccionada,
+                         IdDepositoPlazo : IdDepositoPlazo,
+                         EsDepositoPlazo : true
+                     });
+                 }
+             });
+
+             if (lista_pagos.length === 0) {
+                 alertify.warning("No hay capitalizaciones válidas para ejecutar");
+                 return;
+             }
+
+                 $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("EjecutarTraslados", "Capitalizacion")",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(lista_pagos),
+
+                        beforeSend: function () {
+                            blockUI("Procesando capitalización, por favor espere...");
+                        },
+
+                        success: function (respuesta) {
+                            $("#grid_ahorro_capitalizar").html(
+                                "<div class='alert alert-success'>" + respuesta + "</div>"
+                            );
+
+                            alertify.success(respuesta);
+                            $("#EjecutarCapitalizacion").prop("disabled", true);
+                        },
+
+                        error: function (xhr) {
+                            $("#grid_ahorro_capitalizar").html(
+                                "<div class='alert alert-danger'>" + xhr.responseText + "</div>"
+                            );
+
+                            alertify.error("Ocurrió un error al ejecutar la capitalización");
+                        },
+
+                        complete: function () {
+                            unblockUI();
+                        }
+                    });
+         });
+             $("#GenerarPdf").click(function () {
+
+        var fecha = $("#fecha").val();
+
+        if (!fecha) {
+            alertify.warning("Debe seleccionar una fecha");
+            return;
+        }
+
+        window.open(
+            '@Url.Action("ReporteCapitalizacion", "Capitalizacion")?fecha=' + fecha,
+            '_blank'
+        );
+    });
+    consultarAlertas();
+     });
+         function consultarAlertas(){
+
+        $.ajax({
+
+            url:'@Url.Action("ConsultarDepositosPorVencer", "Capitalizacion")',
+
+            type:'GET',
+
+            success:function(html){
+
+                $("#contenidoAlertas").html(html);
+
+                if(html.indexOf("No existen")==-1){
+
+                    $("#modalAlertas").modal("show");
+
+                }
+
+            }
+
+        });
+
+    }
+     function blockUI(mensaje) {
+            if (mensaje) {
+                $("#blockUI p").text(mensaje);
+            }
+            $("#blockUI").fadeIn(200);
+        }
+
+    function unblockUI() {
+        $("#blockUI").fadeOut(200);
+    }
+</script>

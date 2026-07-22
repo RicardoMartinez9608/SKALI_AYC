@@ -1,0 +1,130 @@
+﻿@model ModelNucleo.Model.Ahorro
+    <form id="form_ahorro">
+
+        <input asp-for="Id_Ahorro" type="hidden" class="form-control" />
+
+        <input asp-for="Id_Persona" type="hidden" class="form-control" />
+        <input asp-for="Saldo_Actual" type="hidden" class="form-control" />
+        <input asp-for="Fecha_Apertura" type="hidden" class="form-control" />
+        <input asp-for="Ultima_Fecha_Traslado" type="hidden" class="form-control" />
+
+        @*<input asp-for="No_Ahorro" type="hidden" class="form-control" />*@
+
+        <input asp-for="Tasa_Interes" type="hidden" class="form-control" />
+        <input asp-for="Mes_Capitalizable" type="hidden" class="form-control" />
+
+        <div class="row">
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    <label asp-for="Fecha_Retiro" class="control-label">Fecha </label>
+                    <input asp-for="Fecha_Retiro" class="form-control" />
+                    <span asp-validation-for="Fecha_Retiro" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Id_Linea_Ahorro" class="control-label">Linea de Ahorro</label>
+                    @Html.DropDownList("Id_Linea_Ahorro", null, htmlAttributes: new { @class = "form-control" })
+                    <span asp-validation-for="Id_Linea_Ahorro" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            @*<div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Tasa_Interes" class="control-label">Tasa interés</label>
+                <input asp-for="Tasa_Interes" class="form-control" />
+                <span asp-validation-for="Tasa_Interes" class="text-danger"></span>
+            </div>
+        </div>*@
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Frecuencia_Deposito" class="control-label">Frecuencia depósito</label>
+                    <input asp-for="Frecuencia_Deposito" class="form-control" />
+                    <span asp-validation-for="Frecuencia_Deposito" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Plazo" class="control-label">Plazo</label>
+                    <input asp-for="Plazo" class="form-control" />
+                    <span asp-validation-for="Plazo" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Monto_Minimo_Ahorro" class="control-label">Monto mínimo ahorro</label>
+                    <input asp-for="Monto_Minimo_Ahorro" class="form-control" />
+                    <span asp-validation-for="Monto_Minimo_Ahorro" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="No_Ahorro" class="control-label">Cuenta Ahorro</label>
+                    <input asp-for="No_Ahorro" class="form-control" />
+                    <span asp-validation-for="No_Ahorro" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+      
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="button" value="Guardar Cuenta de Ahorro" id="Guardar_Ahorro_Cuenta" class="btn btn-default" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="button" value="Editar Cuenta de Ahorro" id="Editar_Ahorro_Cuenta" class="btn btn-default" />
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="well">
+            <div class="row">
+                @*<div class="col-lg-4">
+                    <span style="color: white"> No. Cuenta de Ahorro Activa:</span>
+                    <span style="color: white" id="NCuenta"> </span>
+                </div>
+                <div class="col-lg-4 text-right">
+                    <input type="number" class="form-control" id="valorLibreta" placeholder="Ingrese Número de Libreta de Ahorro" />
+                </div>*@
+                <div class="col-lg-2 text-right">
+                    <input type="button" value="Agregar Libreta" id="Guardar_Libreta" class="btn btn-default N_Libreta" />
+                </div>
+                <div class="col-lg-2 text-right">
+                    <input type="button" value="Rotulado Libreta" id="Rotulado_Libreta" class="btn btn-default N_Cuenta" />
+                </div>
+                <div class="col-lg-2 text-right">
+                    <input type="button" value="# Cuenta"  class="btn btn-default N_Libreta" />
+                </div>
+            </div>
+            
+
+          
+        </div>
+            @*<div class="col-md-5">
+            <div class="form-group">
+                <input type="number" class="form-control" id="valorLibreta" placeholder="Ingrese Número de Libreta de Ahorro" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <input type="button" value="Agregar Libreta" id="Guardar_Libreta" class="btn btn-default N_Libreta" />
+        </div>*@
+
+            <hr />
+
+            <a href="#Mantenimiento_Adicional" data-toggle="modal" class="btn btn-default nueva_firma_autorizada">Nueva firma autorizada</a>
+            <p></p>
+            <div id="lista_firma_autorizadas">
+
+            </div>
+
+</form>

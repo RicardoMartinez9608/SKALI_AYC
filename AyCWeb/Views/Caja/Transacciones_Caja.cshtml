@@ -1,0 +1,102 @@
+﻿@using ModelNucleo.Model
+@model ModelNucleo.Model.ModelView.Transacciones_Caja_Vista
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/BordeCierre.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Transacciones de @Model.Tipo_reporte </title>
+
+</head>
+<body>
+    <h6 align="left">Fecha de Realización: @Model.Fecha_reporte.ToShortDateString()</h6>
+    <h2 align="center"> @ViewBag.nombreEmpresa</h2>
+
+
+    <h3 align="center">Reporte de Cierre de @Model.Tipo_reporte  </h3>
+<table >
+    <tr>
+        <th style="width: 50px"> Caja:</th>
+        <td>@Model.Datos_Caja.Id_Caja</td>
+    </tr>
+    <tr>
+        <th style="width: 50px">Cajero:</th>
+        <td> @Model.Datos_Caja.Id_Usuario</td>
+    </tr>
+</table>
+
+    <br/>
+    <table class="greyGridTable">
+
+        <tr>
+            <th colspan="3"><h3> Ingresos</h3></th>
+
+        </tr>
+        <tr>
+            <td colspan="2" align="left">Interés</td>
+            <td align="right">@Model.Ingreso_Interes.ToString("C")</td>
+        </tr>
+        <tr>
+
+            <td colspan="2" align="left">Comisión</td>
+            <td align="right">@Model.Ingreso_Comision.ToString("C")</td>
+        </tr>
+        <tr>
+
+            <td colspan="2" align="left">IVA</td>
+            <td align="right">@Model.Ingreso_Iva.ToString("C")</td>
+        </tr>
+        <tr>
+
+            <td colspan="2" align="left">Capital</td>
+            <td align="right">@Model.Ingreso_Capital.ToString("C")</td>
+        </tr>
+        <tr>
+            <th colspan="2"><h3>Total Ingresos</h3></th>
+            <th><h3 align="right"> @Model.Ingreso_Total.ToString("C")</h3></th>
+        </tr>
+
+        <tr>
+            <th colspan="3"><h3>Egresos</h3></th>
+        </tr>
+        <tr>
+            <td colspan="2" align="left">Desembolsos</td>
+            <td align="right">@Model.Egreso_Desembolso.ToString("C")</td>
+        </tr>
+        <tr>
+            <th colspan="2">Total Egresos</th>
+            <th><h3 align="right"> @Model.Egreso_Total.ToString("C") </h3></th>
+        </tr>
+
+        <tr>
+            <th colspan="2">Disponible en Caja</th>
+            <th><h3 align="right"> @Model.Disponible.ToString("C") </h3> </th>
+        </tr>
+
+    </table>
+
+<br />
+<br />
+
+<table cellspacing="10" align="center">
+    <thead>
+    <tr>
+        <th>________________________________</th>
+        <th>________________________________</th>
+    </tr>
+
+    <tr>
+        <th style="text-align:center">Cajero(a)</th>
+        <th style="text-align:center">Responsable</th>
+
+    </tr>
+
+    </thead>
+
+</table>
+</body>
+</html>

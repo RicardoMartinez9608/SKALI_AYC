@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ModelNucleo.Model.Configuracion_General>
+
+@{
+    ViewData["Title"] = "Configuraciones generales";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Configuraciones generales</div>
+    <div class="panel-body"></div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tipo)
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.Valor)
+            </th>*@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tipo)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.Valor)
+            </td>*@
+            <td>
+                @Html.ActionLink("Editar", "Detalle_Configuracion", new { id_configuracion=item.Id_Configuracion })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+    </div>

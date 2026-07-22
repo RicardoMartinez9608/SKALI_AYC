@@ -1,0 +1,868 @@
+﻿@model ModelNucleo.Model.Persona
+
+@{
+    //ViewData["Title"] = "Nueva_Persona";
+    Layout = "";
+}
+
+<form id="perfil_principal">
+
+    <input type="hidden" asp-for="Id_Persona" id="Id_Persona" />
+    <input type="hidden" asp-for="Estado_Socio" class="Estado_Socio" />
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <ul id="tab_inf" class="nav nav-tabs" role="tablist">
+
+                <li role="presentation" class="active">
+                    <a href="#informacion_identificacion" aria-controls="informacion_identificacion" data-toggle="tab">
+                        <span class="glyphicon glyphicon-menu-hamburger" style="color:lightblue"></span>
+                        Información identificación
+                    </a>
+                </li>
+
+                <li role="presentation">
+                    <a href="#informacion_personal" aria-controls="informacion_personal" data-toggle="tab">
+                        <span class="glyphicon glyphicon-menu-hamburger" style="color:lightblue"></span>
+                        Información personal
+                    </a>
+                </li>
+
+                <li role="presentation">
+                    <a href="#informacion_economica" aria-controls="informacion_economica" data-toggle="tab">
+                        <span class="glyphicon glyphicon-menu-hamburger" style="color:lightblue"></span>
+                        Información económica
+                    </a>
+                </li>
+
+                <li role="presentation">
+                    <a href="#informacion_laboral" aria-controls="informacion_laboral" data-toggle="tab">
+                        <span class="glyphicon glyphicon-menu-hamburger" style="color:lightblue"></span>
+                        Información Laboral y económica
+                    </a>
+                </li>
+
+                <li role="presentation">
+                    <a href="#informacion_peps" aria-controls="informacion_peps" data-toggle="tab">
+                        <span class="glyphicon glyphicon-menu-hamburger" style="color:lightblue"></span>
+                        Información PEPS
+                    </a>
+                </li>
+
+                <li role="presentation">
+                    <a href="#comentario" aria-controls="comentario" data-toggle="tab">
+                        <span class="glyphicon glyphicon-menu-hamburger" style="color:lightblue"></span>
+                        Comentarios
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="panel-body">
+            <div id="tab_contenido_inf" class="tab-content">
+
+                <div role="tabpanel" class="tab-pane active" id="informacion_identificacion">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Dui" class="control-label"></label>
+                                <input asp-for="Dui" class="form-control" />
+                                <span asp-validation-for="Dui" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="ExpiracionDocumentoIdentificacion" class="control-label">Fecha de expiración del DUI</label>
+                                <input asp-for="ExpiracionDocumentoIdentificacion" type="date" class="form-control" />
+                                <span asp-validation-for="ExpiracionDocumentoIdentificacion" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="ExpedicionDocumentoIdentifcacion" class="control-label">Fecha de expedición del DUI</label>
+                                <input asp-for="ExpedicionDocumentoIdentifcacion" type="date" class="form-control" />
+                                <span asp-validation-for="ExpedicionDocumentoIdentifcacion" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Nit" class="control-label"></label>
+                                <input asp-for="Nit" class="form-control" />
+                                <span asp-validation-for="Nit" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Pasaporte" class="control-label"></label>
+                                <input asp-for="Pasaporte" class="form-control" />
+                                <span asp-validation-for="Pasaporte" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Nacionalidad" class="control-label"></label>
+                                <input asp-for="Nacionalidad" class="form-control" />
+                                <span asp-validation-for="Nacionalidad" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                                <input asp-for="Pone_Huella" />
+                                <label asp-for="Pone_Huella" class="control-label">Con Huella</label>
+                                <span asp-validation-for="Pone_Huella" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <a  class="imprimir_accion_persona">Imprimir Acción</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="informacion_personal">
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Id_Cartera" class="control-label">Asesor</label>
+                                @Html.DropDownList("Id_Cartera", null, htmlAttributes: new { @class = "form-control" })
+                                <span asp-validation-for="Id_Cartera" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Nombres" class="control-label"></label>
+                                <input asp-for="Nombres" class="form-control" />
+                                <span asp-validation-for="Nombres" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Apellidos" class="control-label"></label>
+                                <input asp-for="Apellidos" class="form-control" />
+                                <span asp-validation-for="Apellidos" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Sexo" class="control-label"></label>
+                                @Html.DropDownList("Sexo", null, htmlAttributes: new { @class = "form-control" })
+                                <span asp-validation-for="Sexo" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="EstadoFamiliar" class="control-label">Estado Familiar</label>
+                                @Html.DropDownList("EstadoFamiliar", null, htmlAttributes: new { @class = "form-control" })
+                                <span asp-validation-for="EstadoFamiliar" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Correo" class="control-label"></label>
+                                <input asp-for="Correo" class="form-control" />
+                                <span asp-validation-for="Correo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Telefono" class="control-label">Teléfono</label>
+                                <input asp-for="Telefono" class="form-control" />
+                                <span asp-validation-for="Telefono" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Codigo" class="control-label"></label>
+                                <input asp-for="Codigo"  class="form-control" />
+                                <span asp-validation-for="Codigo" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" >
+                           
+                                <input asp-for="Usuario" type="hidden" class="form-control usuario_socio" />
+                                <span asp-validation-for="Usuario" class="text-danger"></span>
+                            </div>
+                        </div>
+                       
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Lugar y Fecha de Nacimiento</div>
+                        <div class="panel-body">
+                            <div class="row">
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Id_Departamento_Pais_Nacimiento" class="control-label">Departamento</label>
+                                        @Html.DropDownList("Id_Departamento_Pais_Nacimiento", null, htmlAttributes: new { @class = "form-control" })
+                                        <span asp-validation-for="Id_Departamento_Pais_Nacimiento" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Id_Municipio_Departamento_Nacimiento" class="control-label">Municipio</label>
+                                        @Html.DropDownList("Id_Municipio_Departamento_Nacimiento", null, htmlAttributes: new { @class = "form-control" })
+                                        <span asp-validation-for="Id_Municipio_Departamento_Nacimiento" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="FechaNacimiento" class="control-label">Fecha de Nacimiento</label>
+                                        <input asp-for="FechaNacimiento" class="form-control" />
+                                        <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Domicilio Personal</div>
+                        <div class="panel-body">
+                            <div class="row">
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Id_Departamento_Pais_Domicilio" class="control-label">Departamento</label>
+                                        @Html.DropDownList("Id_Departamento_Pais_Domicilio", null, htmlAttributes: new { @class = "form-control" })
+                                        <span asp-validation-for="Id_Departamento_Pais_Domicilio" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Id_Municipio_Departamento_Domicilio" class="control-label">Municipio</label>
+                                        @Html.DropDownList("Id_Municipio_Departamento_Domicilio", null, htmlAttributes: new { @class = "form-control" })
+                                        <span asp-validation-for="Id_Municipio_Departamento_Domicilio" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Domicilio" class="control-label">Dirección de residencia</label>
+                                        <input asp-for="Domicilio" class="form-control" />
+                                        <span asp-validation-for="Domicilio" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="row">
+
+                                @*<div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Domicilio" class="control-label">Dirección de residencia</label>
+                                        <input asp-for="Domicilio" class="form-control" />
+                                        <span asp-validation-for="Domicilio" class="text-danger"></span>
+                                    </div>
+                                </div>*@
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Residencia" class="control-label"></label>
+                                        @Html.DropDownList("Residencia", null, htmlAttributes: new { @class = "form-control" })
+                                        <span asp-validation-for="Residencia" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <hr />
+
+                            <div class="row">
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Latitud_Domicilio" class="control-label">Latitud mapa</label>
+                                        <input asp-for="Latitud_Domicilio" readonly="readonly" class="form-control" />
+                                        <span asp-validation-for="Latitud_Domicilio" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Longitud_Domicilio" class="control-label">Longitud mapa</label>
+                                        <input asp-for="Longitud_Domicilio" readonly="readonly" class="form-control" />
+                                        <span asp-validation-for="Longitud_Domicilio" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <br />
+                                        <a href="#Mantenimiento" data-toggle="modal" id="mapa_coordenadas_domicilio" class="btn btn-default">
+                                            <span class="glyphicon glyphicon-globe" style="color:darkblue"></span> Obtener coordenadas del mapa para el Domicilio
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="informacion_economica">
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+
+                                <input asp-for="Es_Empleado" />
+                                <label asp-for="Es_Empleado" class="control-label">Es empleado</label>
+                                <span asp-validation-for="Es_Empleado" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="empleado" style="display:none">
+                        <fieldset>
+                            <legend>Área de empleado</legend>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Telefono_Trabajo" class="control-label">Teléfono trabajo</label>
+                                        <input asp-for="Telefono_Trabajo" class="form-control" />
+                                        <span asp-validation-for="Telefono_Trabajo" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Cargo_Trabajo" class="control-label">Cargo trabajo</label>
+                                        <input asp-for="Cargo_Trabajo" class="form-control" />
+                                        <span asp-validation-for="Cargo_Trabajo" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Nombre_Jefe_Inmediato" class="control-label">Jefe inmediato</label>
+                                        <input asp-for="Nombre_Jefe_Inmediato" class="form-control" />
+                                        <span asp-validation-for="Nombre_Jefe_Inmediato" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Salario_Mensual" class="control-label">Salario Mensual</label>
+                                        <input asp-for="Salario_Mensual" class="form-control" />
+                                        <span asp-validation-for="Salario_Mensual" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Domicilio Trabajo</div>
+                                <div class="panel-body">
+                                    <div class="row">
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label asp-for="Id_Departamento_Pais_Direccion_Trabajo" class="control-label">Departamento</label>
+                                                @Html.DropDownList("Id_Departamento_Pais_Direccion_Trabajo", null, htmlAttributes: new { @class = "form-control" })
+                                                <span asp-validation-for="Id_Departamento_Pais_Direccion_Trabajo" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label asp-for="Id_Municipio_Departamento_Direccion_Trabajo" class="control-label">Municipio</label>
+                                                @Html.DropDownList("Id_Municipio_Departamento_Direccion_Trabajo", null, htmlAttributes: new { @class = "form-control" })
+                                                <span asp-validation-for="Id_Municipio_Departamento_Direccion_Trabajo" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label asp-for="Lugar_Trabajo" class="control-label">Lugar de trabajo</label>
+                                                <input asp-for="Lugar_Trabajo" class="form-control" />
+                                                <span asp-validation-for="Lugar_Trabajo" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                          
+                                            <div class="form-group">
+                                                <label asp-for="Direccion_Trabajo" class="control-label">Dirección del trabajo</label>
+                                                <input asp-for="Direccion_Trabajo" class="form-control" />
+                                                <span asp-validation-for="Direccion_Trabajo" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr />
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label asp-for="Latitud_Direccion_Trabajo" class="control-label">Latitud mapa</label>
+                                                <input asp-for="Latitud_Direccion_Trabajo" readonly="readonly" class="form-control" />
+                                                <span asp-validation-for="Latitud_Direccion_Trabajo" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label asp-for="Longitud_Direccion_Trabajo" class="control-label"></label>
+                                                <input asp-for="Longitud_Direccion_Trabajo" readonly="readonly" class="form-control" />
+                                                <span asp-validation-for="Longitud_Direccion_Trabajo" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <br />
+                                                <a href="#Mantenimiento" data-toggle="modal" id="mapa_coordenadas_direccion_trabajo" class="btn btn-default">
+                                                    <span class="glyphicon glyphicon-globe" style="color:darkblue"></span> Obtener coordenadas del mapa para el Domicilio
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <p></p>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input asp-for="Es_Comerciante" />
+                                <label asp-for="Es_Comerciante" class="control-label">Es comerciante</label>
+                                <span asp-validation-for="Es_Comerciante" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div id="comerciante" style="display:none">
+                        <fieldset>
+                            <legend>Área Comerciante</legend>
+                            <p></p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="Giro_Comercial" class="control-label">Tipo de Negocio</label>
+                                        <input asp-for="Giro_Comercial" class="form-control" />
+                                        <span asp-validation-for="Giro_Comercial" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="Ingresos_Mensuales" class="control-label">Ingreso mensual</label>
+                                        <input asp-for="Ingresos_Mensuales" class="form-control" />
+                                        <span asp-validation-for="Ingresos_Mensuales" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Domicilio Negocio</div>
+                                <div class="panel-body">
+                                    <div class="row">
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label asp-for="Id_Departamento_Pais_Direccion_Negocio" class="control-label">Departamento</label>
+                                                @Html.DropDownList("Id_Departamento_Pais_Direccion_Negocio", null, htmlAttributes: new { @class = "form-control" })
+                                                <span asp-validation-for="Id_Departamento_Pais_Direccion_Negocio" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label asp-for="Id_Municipio_Departamento_Direccion_Negocio" class="control-label">Municipio</label>
+                                                @Html.DropDownList("Id_Municipio_Departamento_Direccion_Negocio", null, htmlAttributes: new { @class = "form-control" })
+                                                <span asp-validation-for="Id_Municipio_Departamento_Direccion_Negocio" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label asp-for="Direccion_Negocio" class="control-label">Dirección del negocio</label>
+                                                <input asp-for="Direccion_Negocio" class="form-control" />
+                                                <span asp-validation-for="Direccion_Negocio" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr />
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label asp-for="Latitud_Direccion_Negocio" class="control-label">Latitud mapa</label>
+                                                <input asp-for="Latitud_Direccion_Negocio" readonly="readonly" class="form-control" />
+                                                <span asp-validation-for="Latitud_Direccion_Negocio" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label asp-for="Longitud_Direccion_Negocio" class="control-label">Longitud mapa</label>
+                                                <input asp-for="Longitud_Direccion_Negocio" readonly="readonly" class="form-control" />
+                                                <span asp-validation-for="Longitud_Direccion_Negocio" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <br />
+                                                <a href="#Mantenimiento" data-toggle="modal" id="mapa_coordenadas_direccion_negocio" class="btn btn-default">
+                                                    <span class="glyphicon glyphicon-globe" style="color:darkblue"></span> Obtener coordenadas del mapa para el Domicilio
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </fieldset>
+                    </div>
+
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="informacion_laboral">
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Ocupacion" class="control-label">Ocupación</label>
+                                <input asp-for="Ocupacion" class="form-control" />
+                                <span asp-validation-for="Ocupacion" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Profesion" class="control-label">Profesión según DUI</label>
+                                <input asp-for="Profesion" class="form-control" />
+                                <span asp-validation-for="Profesion" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="informacion_peps">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input asp-for="Tiene_Cargo" /> Desempeña o ha desempeñado cargo PEPS
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input asp-for="Familiar_Cargo" /> Tiene un familiar que desempeñe o ha desepeñado cargo PEPS
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input asp-for="Asociado_Cargo" /> Tiene un asociado que desempeñe o ha desepeñado cargo PEPS
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="comentario">
+
+                    <div class="form-group">
+                        <textarea asp-for="Comentario" rows="5" cols="400" class="form-control"></textarea>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</form>
+
+<p></p>
+@if (!ViewBag.EsNuevo)
+{
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <ul id="ramas_socio" class="nav nav-tabs" role="tablist">
+
+                <li role="presentation" class="active">
+                    <a href="#referencias_familiares" aria-controls="referencias_familiares" data-toggle="tab">
+                        <span class="glyphicon glyphicon-menu-hamburger" style="color:lightblue"></span>
+                        Referencias familiares
+                    </a>
+                </li>
+
+                <li role="presentation">
+                    <a href="#referencia_amistad" aria-controls="referencia_amistad" data-toggle="tab">
+                        <span class="glyphicon glyphicon-menu-hamburger" style="color:lightblue"></span>
+                        Referencias de amistad
+                    </a>
+                </li>
+
+                <li role="presentation">
+                    <a href="#referencias_bancarias" aria-controls="referencias_bancarias" data-toggle="tab">
+                        <span class="glyphicon glyphicon-menu-hamburger" style="color:lightblue"></span>
+                        Referencias bancarias
+                    </a>
+                </li>
+
+                <li role="presentation">
+                    <a href="#referencias_beneficiarios" aria-controls="referencias_beneficiarios" data-toggle="tab">
+                        <span class="glyphicon glyphicon-menu-hamburger" style="color:lightblue"></span>
+                        Beneficiarios
+                    </a>
+                </li>
+
+                @*<li role="presentation">
+                    <a href="#acciones" aria-controls="acciones" data-toggle="tab">
+                        <span class="glyphicon glyphicon-menu-hamburger" style="color:lightblue"></span>
+                        Acciones
+                    </a>
+                </li>*@
+
+                <li role="presentation">
+                    <a href="#cuenta_ahorro" aria-controls="cuenta_ahorro" data-toggle="tab">
+                        <span class="glyphicon glyphicon-menu-hamburger" style="color:lightblue"></span>
+                        Cuenta de ahorros
+                    </a>
+                </li>
+
+                <li role="presentation">
+                    <a href="#creditos" aria-controls="creditos" data-toggle="tab">
+                        <span class="glyphicon glyphicon-menu-hamburger" style="color:lightblue"></span>
+                        Créditos
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="panel-body">
+            <div id="ramas_socio_contenido" class="tab-content">
+
+                <div role="tabpanel" class="tab-pane active" id="referencias_familiares">
+                    <p></p>
+                    <a data-toggle="modal" href="#Mantenimiento" id="Nueva_Referencia_Familiar_Modal" data-backdrop="false" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-asterisk"></span> Nueva Referencia Familiar
+                    </a>
+                    <p></p>
+                    <p>
+                        Referencias agregadas:
+                        <div id="referencias_familiares_tablas"></div>
+                    </p>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="referencia_amistad">
+                    <p></p>
+                    <a data-toggle="modal" href="#Mantenimiento" id="Nueva_Referencia_Amistad_Modal" data-backdrop="false" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-asterisk"></span> Nueva Referencia Amistad
+                    </a>
+                    <p></p>
+                    <p>
+                        Referencias de amistad:
+                        <div id="referencias_amistad_tablas"></div>
+                    </p>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="referencias_bancarias">
+                    <p></p>
+                    <a data-toggle="modal" href="#Mantenimiento" id="Nueva_Referencia_Bancaria_Modal" data-backdrop="false" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-asterisk"></span> Nueva Referencia Bancaria
+                    </a>
+                    <p></p>
+                    <p>
+                        Referencias bancarias:
+                        <div id="referencias_bancaria_tablas"></div>
+                    </p>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="referencias_beneficiarios">
+                    <p></p>
+                    <a data-toggle="modal" href="#Mantenimiento" id="Nueva_Referencia_Beneficiario_Modal" data-backdrop="false" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-asterisk"></span> Nuevo beneficiario
+                    </a>
+                    <p></p>
+                    <p>
+                        Beneficiarios:
+                        <div id="referencias_beneficiarios_tablas"></div>
+                    </p>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="acciones">
+                    <p></p>
+                    <a data-toggle="modal" href="#Mantenimiento" id="Nueva_Accion_Modal" data-backdrop="false" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-asterisk"></span> Nueva acción
+                    </a>
+                    <p></p>
+                    <p>
+                        Acciones:
+                        <div id="tabla_acciones"></div>
+                    </p>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="cuenta_ahorro">
+                    <p></p>
+                    <a data-toggle="modal" href="#Mantenimiento" id="Nueva_Cuenta_Ahorro_Modal" data-backdrop="false" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-asterisk"></span> Nueva cuenta ahorro
+                    </a>
+                    <p></p>
+                    <p>
+                        Cuentas ahorro:
+                        <div id="cuentas_ahorro_tablas"></div>
+                    </p>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="creditos">
+                    <p></p>
+                    <a data-toggle="modal" href="#Mantenimiento" id="Nueva_Cuenta_Credito_Modal" data-backdrop="false" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-asterisk"></span> Nueva solicitud de crédito
+                    </a>
+                    <p></p>
+                    <p>
+                        Créditos:
+                        <div id="cuentas_credito_tablas"></div>
+                    </p>
+                </div>
+
+                <p></p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @*<a href="@Url.Action("Generar_Solicitud_Socio","Persona",new {id_persona= Model.Id_Persona})" class="form-control btn btn-primary" target="_blank">Imprimir solicitud de socio</a>*@
+                        </div>
+                    </div>
+                </div>
+
+                
+            </div>
+
+                <div id="conjunto_impresiones" style="display:none">
+                    <a href="#Mantenimiento" class="btn btn-default mostrar_select_estado" data-toggle="modal">
+                        Cambiar Estado
+                        <span class="glyphicon glyphicon-cog"></span>
+                    </a>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Imprimir
+                        <span class="glyphicon glyphicon-option-vertical"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="@Url.Action("Generar_Solicitud_Socio","Persona",new {id_persona= Model.Id_Persona})" target="_blank">
+                                <span class="glyphicon glyphicon-cloud-download"></span> Solicitud de socio
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Generar_Solicitud_Admision","Persona",new {id_persona= Model.Id_Persona})" target="_blank">
+                                <span class="glyphicon glyphicon-cloud-download"></span> Solicitud de admisión como socio
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+        </div>
+    </div>
+}
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+<script>
+
+    $(function() {
+        Validar();
+    });
+
+    function Validar() {
+        $("a.imprimir_accion_persona").click(function() {
+            var id_persona = $("#Id_Persona").val();
+            $.get("@Url.Action("Consultar_Accion", "Accion")",
+                { id_persona: id_persona },
+                function() {
+                    Imprimir_Accion(id_persona);
+                }).fail(function(error) {
+                alertify.error("El cliente no tiene acciones");
+            });
+        });
+    }
+    function Imprimir_Accion(id_persona) {
+        window.open("@Url.Action("Consultar_Accion", "Accion")?id_persona=" + id_persona);
+    }
+</script>

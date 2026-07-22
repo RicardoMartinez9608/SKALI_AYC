@@ -1,0 +1,58 @@
+﻿@model IEnumerable<ModelNucleo.Model.Cartera>
+
+<p>
+    <a href="#modal_detalle" id="nueva_cartera" class="btn btn-default" data-backdrop="false" data-toggle="modal">Nueva Cartera</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Usuario
+            </th>
+            <th>
+                Colector
+            </th>
+            <th>
+                Cartera
+            </th>
+            <th>
+               Opciones
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Cartera)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Usuario)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Colector)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Por_Defecto)
+            </td>
+            <td>
+                <input type="hidden" class="id_cartera_fila" value="@item.Id_Cartera" />
+                <a href="#" class="btn btn-default poner_pordefecto">Poner por defecto</a>
+            </td>
+            <td>
+              
+                <a href="#modal_editar"  class="btn btn-default Editar_Cartera" data-backdrop="false"
+                   data-toggle="modal">Editar Cartera</a>
+
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

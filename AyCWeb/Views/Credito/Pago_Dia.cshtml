@@ -1,0 +1,58 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Traslado_Abono>
+
+@{
+    ViewData["Title"] = "Pago_Dia";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        Pago al Día
+    </div>
+    <div class="panel-body panel-body-personalizado">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Fecha)
+                    </th>
+                    <th>
+                        Usuario
+                    </th>
+                    <th>
+                        Cliente
+                    </th>
+                    <th>
+                        Código crédito
+                    </th>
+                    <th>
+                        Para estar al día
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Fecha)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id_Usuario)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombre_Completo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Codigo_Credito)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Pago_Requerido)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

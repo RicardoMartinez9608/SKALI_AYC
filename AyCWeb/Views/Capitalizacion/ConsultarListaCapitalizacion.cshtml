@@ -1,0 +1,48 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Capitalizacion>
+@{
+    Layout = "";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Cuentahabiente
+            </th>
+            <th>
+                Cuenta
+            </th>
+           
+            <th>
+                Saldo
+            </th>
+            <th>
+                Interés Aplicado
+            </th>
+            <th>
+                Forma de Pago
+            </th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr data-id="@item.Id_Ahorro">
+                <td>@Html.DisplayFor(modelItem => item.CuentaHabiente)</td>
+                <td>@Html.DisplayFor(modelItem => item.Cuenta)</td>
+                <td>@Html.DisplayFor(modelItem => item.Saldo)</td>
+                <td>
+                    <input disabled class="valor-capitalizar" value="@item.Interes_Aplicar" />
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.FormaPago)</td>
+                <td>
+                    <input type="hidden" disabled class="idcapitalizar" value="@item.Id_Ahorro" />
+                    <input type="hidden" disabled class="iddep" value="@item.Id_Deposito_Plazo" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<input type="hidden" value="@ViewBag.Ids" id="array_lista">

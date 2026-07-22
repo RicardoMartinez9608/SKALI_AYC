@@ -1,0 +1,37 @@
+﻿@model IEnumerable<ModelNucleo.Model.Deduccion_Historial>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Valor)
+            </th>
+            <th>
+                Tipo
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Valor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tipo_Valor)
+            </td>
+            <td>
+                <input type="hidden" class="id_deduccion_desembolso_valor" value="@item.Id_Deduccion_Historial" />
+                <a href="#Mantenimiento_Adicional" class="btn btn-default mostrar_deduccion_desembolso" data-backdrop="false" data-toggle="modal">Detalle</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

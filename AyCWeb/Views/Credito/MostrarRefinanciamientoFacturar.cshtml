@@ -1,0 +1,16 @@
+﻿<div class="form-group">
+    <label>Total Gravados:</label>
+    <p class="form-control-static" id="totalGravados">@ViewBag.TotalGravados.ToString("F2")</p>
+</div>
+<div class="form-group">
+    <label>Total Excentos:</label>
+    <p class="form-control-static" id="totalExcentos">@ViewBag.TotalExcentos.ToString("F2")</p>
+</div>
+<div class="form-group">
+    <button class="btn btn-success" id="btnFacturar">Facturar</button>
+</div>
+<div id="customBlockUI" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; background:rgba(0,0,0,0.5); text-align:center;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 20px; background-color: #333; padding: 20px; border-radius: 10px;">
+        Generando DTE, por favor espera...
+    </div>
+</div>

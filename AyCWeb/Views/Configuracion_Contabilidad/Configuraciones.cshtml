@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ModelNucleo.Model.Contabilidad.Conf_Partida_Contable>
+@{
+    Layout = null;
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Identificador
+            </th>
+            <th>
+                Agencia
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id_Conf_Partida_Contable)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Identificador)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Agencia.Nombre)
+                </td>
+                <td>
+                    <input type="hidden" class="Id_Conf_Partida_Contable" value="@item.Id_Conf_Partida_Contable" />
+                    <a href="#Mantenimiento" data-toggle="modal" class="btn btn-default ver_detalle">Detalle</a>
+                    <a href="#Mantenimiento" data-toggle="modal" class="btn btn-default editar_configuracion">Editar</a>
+                    <a href="#" class="btn btn-default borrar_configuracion">Borrar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

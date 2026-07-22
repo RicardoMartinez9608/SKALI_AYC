@@ -1,0 +1,107 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Transacciones_para_Credito>
+<ayc-alerta respuesta="ViewBag.Respueta"></ayc-alerta>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                No
+            </th>
+            <th>
+                Fecha
+            </th>
+            <th>
+                Comprobante
+            </th>
+            <th>
+                Caja
+            </th>
+            <th>
+                Interés
+            </th>
+            <th>
+                BCR
+            </th>
+            <th>
+                IVA
+            </th>
+            <th>
+                Recargo
+            </th>
+
+            <th>
+                Abono
+            </th>
+            <th>
+                Pago
+            </th>
+            <th>
+                Saldo
+            </th>
+            <th>
+                Días
+            </th>
+            <th>
+                <input type="checkbox" name="todas_transacciones_credito" class="btn btn-default todas_transacciones_credito" value="todo" />
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+
+    string style = "";
+    if (item.Transacciones.Vencido)
+    { style = "color:red"; }
+
+    if (item.Transacciones.Anticipado)
+    { style = "background-color:lemonchiffon"; }
+
+    if (item.Transacciones.Puntual)
+    { style = "background-color:palegreen"; }
+    
+        <tr style=@style>
+            <td>
+                @Html.DisplayFor(modelItem => item.Transacciones.No)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Transacciones.FechaPago)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Transaccion_Caja.No_Comprobante)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Caja.Id_Caja)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Transacciones.Interes_Comision)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Transacciones.Interes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Transacciones.IvaSobreComision)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Transacciones.Recargo)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Transacciones.Abono_capital)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Transacciones.Valor_Cuota)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Transacciones.Saldo_Capital)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Transacciones.Dias)
+            </td>
+            <td>
+                <input type="hidden" class="id_transaccion_valor_credito" value="@item.Transacciones.Id_Transaccion_Credito">
+                <input type="checkbox" name="transaccion_credito" class="btn btn-default transaccion_credito" value="@item.Transacciones.Id_Transaccion_Credito" />
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

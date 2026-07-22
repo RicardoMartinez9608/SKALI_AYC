@@ -1,0 +1,24 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.ClienteVIewLite>
+
+@foreach (var item in Model) {
+
+<li class="list-group-item">
+        <p>Nombre: @Html.DisplayFor(modelItem => item.NombreCompleto)</p>
+        
+        <div class="btn-group" role="group" aria-label="...">
+            <a href="#modal_detalle" class="ver_detalle btn btn-default" data-backdrop="false" data-toggle="modal" title="Ficha">
+                <span class="glyphicon glyphicon-edit"></span>
+            </a>
+            <a class="btn btn-default" href="@Url.Action("Index","Evaluacion_Tecnica")?id_persona=@item.Id_Persona&nombre_completo=@item.Nombres @item.Apellidos" title="Evaluaciones técnicas" target="_blank">
+                <span class="glyphicon glyphicon-fire"></span>
+            </a>
+            <a class="btn btn-default" href="@Url.Action("Expedientes","Documento")?dui=@item.Dui" target="_blank" title="Documentos escaneados">
+                <span class="glyphicon glyphicon-picture"></span>
+            </a>
+            @*<a class="btn btn-default" href="@Url.Action("Relaciones","Persona")?id_persona=<%=data.Id_Persona%>&nombre_completo=<%=data.Nombres%> <%=data.Apellidos%>" target="_blank" title="Relaciones">
+            <span class="glyphicon glyphicon-registration-mark"></span>
+        </a>*@
+        </div>
+</li>
+
+}

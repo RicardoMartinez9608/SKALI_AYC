@@ -1,0 +1,94 @@
+﻿@model ModelNucleo.Model.ModelView.Colecta_Agrupada
+
+<h4>SOCIEDAD COOPERATIVA CRÉDITOS A&C DE R.L. INFORME DE COLECTA DIARIA</h4>
+    <table>
+        <tr>
+            <td>
+
+                <table class="widget-small">
+                    <tr>
+                        <th>Asesor</th>
+                        <td>@Model.Colecta_Diaria.Id_Usuario</td>
+                    </tr>
+                    <tr>
+                        <th>Fecha</th>
+                        <td>@Model.Colecta_Diaria.Fecha</td>
+                    </tr>
+                    <tr>
+                        <th><br /></th>
+                        <td><br /></td>
+                    </tr>
+                    <tr>
+                        <th>Firma</th>
+                        <td>____________________________</td>
+                    </tr>
+                </table>
+
+            </td>
+
+            <td>
+                <table class="widget-small">
+                    <tr>
+                        <th>No Inicial Recibo</th>
+                        <td>@Model.Colecta_Diaria.No_Comprobante_Inicio</td>
+                    </tr>
+                    <tr>
+                        <th>No Final Recibo</th>
+                        <td>@Model.Colecta_Diaria.No_Comprobante_Final</td>
+                    </tr>
+                    <tr>
+                        <th>Total Registros</th>
+                        <td>@Model.Colecta_Diaria.Colectas.Count()</td>
+                    </tr>
+                    <tr>
+                        <th>Valor Total</th>
+                        <td>@Model.Colecta_Diaria.Colectas.Sum(q => q.Monto).ToString("0.00")</td>
+                    </tr>
+                </table>
+            </td>
+
+            <td>
+
+                <table>
+                    <tr>
+                        <td>
+                            <b>CRÉDITO</b>
+                            <hr />
+                            <table class="widget-small">
+                                <tr>
+                                    <th>Valor</th>
+                                    <td>@Model.Colecta_Credito.Sum(s => s.Monto).ToString("0.00")</td>
+                                </tr>
+                                <tr>
+                                    <th>Registros</th>
+                                    <td>@Model.Colecta_Credito.Count()</td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <b>AHORRO</b>
+                            <hr />
+                            <table class="widget-small">
+                                <tr>
+                                    <th>Valor</th>
+                                    <td>@Model.Colecta_Ahorro.Sum(q => q.Monto).ToString("0.00")</td>
+                                </tr>
+                                <tr>
+                                    <th>Registros</th>
+                                    <td>@Model.Colecta_Ahorro.Count()</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    Uso para Jefa de Operación -Nombre y Firma-
+    <div class="Para_Firma">
+
+
+
+    </div>
+
+<hr />

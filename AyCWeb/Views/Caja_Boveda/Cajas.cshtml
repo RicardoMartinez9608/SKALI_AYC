@@ -1,0 +1,82 @@
+﻿@model IEnumerable<ModelNucleo.Model.Caja>
+
+@{
+    ViewData["Title"] = "Cajas y Bóvedas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Cajas y Bóvedas</div>
+    <div class="panel-body">
+        @if (ViewBag.ConRespuesta)
+        {
+            <ayc-alerta respuesta="ViewBag.Respuesta"></ayc-alerta>
+        }
+    <div class="well">
+        @{var usuario = ViewBag.Id_Usuario;}
+        @if (usuario != null)
+        {
+            <a href="@Url.Action("F_nueva_caja","Caja_Boveda",new { id_usuario=ViewBag.Id_Usuario})" class="btn btn-default">Nuevo</a>
+        }
+        else
+        {
+            <a href="@Url.Action("Nueva_Caja","Caja_Boveda",new { id_usuario=ViewBag.Id_Usuario})" class="btn btn-default">Nuevo</a>
+        }
+
+    </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Usuario
+                    </th>
+                    <th>
+                        Agencia
+                    </th>
+                    <th>
+                        Máquina
+                    </th>
+                    <th>
+                        Activa
+                    </th>
+                    <th>
+                        Es Bóveda
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id_Caja)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id_Usuario)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Agencia.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombre_PC)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Activa)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Boveda)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Editar", "Editar_Caja", new { id_caja = item.Id_Caja })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

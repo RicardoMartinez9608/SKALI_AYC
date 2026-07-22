@@ -1,0 +1,155 @@
+﻿@model ModelNucleo.Model.Evaluacion_Tecnica.Evaluacion
+@{
+    ViewData["Title"] = "Nuevo_Inicial";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Evaluación</div>
+    <div class="panel-body panel-body-personalizado">
+        <form asp-action="Guardar_Evaluacion">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Id_Evaluacion" type="hidden" class="form-control" />
+            <input asp-for="Id_Persona" type="hidden" value="@ViewBag.Id_Persona" class="form-control" />
+            <input asp-for="Id_Asesor" type="hidden" class="form-control" />
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="No_Dias_Buenos" class="control-label">No Días Buenos</label>
+                        <input asp-for="No_Dias_Buenos" class="form-control" />
+                        <span asp-validation-for="No_Dias_Buenos" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="No_Dias_Malos" class="control-label">No Días Malos</label>
+                        <input asp-for="No_Dias_Malos" class="form-control" />
+                        <span asp-validation-for="No_Dias_Malos" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="No_Dias_Descanso" class="control-label">No Días Descanso</label>
+                        <input asp-for="No_Dias_Descanso" class="form-control" />
+                        <span asp-validation-for="No_Dias_Descanso" class="text-danger"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Venta_Diaria_Bueno" class="control-label">Venta Diaria Bueno</label>
+                        <input asp-for="Venta_Diaria_Bueno" class="form-control" />
+                        <span asp-validation-for="Venta_Diaria_Bueno" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Venta_Diaria_Mala" class="control-label">Venta Diaria Mala</label>
+                        <input asp-for="Venta_Diaria_Mala" class="form-control" />
+                        <span asp-validation-for="Venta_Diaria_Mala" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Antiguedad_Negocio" class="control-label">Antiguedad del Negocio</label>
+                        <input asp-for="Antiguedad_Negocio" class="form-control" />
+                        <span asp-validation-for="Antiguedad_Negocio" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input asp-for="Reside_Zona_Peligrosa" /> Reside en Zona Peligrosa
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input asp-for="Referencia_Comprobada" /> Referencia Comprobada
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Monto_Credito_Mayor_Historial" class="control-label">Monto Crédito Mayor Histórico</label>
+                        <input asp-for="Monto_Credito_Mayor_Historial" class="form-control" />
+                        <span asp-validation-for="Monto_Credito_Mayor_Historial" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Mora" class="control-label">Mora</label>
+                        <input asp-for="Mora" class="form-control" />
+                        <span asp-validation-for="Mora" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Riesgo_Info_Red" class="control-label">Riesgo según InfoRed</label>
+                        <input asp-for="Riesgo_Info_Red" class="form-control" />
+                        <span asp-validation-for="Riesgo_Info_Red" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Sector_Economico" class="control-label">Sector Económico</label>
+                        <input asp-for="Sector_Economico" class="form-control" />
+                        <span asp-validation-for="Sector_Economico" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Monto" class="control-label">Monto Solicitado</label>
+                        <input asp-for="Monto" class="form-control" />
+                        <span asp-validation-for="Monto" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Cuota" class="control-label">Cuota Solicitada</label>
+                        <input asp-for="Cuota" class="form-control" />
+                        <span asp-validation-for="Cuota" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Plazo" class="control-label">Plazo Solicitado</label>
+                        <input asp-for="Plazo" class="form-control" />
+                        <span asp-validation-for="Plazo" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <br />
+                        <input type="submit" value="Guardar" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

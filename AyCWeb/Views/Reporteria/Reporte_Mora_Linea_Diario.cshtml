@@ -1,0 +1,207 @@
+﻿@model ModelNucleo.Model.ModelView.Reporte_Vencimiento_Cuotas_Mora_Diaria
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="~/css/BordeCierre.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+
+    <title>Reporte </title>
+</head>
+<body>
+    <h3 align="center">@ViewBag.nombreEmpresa</h3>
+    <table align="left">
+        <tbody>
+            <tr>
+                <td>
+                    @Model.Encabezado.dia_ejecucion
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Model.Encabezado.hora_ejecucion
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Model.Encabezado.agencia.Usuario_Agencias.Max(a => a.Id_Usuario)
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+    <br /><br />
+
+    <h4 align="center">REPORTE DE CUOTAS EN MORA LINEA ÁGIL EFECTIVO</h4>
+
+    @{
+        int centinela = 0;
+        decimal suma_saldo_cinco = 0.00M;
+        int centinela_cinco = 0;
+        decimal aldia_cinco = 0.00M;
+
+        decimal suma_saldo_seis = 0.00M;
+        int centinela_seis = 0;
+        decimal aldia_seis = 0.00M;
+    }
+    <h5 align="center">@Convert.ToDateTime(ViewBag.inicio).ToString("dd/MM/yyyy") - @Convert.ToDateTime(ViewBag.final).ToString("dd/MM/yyyy") </h5>
+    <style>
+        table tbody tr td {
+            text-align: left !important;
+            font-size: 13px !important;
+        }
+    </style>
+
+    <table class="greyGridTable">
+        <tbody>
+            @if (Model.Detalle_Vencimiento_Cuotas_Mora_Diaria != null)
+            {
+
+                <tr>
+                    <th>Código</th>
+                    <th style="width: 30%">Nombre</th>
+                    <th>Fecha Pago</th>
+                    <th>Cuota</th>
+                    <th>Pago al Día</th>
+                    <th>Último Movimiento</th>
+                    <th>Días</th>
+                    <th>Saldo</th>
+                    <th>Teléfono</th>
+                    <th>Vencimiento</th>
+                    <th>%</th>
+                </tr>
+
+                @foreach (var item in Model.Detalle_Vencimiento_Cuotas_Mora_Diaria)
+                {
+                    centinela += 1;
+                    <tr>
+                        <td>@item.Datos_Generales.Codigo_Credito</td>
+                        <td>@item.Datos_Generales.Nombre_Cliente</td>
+                        <td>@item.Datos_Generales.Fecha_Pago.ToString("dd/MM/yyyy")</td>
+                        <td>@item.Datos_Generales.Cuota.ToString("C")</td>
+                        <td>@item.Datos_Generales.Pago_Al_Dia.ToString("C")</td>
+                        <td>@item.Datos_Generales.Ultimo_Movimiento.ToString("dd/MM/yyyy")</td>
+
+                        <td>@item.Mora_Asesor.Dias</td>
+                        <td>@item.Datos_Generales.Saldo.ToString("C")</td>
+                        <td>@item.Datos_Generales.Telefono</td>
+                        <td>@item.Datos_Generales.Vencimiento.ToString("dd/MM/yyyy")</td>
+                        <td>@item.Mora_Asesor.Porcentaje_Mora</td>
+
+
+                    </tr>
+                }
+
+
+            }
+
+
+        </tbody>
+    </table>
+    <br />
+    <h2 align="center">SUBTOTALES</h2>
+    <br />
+    <table>
+        <tr>
+            <td>
+                <h2 align="center">Clientes menores o iguales a 5 dias mora</h2>
+         
+                <table style="border-collapse:separate;
+                    border-spacing: 10px;
+                    border:solid black 1px;
+                    border-radius:10px;
+                    -moz-border-radius:10px;
+                    -webkit-border-radius: 5px;text-align: center">
+                    <tbody style="text-align: center">
+                        @foreach (var item in Model.Detalle_Vencimiento_Cuotas_Mora_Diaria)
+                        {
+                            if (item.Mora_Asesor.Dias <= 5)
+                            {
+                                suma_saldo_cinco += item.Datos_Generales.Saldo;
+                                centinela_cinco += 1;
+                                aldia_cinco += item.Datos_Generales.Pago_Al_Dia;
+                            }
+                        }
+                        <tr>
+                            <th style="text-align: center">Número de Clientes  @centinela_cinco.ToString("#.##")</th>
+                            <th style="text-align: center">saldo mora  @suma_saldo_cinco.ToString("#.##")</th>
+                            <th style="text-align: center">Valor para estar al Día  @aldia_cinco.ToString("#.##")</th>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </td>
+
+            <td>
+                <h2 align="center">Clientes mayores a 6 dias mora</h2>
+            
+                <table style="border-collapse:separate;
+                    border-spacing: 10px;
+                    border:solid black 1px;
+                    border-radius:10px;
+                    -moz-border-radius:10px;
+                    -webkit-border-radius: 5px;text-align: center">
+                    <tbody style="text-align: center">
+                        @foreach (var item in Model.Detalle_Vencimiento_Cuotas_Mora_Diaria)
+                        {
+                            if (item.Mora_Asesor.Dias >= 6)
+                            {
+                                suma_saldo_seis += item.Datos_Generales.Saldo;
+                                centinela_seis += 1;
+                                aldia_seis += item.Datos_Generales.Pago_Al_Dia;
+                            }
+                        }
+                        <tr>
+                            <th style="text-align: center">Número de Clientes  @centinela_seis.ToString("#.##")</th>
+                            <th style="text-align: center">saldo mora  @suma_saldo_seis.ToString("#.##")</th>
+                            <th style="text-align: center">Valor para estar al Día  @aldia_seis.ToString("#.##")</th>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+    <br />
+    <br />
+
+
+    <table style="border-collapse:separate;
+                    border-spacing: 10px;
+                    border:solid black 1px;
+                    border-radius:10px;
+                    -moz-border-radius:10px;
+                    -webkit-border-radius: 5px;text-align: center">
+        <tbody style="text-align: center">
+          
+            <tr>
+
+
+                @if (Model != null)
+                {
+                    <th style="text-align: center">Totales por Asesor @centinela</th>
+                    <th style="text-align: center">Al día   @Model.Detalle_Vencimiento_Cuotas_Mora_Diaria.Sum(a => a.Datos_Generales.Pago_Al_Dia).ToString("C")</th>
+                    <th style="text-align: center">Cuotas   @Model.Detalle_Vencimiento_Cuotas_Mora_Diaria.Sum(a => a.Datos_Generales.Cuota).ToString("C")</th>
+                    <th style="text-align: center">Saldos   @Model.Detalle_Vencimiento_Cuotas_Mora_Diaria.Sum(a => a.Datos_Generales.Saldo).ToString("C")</th>
+                    @*<th style="text-align: center">Porcentaje   @Model.Detalle_Vencimiento_Cuotas_Mora_Diaria.Sum(a => a.Mora_Asesor.Porcentaje_Mora).ToString()</th>*@
+                }
+                else
+                {
+                    <th></th>
+                    <th style="text-align: center">Cuotas   0.00</th>
+                    <th></th>
+                    <th style="text-align: center">Al día   0.00</th>
+                }
+
+
+            </tr>
+
+        </tbody>
+
+    </table>
+</body>
+</html>

@@ -1,0 +1,85 @@
+﻿@model IEnumerable<ModelNucleo.Model.Credito>
+<div class="table-responsive">
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            Código
+        </th>
+        <th>
+            Línea
+        </th>
+        <th>
+            Cartera
+        </th>
+        <th>
+            Interés
+        </th>
+        <th>
+            Monto
+        </th>
+        <th>
+            Plazo
+        </th>
+        <th>
+            Cuotas
+        </th>
+        <th>
+            BCR
+        </th>
+        <th>
+            IVA
+        </th>
+        <th>
+            Cuota
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Codigo_Credito)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Linea_Credito_Historial.Descripcion_linea)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cartera.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Interes_Comision)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Monto_pago)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Plazo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Numero_cuotas)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Interes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Valor_IVA)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cuota_Total)
+            </td>
+            <td>
+                @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+                <input type="hidden" value="@item.Id_Credito" class="id_credito_valor" />
+                <a href="#" class="ver_transacciones_credito">Transacciones</a>
+                @*<a href="#Mantenimiento" data-toggle="modal" class="ver_codeudores">Codeudores</a>*@
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+</div>

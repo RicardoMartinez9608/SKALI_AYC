@@ -1,0 +1,145 @@
+﻿<p></p>
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">Personas</div>
+            <div class="panel-body">
+                <div class="input-group">
+                    <input type="text" class="form-control busqueda">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default BuscarPersona" type="button">Buscar</button>
+                    </span>
+                </div>
+            </div>
+            <ul class="list-group load-personas-busqueda"></ul>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="btn-group" role="group" aria-label="...">
+                    <button type="button" class="btn btn-default nuevaPersona">Nuevo</button>
+                    <button type="button" class="btn btn-default editar-persona">Editar</button>
+                    <button type="button" class="btn btn-default">Eliminar</button>
+                </div>
+            </div>
+            <div class="panel-body load-form-persona">
+                Panel content
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script>
+
+        $(".BuscarPersona").click(function () {
+            $.ajax({
+                url: "@Url.Action("Grid_Personas","Persona")",
+                data: { busqueda: $(".busqueda").val()},
+                type: "html",
+                method: "post",
+                success: function (personas) {
+                    $(".load-personas-busqueda").html(personas);
+                    /*pera ver el detalle del resultado de la lista*/
+                    $(".verDetalle").each(function (index) {
+                        $(".verDetalle").eq(index).click(function () {
+                            var valorParaDetalle = $(".valorParaDetalle").eq(index).val();
+                            VeroCrear(valorParaDetalle, false);
+                        });
+                    });
+                }
+            });
+        });
+
+        /*para crear nueva persona*/
+        $(".nuevaPersona").click(function () {
+            VeroCrear(null,true);
+        });
+
+
+        function VeroCrear(filtro,esnuevo) {
+            $.ajax({
+                url: "@Url.Action("DetallePersona","Persona")",
+                data: { filtro:filtro,esnuevo:esnuevo},
+                type: "html",
+                method: "post",
+                success: function (persona) {
+                    $(".load-form-persona").html(persona);
+
+                    /*cargar la lista de tipo de persona para elegir*/
+                    $.get("@Url.Action("Tipos_Persona","Persona")", function (select) {
+                        $(".CargarTipoPersona").html(select);
+
+                        /*Agregar otro tipo de persona a la persona*/
+                        $("#Tipo_persona").change(function () {
+                            var id_tipo_persona = $(this).val();
+                            var id_persona = $("#Id_Persona").val();
+                            $.post(
+                                "@Url.Action("CrearTipoPersonaPorPersona","Persona")",
+                                { id_persona: id_persona, id_tipo_persona: id_tipo_persona },
+                                function () {
+                                    ListaTipoPersonaPorPersona(id_persona);
+                                 });
+                        });
+                        /*termina el manejo de tipo de persona*/
+                    });
+
+                    /*manejo de referencias para la persona*/
+                    $.get("@Url.Action("DetalleReferencia","Persona")", { id_referencia:0, id_persona: 0, esNuevo: true }, function (form) {
+                        $(".formReferencia").html(form);
+                        /*guardar la nueva referencia*/
+                        $(".agregarReferencia").attr("value", "Agregar Referencia");
+                        $(".agregarReferencia").click(function () {
+                            var id_persona = $("#Id_Persona").val();
+                            var dataReferencia = $("#formReferenciaContent").serializeAnything();
+                            $.post("@Url.Action("CrearReferencia", "Persona")?id_persona=" + id_persona, dataReferencia , function () {
+                                var id_persona = $("#Id_Persona").val();
+                                ListaReferencia(id_persona);
+                            });
+                        });
+                    });
+                    var id_persona = $("#Id_Persona").val();
+                    ListaReferencia(id_persona);
+                    ListaTipoPersonaPorPersona(id_persona);
+                }
+            });
+        }
+
+        function ListaTipoPersonaPorPersona(id_persona) {
+            $.get("@Url.Action("TiposPersonaPorPersona","Persona")?id_persona=" + id_persona, function (list) {
+                $(".CargarTipoPersonaPorPersona").html(list);
+            });
+        }
+
+        function ListaReferencia(id_persona) {
+            $.get("@Url.Action("Referencias","Persona")", { id_persona: id_persona}, function (referencias) {
+                $(".ListaReferencias").html(referencias);
+                /*manejo de edicion de la referencias*/
+                $(".detalleReferencia").each(function (index) {
+                    $(".detalleReferencia").eq(index).click(function () {
+                        var id_referencia = $(".id_ReferenciaValor").eq(index).val();
+                        console.log("Ver el id: " + id_referencia);
+                        var id_persona = $("#Id_Persona").val();
+                        $.get("@Url.Action("DetalleReferencia","Persona")", { id_referencia: id_referencia, id_persona:id_persona, esNuevo: false }, function (form) {
+                            $(".formReferencia").html(form);
+                            $(".agregarReferencia").attr("value", "Editar Referencia");
+                            /*enviar la edicion a la web api*/
+                            $(".agregarReferencia").click(function () {
+                                var id_persona = $("#Id_Persona").val();
+                                var dataReferencia = $("#formReferenciaContent").serializeAnything();
+                                $.post("@Url.Action("EditarReferencia", "Persona")?id_persona=" + id_persona, dataReferencia , function () {
+                                    var id_persona = $("#Id_Persona").val();
+                                    ListaReferencia(id_persona);
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        }
+
+
+    </script>
+}

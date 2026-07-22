@@ -1,0 +1,26 @@
+﻿@using DevExtreme.AspNet.Mvc
+<div class="col-md-4">
+    @{
+        var linea = "";
+    }
+    @(
+        Html.DevExtreme().FileUploader()
+        .ID("File_Uploader")
+        .Name("Documento")
+        .Multiple(false)
+        .Accept("*")
+        .UploadMode(FileUploadMode.Instantly)
+        .UploadButtonText("Subir archivo")
+        .SelectButtonText("Subir archivo")
+        .LabelText("Soltar archivo")
+
+        .UploadUrl(Url.Action("Subir_Foto_Atm", "Documento",
+        new
+        {
+            id_banco = ViewBag.id_banco
+        }))
+        )
+
+
+
+</div>

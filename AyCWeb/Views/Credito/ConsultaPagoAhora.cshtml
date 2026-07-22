@@ -1,0 +1,116 @@
+﻿@model ModelNucleo.Model.ModelView.Datos_Credito
+
+@if (Model.Transacciones == null)
+{
+    <div class="row">
+        <div class="col-md-3">
+            <b>Interes Corriente</b>:<br />
+            0.00
+        </div>
+        <div class="col-md-3">
+            <b>Interes Pendiente</b>:<br />
+            0.00
+        </div>
+        <div class="col-md-3">
+            <b>Cobertura Pendiente</b>:<br />
+            0.00
+        </div>
+        <div class="col-md-3">
+            <b>Total Intereses</b>:<br />
+            0.00
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <b>Recargos Acumulados</b>:<br />
+            0.00
+        </div>
+        <div class="col-md-3">
+            <b>Recargos Pendientes</b>:<br />
+            0.00
+        </div>
+        <div class="col-md-3">
+            <b>Saldo Capital</b>:<br />
+            0.00
+        </div>
+        <div class="col-md-3">
+            <b>Recargo</b>:<br />
+            0.00
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <b>Capital Mora</b>:<br />
+            0.00
+        </div>
+        <div class="col-md-3">
+            <b>Para cancelar el crédito</b>:<br />
+            0.00
+        </div>
+        <div class="col-md-3" style="color: dodgerblue">
+            <b style="color: dodgerblue">Pago al día</b>:<br />
+            0.00
+        </div>
+        @*<div class="col-md-3">
+            <input type="hidden" id="id_credito" value="0.00" />
+            <button id="ajustar_saldo" class="btn btn-danger btn-sm">Ajustar saldo</button>
+        </div>*@
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-3">
+            <b>Interes Corriente</b>:<br />
+            @Model.Interes_Diario.ToString("0.00")
+        </div>
+        <div class="col-md-3">
+            <b>Interes Pendiente</b>:<br />
+            @Model.Interes_Pendiente.ToString("0.00")
+        </div>
+        <div class="col-md-3">
+            <b>Cobertura Pendiente</b>:<br />
+            @Model.Cobertura_Pendiente.ToString("0.00")
+        </div>
+        <div class="col-md-3">
+            <b>Total Intereses</b>:<br />
+            @Model.Total_Intereses.ToString("0.00")
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <b>Recargos Acumulados</b>:<br />
+            @Model.Recargos_Acumulados.ToString("0.00")
+        </div>
+        <div class="col-md-3">
+            <b>Recargos Pendientes</b>:<br />
+            @Model.Recargos_Pendientes.ToString("0.00")
+        </div>
+        @*<div class="col-md-3">
+            <b>Saldo Capital</b>:<br />
+            @Model.Transacciones.Saldo_Capital.ToString("C")
+        </div>*@
+        <div class="col-md-3">
+            <b>Recargo</b>:<br />
+            @Model.Transacciones.Recargo.ToString("C")
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <b>Capital Mora</b>:<br />
+            @Model.Capital_Mora.ToString("0.00")
+        </div>
+        <div class="col-md-3">
+            <b>Para cancelar el crédito</b>:<br />
+            @Model.Transacciones.Pago_para_cancelar.ToString("C")
+        </div>
+        <div class="col-md-3" style="color: dodgerblue">
+            <b style="color: dodgerblue">Pago al día</b>:<br />
+            @Model.Pago_al_Dia.ToString("C")
+        </div>
+        @*<div class="col-md-3">
+            <input type="hidden" id="id_credito" value="@Model.Transacciones.Id_Credito" />
+            <button id="ajustar_saldo" class="btn btn-danger btn-sm">Ajustar saldo</button>
+        </div>*@
+    </div>
+}

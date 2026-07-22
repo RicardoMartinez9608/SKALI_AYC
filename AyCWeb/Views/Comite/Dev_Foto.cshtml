@@ -1,0 +1,38 @@
+﻿@using DevExtreme.AspNet.Mvc
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <h4>Seleccione la Fotografía a Subir</h4>
+    </div>
+    <div class="panel-body panel-body-personalizado">
+        <div class="row">
+            <div class="col-md-12">
+
+                @{
+                    var linea = "";
+                }
+                @(
+                    Html.DevExtreme().FileUploader()
+                    .ID("File_Uploader")
+                    .Name("Documento")
+                    .Multiple(false)
+                    .Accept("*")
+                    .UploadMode(FileUploadMode.Instantly)
+                    .UploadButtonText("Subir archivo")
+                    .SelectButtonText("Subir archivo")
+                    .LabelText("Soltar archivo")
+
+                    .UploadUrl(Url.Action("Subir_Foto_Comite_Ampliado", "Comite",
+                    new
+                    {
+                        id_comite = ViewBag.id_comite
+                    }))
+                    )
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+</div>

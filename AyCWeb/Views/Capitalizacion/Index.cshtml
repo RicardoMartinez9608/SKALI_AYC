@@ -1,0 +1,599 @@
+﻿@{
+    ViewData["Title"] = "Capitalizaçión";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Capitalización</div>
+    <div class="panel-body panel-body-personalizado">
+
+        <p></p>
+        <div class="row">
+            <div class="col-md-4">
+                Línea de Ahorro:
+                <div id="id_linea_ahorro_combo"></div>
+            </div>
+            <div class="col-md-4">
+                Fecha:
+                <input type="date" id="fecha" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <br />
+                <input type="button" class="btn btn-primary" value="Capitalización Individual" data-toggle="modal" data-target="#modalCapitalizacionIndividual" />
+
+            </div>
+            <div class="col-md-6">
+                <br />
+                <div class="btn-group" role="group">
+                    <input type="button" class="btn btn-default" value="Mostrar" id="CargarGrid" />
+                    <input type="button" class="btn btn-default" value="Ejecutar" id="EjecutarCapitalizacion" />
+                    <input type="button" class="btn btn-success" value="Exportar a Excel" id="ExportarExcel" />
+                </div>
+            </div>
+           
+        </div>
+        
+        <p id="mensajeCapitalizacion"></p>
+
+        <p id="grid_ahorro_capitalizar">
+
+        </p>
+    </div>
+</div>
+<!-- Modal Capitalización Individual -->
+<div class="modal fade" id="modalCapitalizacionIndividual" tabindex="-1" role="dialog" aria-labelledby="tituloCapitalizacionIndividual">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="tituloCapitalizacionIndividual">Capitalización Individual</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" name="dui_buscar" id="dui_buscar" placeholder="introduzca un DUI válido" class="form-control" />
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" id="buscarpordui">Buscar</button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Cuenta de Ahorro:</label>
+                    <input id="Id_Ahorro" type="hidden" class="form-control" />
+                    <div id="Cuentas_Ahorro"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha Capitalizacion:</label>
+                    <input type="date" id="fechaCapitalizacionIndividual" class="form-control" />
+
+                </div>
+
+                <div id="mensaje_modal"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-info" id="btnConsultarCapitalizacion">Consultar capitalización</button>
+                <button type="button" class="btn btn-success" id="btnCapitalizarIndividualModal" disabled>Capitalizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
+     id="modalConfirmacionCapitalizacion"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    Confirmar Capitalización
+                </h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div id="resumenCapitalizacion"></div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-default"
+                        data-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <button type="button"
+                        class="btn btn-success"
+                        id="btnConfirmarCapitalizacion">
+                    Capitalizar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<div id="blockUI" style="display:none;">
+    <div class="blockui-overlay"></div>
+    <div class="blockui-content">
+        <div class="spinner"></div>
+        <p>Procesando, por favor espere...</p>
+    </div>
+</div>
+<style>
+    .blockui-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 9998;
+    }
+
+    .blockui-content {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #fff;
+        padding: 25px 40px;
+        border-radius: 8px;
+        text-align: center;
+        z-index: 9999;
+        box-shadow: 0 0 15px rgba(0,0,0,.3);
+        font-weight: bold;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 10px auto;
+        border: 4px solid #ccc;
+        border-top: 4px solid #007bff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+<script>
+    const urlEjecutarTraslados = '@Url.Action("EjecutarTraslados", "Capitalizacion")';
+
+    $(document).ready(function () {
+        $.get("@Url.Action("Lineas_Ahorro","Componentes")", function (lineas) {
+            $("#id_linea_ahorro_combo").html(lineas);
+        });
+        $("#EjecutarCapitalizacion").prop("disabled", true);
+        BuscarPorDui();
+    });
+    function BuscarPorDui() {
+        $("#buscarpordui").click(function () {
+            var filtro = $("#dui_buscar").val();
+            $.get("@Url.Action("JDetalle_Persona", "Persona")",
+                { filtro: filtro },
+                function (detalle) {
+                    $("#Id_Cliente").val(detalle.id_Persona);
+
+                    Obtener_Ahorro_Combo(detalle.id_Persona);
+
+                }).fail(function (error) {
+                    alertify.error("No se encontró esa identificación");
+                });
+        });
+    }
+    function Obtener_Ahorro_Combo(id_persona) {
+        $.get("@Url.Action("AhorrosCombo", "Componentes")",
+            { id_persona: id_persona },
+            function (selectCombo) {
+                $("#Cuentas_Ahorro").html(selectCombo);
+              //  Cuenta_Ahorro_Seleccionado();
+            }
+        );
+    }
+    $(document).on("change", "#id_ahorro_combo", function () {
+        var idAhorro = $(this).val();
+        $("#Id_Ahorro").val(idAhorro); // guardar el valor en el hidden
+    });
+
+
+    $(document).on("click", "#btnConsultarCapitalizacion", function () {
+        var idAhorro = $("#Id_Ahorro").val();
+        var fecha = $("#fechaCapitalizacionIndividual").val();
+    
+
+        if (!idAhorro || idAhorro == "0") {
+            alertify.warning("Debe seleccionar una cuenta de ahorro.");
+            return;
+        }
+        if (!fecha) {
+            alertify.warning("Debe seleccionar una fecha de capitalización.");
+            return;
+        }
+
+        $("#mensaje_modal").html('<div class="text-center text-info">Consultando capitalización...</div>');
+
+        $.get("@Url.Action("ConsultarCapitalizacionAhorroIndividual", "Capitalizacion")",
+            { id_ahorro: idAhorro, fecha: fecha },
+            function (vistaParcial) {
+                $("#mensaje_modal").html(vistaParcial);
+
+                if ($("#mensaje_modal").find("table").length > 0) {
+                    $("#btnCapitalizarIndividualModal").prop("disabled", false);
+                } else {
+                    $("#btnCapitalizarIndividualModal").prop("disabled", true);
+                }
+            }
+        ).fail(function (error) {
+            console.error(error);
+            alertify.error("Error al consultar la capitalización.");
+            $("#mensaje_modal").html('<div class="text-danger">Ocurrió un error al consultar.</div>');
+        });
+    });
+    $(document).on("click", "#btnCapitalizarIndividualModal", function () {
+        var idAhorro = $("#Id_Ahorro").val();
+        var fecha = $("#fechaCapitalizacionIndividual").val();
+        var valor = parseFloat($("#valor_capitalizar").val()) || 0;
+
+        if (!idAhorro || idAhorro == "0") {
+            alertify.warning("Debe seleccionar una cuenta de ahorro.");
+            return;
+        }
+
+        if (!fecha) {
+            alertify.warning("Debe seleccionar una fecha de capitalización.");
+            return;
+        }
+        var datos = [];
+         datos.push ({
+            IdAhorro: parseInt(idAhorro),   
+            Fecha: new Date(fecha).toISOString(),  
+            Valor: parseFloat(valor)
+        });
+        $("#mensaje_modal").html('<div class="alert alert-info">Ejecutando capitalización...</div>');
+
+        $.ajax({
+            type: "POST",
+            url: urlEjecutarTraslados,
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(datos),
+            success: function (respuesta) {
+                $("#mensaje_modal").html('<div class="alert alert-success">' + respuesta + '</div>');
+                alertify.success("Capitalización ejecutada correctamente.");
+                $("#btnCapitalizarIndividualModal").prop("disabled", true);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                $("#mensaje_modal").html('<div class="alert alert-danger">Error al ejecutar la capitalización.</div>');
+                alertify.error("Error al ejecutar la capitalización.");
+            }
+        });
+    });
+    $("#ExportarExcel").click(function () {
+        var table = document.querySelector("table");
+        var rows = table.rows;
+        var csvData = [];
+
+        // Iterar sobre las filas de la tabla
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var rowData = [];
+
+            // Iterar sobre las celdas de cada fila
+            for (var j = 0; j < row.cells.length; j++) {
+                var cell = row.cells[j];
+                rowData.push(cell.innerText || cell.textContent);
+            }
+
+            // Unir las celdas por comas y agregar la fila al array csvData
+            csvData.push(rowData.join(","));
+        }
+
+        // Unir las filas por saltos de línea
+        var csvString = csvData.join("\n");
+
+        // Crear un Blob para el CSV
+        var blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+
+        // Crear un enlace para descargar el archivo
+        var link = document.createElement("a");
+        if (link.download !== undefined) {  // Soporte para descargar en la mayoría de los navegadores
+            var url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "capitalizacion.csv");  // Nombre del archivo
+            link.style.visibility = 'hidden';
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    });
+    $("#CargarGrid").click(function () {
+        var id_linea_ahorro = $("#Id_Linea_Ahorro").val();
+        var fecha = $("#fecha").val();
+        $.ajax({
+            url: "@Url.Action("ConsultarListaTrasladoActuales","Capitalizacion")",
+            method: "get",
+            data: {
+                id_linea_ahorro: id_linea_ahorro,
+                fecha: fecha
+            },
+            beforeSend: function () {
+                $("#grid_ahorro_capitalizar").html("<div class='alert alert-warning' role='alert'>Por favor, espere un momento...</div>");
+            },
+            success: function (lista) {
+                $("#grid_ahorro_capitalizar").html(lista);
+                alertify.success("La lista se ha cargado, puede que no tenga cuentas de ahorro pendientes de procesar");
+                EjecutarCapitalizacion();
+                $("#EjecutarCapitalizacion").prop("disabled", false);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $("#grid_ahorro_capitalizar").html("<div class='alert alert-danger' role='alert'>" + thrownError + "</div>");
+            }
+        });
+    });
+
+        // function EjecutarCapitalizacion() {
+        //     $("#EjecutarCapitalizacion")
+        //         .off("click")
+        //         .on("click", function () {
+
+        //             var lista_pagos = [];
+        //             var fechaSeleccionada = $("#fecha").val();
+
+        //             // $("table tbody tr").each(function () {
+        //             //     var id = $(this).data("id");
+        //             //     var valor = parseFloat($(this).find(".valor-capitalizar").val()) || 0;
+
+        //             //     lista_pagos.push({
+        //             //         IdAhorro: id,
+        //             //         Valor: valor,
+        //             //         Fecha: fechaSeleccionada
+        //             //     });
+        //             // });
+        //                 $("table tbody tr").each(function () {
+
+        //                     if ($(this).attr("data-excluido") === "true") {
+        //                         return true; // continúa con la siguiente fila
+        //                     }
+
+        //                     var id = $(this).data("id");
+        //                     var valor = parseFloat($(this).find(".valor-capitalizar").val()) || 0;
+
+        //                     lista_pagos.push({
+        //                         IdAhorro: id,
+        //                         Valor: valor,
+        //                         Fecha: fechaSeleccionada
+        //                     });
+
+        //                 });
+        //             $.ajax({
+        //                 type: "POST",
+        //                 url: urlEjecutarTraslados,
+        //                 contentType: "application/json; charset=utf-8",
+        //                 data: JSON.stringify(lista_pagos),
+        //                 beforeSend: function () {
+        //                     blockUI("Ejecutando capitalización...");
+        //                     $("#EjecutarCapitalizacion").prop("disabled", true); // ✅ evita doble click
+        //                     $("#mensajeCapitalizacion").html("<div class='alert alert-warning'>Procesando...</div>");
+        //                 },
+        //                 success: function (Respuesta) {
+        //                      unblockUI();
+        //                     $("#mensajeCapitalizacion").html("<div class='alert alert-success'>" + Respuesta + "</div>");
+        //                     alertify.success(Respuesta);
+        //                 },
+        //                 error: function () {
+        //                      unblockUI();
+        //                     $("#EjecutarCapitalizacion").prop("disabled", false);
+        //                     alertify.error("Error al ejecutar la capitalización");
+        //                 }
+        //             });
+        //         });
+        //  }
+            function EjecutarCapitalizacion() {
+
+        $("#EjecutarCapitalizacion")
+            .off("click")
+            .on("click", function () {
+
+                var excluidos = [];
+
+                var incluidos = 0;
+
+                $("table tbody tr").each(function () {
+
+                    if ($(this).attr("data-excluido") === "true") {
+
+                        excluidos.push(
+                            $(this)
+                                .find(".nombre-ahorrante")
+                                .text()
+                        );
+                    }
+                    else {
+                        incluidos++;
+                    }
+
+                });
+
+                var html = "";
+
+                html += "<p><strong>Cuentas a procesar:</strong> "
+                    + incluidos + "</p>";
+
+                html += "<p><strong>Cuentas excluidas:</strong> "
+                    + excluidos.length + "</p>";
+
+                if (excluidos.length > 0) {
+
+                    html += "<hr>";
+
+                    html += "<p><strong>Excluidos:</strong></p>";
+
+                    html += "<ul>";
+
+                    excluidos.forEach(function (nombre) {
+
+                        html += "<li>" + nombre + "</li>";
+
+                    });
+
+                    html += "</ul>";
+                }
+
+                $("#resumenCapitalizacion").html(html);
+
+                $("#modalConfirmacionCapitalizacion").modal("show");
+
+            });
+
+    }
+        $("#btnConfirmarCapitalizacion").click(function () {
+
+        $("#modalConfirmacionCapitalizacion").modal("hide");
+
+        var lista_pagos = [];
+
+        var fechaSeleccionada = $("#fecha").val();
+
+        $("table tbody tr").each(function () {
+
+            if ($(this).attr("data-excluido") === "true") {
+                return true;
+            }
+
+            var id = $(this).data("id");
+
+            var valor = parseFloat(
+                $(this)
+                    .find(".valor-capitalizar")
+                    .val()
+            ) || 0;
+
+            lista_pagos.push({
+                IdAhorro: id,
+                Valor: valor,
+                Fecha: fechaSeleccionada
+            });
+
+        });
+
+        $.ajax({
+
+            type: "POST",
+
+            url: urlEjecutarTraslados,
+
+            contentType: "application/json; charset=utf-8",
+
+            data: JSON.stringify(lista_pagos),
+
+            beforeSend: function () {
+
+                blockUI("Ejecutando capitalización...");
+
+                $("#EjecutarCapitalizacion")
+                    .prop("disabled", true);
+
+                // $("#mensajeCapitalizacion")
+                //     .html("<div class='alert alert-warning'>Procesando...</div>");
+            },
+
+            success: function (Respuesta) {
+
+                unblockUI();
+
+                $("#mensajeCapitalizacion")
+                    .html("<div class='alert alert-success'>" +
+                        Respuesta +
+                        "</div>");
+
+                alertify.success(Respuesta);
+            },
+
+            error: function () {
+
+                unblockUI();
+
+                $("#EjecutarCapitalizacion")
+                    .prop("disabled", false);
+
+                alertify.error(
+                    "Error al ejecutar la capitalización"
+                );
+            }
+
+        });
+
+    });
+        function blockUI(mensaje) {
+            if (mensaje) {
+                $("#blockUI p").text(mensaje);
+            }
+            $("#blockUI").fadeIn(200);
+        }
+
+    function unblockUI() {
+        $("#blockUI").fadeOut(200);
+    }
+
+        $(document).on("click", ".excluir-registro", function () {
+
+        var fila = $(this).closest("tr");
+
+        var boton = $(this);
+
+        if (!fila.hasClass("fila-excluida")) {
+
+            fila.addClass("fila-excluida");
+
+            fila.attr("data-excluido", "true");
+
+            fila.find(".estado-capitalizacion")
+                .html("<span class='label label-danger'>Excluido</span>");
+
+            boton
+                .removeClass("btn-warning")
+                .addClass("btn-success")
+                .text("Incluir");
+        }
+        else {
+
+            fila.removeClass("fila-excluida");
+
+            fila.removeAttr("data-excluido");
+
+            fila.find(".estado-capitalizacion")
+                .html("<span class='label label-success'>Incluido</span>");
+
+            boton
+                .removeClass("btn-success")
+                .addClass("btn-warning")
+                .text("Excluir");
+        }
+
+    });
+        
+</script>

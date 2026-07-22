@@ -1,0 +1,36 @@
+﻿@model IEnumerable<ModelNucleo.Model.Accion>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Cliente
+            </th>
+            <th>
+                Fecha
+            </th>
+            <th>
+                Cancelada
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Persona.NombreCompleto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Creado_En.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cancelado)
+            </td>
+
+            <td>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

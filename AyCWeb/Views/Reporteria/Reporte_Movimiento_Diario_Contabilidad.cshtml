@@ -1,0 +1,98 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Movimientos_Contabilidad>
+
+
+<table class="table" id="movimientos_diario_contabilidad">
+    <thead>
+        <tr>
+            <th>
+                Código
+            </th>
+
+            <th>
+                Concepto
+            </th>
+            <th>
+                
+            </th>
+            <th>
+              
+            </th>
+        </tr>
+      
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                <b>@Html.DisplayFor(modelItem => item.Codigo)</b>
+            </td>
+            <td>
+                <b>@Html.DisplayFor(modelItem => item.Concepto)</b>
+            </td>
+            <td>
+                <b>Verificar Partida Contable</b>
+                <input type="checkbox" class="btn btn-default id_asiento"  value="@Html.DisplayFor(modelItem => item.id_asiento_contable)" />
+
+            </td>
+        </tr>
+            <tr>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                </td>
+                <td>
+                    <b>Cargo</b>
+                </td>
+                <td>
+                    <b>Abono</b>
+                </td>
+            </tr>
+            @foreach (var nombre in item.Distribucion)
+            {
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => nombre.Cuenta_Contable)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => nombre.Concepto)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => nombre.Cargo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => nombre.Abono)
+                    </td>
+                </tr>
+
+            }
+             <tr>
+                <td>
+                    <b></b>
+                </td>
+
+            </tr>
+            <tr>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                </td>
+                <td>
+                    <b>@Html.DisplayFor(modelItem => item.totales.Total_Cargo)</b>
+                </td>
+                <td>
+                    <b>@Html.DisplayFor(modelItem => item.totales.Total_Abono)</b>
+                </td>
+            </tr>
+        }
+     
+    </tbody>
+</table>
+<script>
+
+</script>

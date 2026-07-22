@@ -1,0 +1,81 @@
+﻿<div class="row" style="text-align:center">
+    <div class="col-md-9">
+        <input type="hidden" id="id_fotografia" value="@ViewBag.id_fotografia_comprobante" />
+        <img src="data:image/png;base64,@ViewBag.foto" />
+
+    </div>
+    <div class="col-md-3">
+        @if (ViewBag.estado_fotografia == false)
+        {
+            <div class="alert alert-warning" role="alert" style="text-align:center">
+                <b>Fotografía no validada</b>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-success" role="alert" style="text-align:center">
+                <b>Fotografía validada</b>
+            </div>
+        }
+        <div style="text-align:center">
+            <input type="button" value="Verificar Fotografía" class="btn btn-primary verificar_fotografia" />
+        </div>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        VerificarFotografia();
+    });
+
+    function VerificarFotografia() {
+        $("input.verificar_fotografia").click(function () {
+            var id_fotografia = $("#id_fotografia").val();
+            $.post("@Url.Action("Validar_Fotografia", "Documento")",
+                { id_fotografia_atm: id_fotografia },
+                function (perfil) {
+                    alertify.success(perfil);
+                    MOModal_Abono_Ahorro_Hide();
+                    Reporte();
+                }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+        });
+            
+    }
+    function Reporte() {
+        
+
+            var inicio = $("#inicio").val();
+            var final = $("#final").val();
+
+            $.get("@Url.Action("Listado_Verificacion", "Documento")",
+                {
+                    inicio: inicio,
+                    fin: final
+                },
+                function (lista) {
+                    $("#listapagos").html(lista);
+                   Abrir_Documentos();
+                });
+        
+    }
+    function Abrir_Documentos() {
+        $("a.editar_meta").each(function (index) {
+            $("a.editar_meta").eq(index).click(function () {
+                var id_foto_atm = $("input.id_fotografia_atm").eq(index).val();
+
+                $.get("@Url.Action("Detalle_Fotografia_Atm", "Documento")",
+                    { id_fotografia_atm: id_foto_atm },
+                    function (perfil) {
+                        $("div.agregar_meta").html(perfil);
+                    });
+
+            });
+        });
+    }
+    function MOModal_Abono_Ahorro_Hide() {
+        $('#Mantenimiento').modal('hide');
+    }
+
+</script>

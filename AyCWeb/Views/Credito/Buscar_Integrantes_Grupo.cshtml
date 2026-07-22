@@ -1,0 +1,170 @@
+﻿<div>
+    <div class="input-group">
+        <input type="text"  id="buscar_grupo" placeholder="introduzca nombre del grupo" class="form-control" />
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="button" id="buscargrupo">Buscar</button>
+        </span>
+    </div>
+</div>
+<input type="hidden"  id="id_grupo" />
+<div class="grupales">
+   
+</div>
+
+<br />
+<div id="para_grupales">
+    <div >
+        <div class="input-group">
+            <input type="text" name="dui_buscar" id="dui_buscar_grupo" placeholder="introduzca un DUI válido" class="form-control" />
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="buscarporduigrupo">Buscar</button>
+            </span>
+        </div>
+    </div>
+    <div id="Form_Credito"style="display:none">
+        <div class="form-group">
+            <input id="Id_Credito" type="hidden" class="form-control" />
+            Cuentas de Crédito:
+            <div id="Cuentas_Credito"></div>
+        </div>
+        <div class="row">
+            
+            <div class="col-md-3">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" id="agregar_credito">Agregar</button>
+                </span>
+            </div>
+        </div>
+
+        </div>
+</div>
+<br />
+<div id="integrantes">
+
+</div>
+<script>
+    $(function () {
+        BuscarPorDui();
+        Obtener_Grupo();
+        $("#para_grupales").hide();
+    });
+    function BuscarPorDui() {
+        $("#buscarporduigrupo").click(function () {
+            var filtro = $("#dui_buscar_grupo").val();
+            $.get("@Url.Action("JDetalle_Persona","Persona")",
+                { filtro: filtro },
+                function (detalle) {
+                    $("#Id_Cliente").val(detalle.id_Persona);
+                    Obtener_Credito_Combo(detalle.id_Persona);
+                    alertify.success("Se ha encontrado");
+                }).fail(function (error) {
+                alertify.error("No se encontró esa identificación");
+            });
+        });
+    }
+    function Obtener_Credito_Combo(id_persona) {
+        $.get("@Url.Action("CreditosCombos","Componentes")",
+            { id_persona: id_persona },
+            function (selectCombo) {
+                $("#Cuentas_Credito").html(selectCombo);
+                $("#Form_Credito").show();
+
+            }
+        );
+    }
+
+    function Obtener_Grupo()
+    {
+        $("#buscargrupo").click(function () {
+            var nombre_grupo = $("#buscar_grupo").val();
+            $.ajax({
+                url: "@Url.Action("Consulta_Grupo","Credito")",
+                method: 'get',
+                data:{
+                    nombre_grupo: nombre_grupo,
+                },
+                success: function (tabla) {
+                    $("#para_grupales").show();
+                    $(".grupales").html("<div class='alert alert-success' role='alert'>"+"Grupo encontrado, ingrese los integrantes" + "</div>");
+                    $("#id_grupo").val(tabla);
+                    Guardar_Lider();
+                    Obtener_Integrantes();
+                    Guardar_Persona_Grupo();
+                    
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".grupales").html("<div class='alert alert-danger' role='alert'>" + "El grupo no existe"+"</div>");
+                }
+            });
+
+        });
+    }
+    function Obtener_Integrantes()
+    {
+        var nombre_grupo = $("#buscar_grupo").val();
+            $.ajax({
+                url: "@Url.Action("Integrantes_Grupo","Credito")",
+                method: 'get',
+                data: {
+                    nombre_grupo: nombre_grupo,
+                },
+                success: function (tabla) {
+                    $("#integrantes").html(tabla);
+                    BorrarDetalle_Grupal();
+                }
+        });
+    }
+
+    function Guardar_Persona_Grupo() {
+        $("#agregar_credito").click(function() {
+            var id_credito = $("#id_credito_combo").val();
+            var id_grupo = $("#id_grupo").val();
+            var es_lider = false;
+            $.post("@Url.Action("Guardar_Integrante_Grupo", "Credito")",
+                {
+                    id_credito: id_credito,
+                    id_grupo: id_grupo,
+                    es_lider : es_lider
+                },
+                function (correcto) {
+                    Obtener_Integrantes();
+                    $("#es_lider").prop('checked', false);
+                    alertify.success(correcto);
+            }).fail(function (error) {
+                alertify.error(error.responseText);
+                console.log(error);
+            });
+        });
+    }
+    function Guardar_Lider() {
+        var id_credito = $("#form_credito #Id_Credito").val();
+            var id_grupo = $("#id_grupo").val();
+            var es_lider = true;
+
+            $.post("@Url.Action("Cambiar_Lider", "Credito")",
+                {
+                    id_credito: id_credito,
+                    id_grupo: id_grupo,
+                    es_lider : es_lider
+                },
+                function (correcto) {
+                    Obtener_Integrantes();
+                    alertify.success(correcto);
+                }).fail(function (error) {
+                alertify.error(error.responseText);
+                console.log(error);
+            });
+    }
+    function BorrarDetalle_Grupal() {
+        $(".borrar_detalle").each(function (index) {
+            $(".borrar_detalle").eq(index).click(function () {
+                $.post("@Url.Action("Eliminar_Detalle_Grupal","Credito")",
+                    { id_detalle_grupo: $("input.id_detalle").eq(index).val() },
+                    function (resultado) {
+                        Obtener_Integrantes();
+                        alertify.success(resultado);
+                    });
+            });
+        });
+    }
+</script>

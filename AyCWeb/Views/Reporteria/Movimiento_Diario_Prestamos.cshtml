@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewData["Title"] = "Reporte Movimiento Diario de Prestamos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Movimiento Diario de Prestamos</div>
+    <div class="panel-body">
+        <div class="well">
+            <div class="row">
+                <div class="col-md-3" id="agencias">
+                    <div class="form-group">
+                        <div id="id_agencia"></div>
+                    </div>
+                </div>
+                <div class="col-md-3" id="carteras">
+                    <div class="form-group">
+                        <div id="id_cartera"></div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input type="date" name="fecha" class="form-control" id="fecha" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-default" id="Cargar">Cargar Datos</button>
+                </div>
+              
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-default" id="CargarPDF"> Generar PDF</button>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-default" id="CargarEXCEL"> Generar EXCEL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">Movimiento Diario de Prestamos</div>
+            <div class="panel-body">
+                <div id="listapagos"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        ListaCarteras();
+        Cargar_Agencias();
+        Reporte_Carteras();
+        Reporte_Carteras_PDF();
+        CargarExcel();
+    });
+   function ListaCarteras() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol == "Administrador") {
+            $("#Id_Agencia").change(function () {
+                var id_agencia = $("#Id_Agencia").val();
+                $.get("@Url.Action("Carteras", "Componentes")?id_agencia="+id_agencia, function (agencias) {
+                    $("#id_cartera").html(agencias);
+                });
+            });
+
+        } else if (rol == "") {
+            $("#agencias").css("display", "none");
+            $("#carteras").css("display", "none");
+        }else {
+            $("#agencias").css("display", "none");
+            Cargar_Carteras_Agencia();
+        }
+    }
+   function Cargar_Agencias() {
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia").html(agencias);
+            ListaCarteras();
+        });
+   }
+   function Cargar_Carteras_Agencia() {
+        $.get("@Url.Action("Carteras", "Componentes")",function (agencias) {
+            $("#id_cartera").html(agencias);
+        });
+    }
+
+    function Reporte_Carteras_PDF() {
+        $("#CargarPDF").click(function () {
+
+            var fecha = $("#fecha").val();
+            var id_cartera = $("#Id_Cartera").val();
+            var id_agencia = $("#Id_Agencia").val();
+            window.open("@Url.Action("Reporte_Movimiento_Diario_Prestamos","Reporteria")?fecha_reporte=" + fecha + "&id_cartera=" + id_cartera +"&id_agencia="+id_agencia);
+        });
+    }
+     function Reporte_Carteras() {
+        $("#Cargar").click(function () {
+
+            var fecha = $("#fecha").val();
+            var id_cartera = $("#Id_Cartera").val();
+            var id_agencia = $("#Id_Agencia").val();
+             $.get("@Url.Action("Reporte_Movimiento_Diario_Prestamos_Vista", "Reporteria")",
+                 {
+                     fecha_reporte:fecha,
+                     id_cartera: id_cartera,
+                     id_agencia: id_agencia
+                 },
+            function (lista) {
+                $("#listapagos").html(lista);
+            });
+        });
+    }
+    function CargarExcel() {
+        $("#CargarEXCEL").click(function () {
+            generateexcel("movimientos_diario_prestamos");
+        });
+    }
+   
+
+    function generateexcel(tableid) {
+        var tmpElemento = document.createElement('a');
+        var data_type = 'data:application/vnd.ms-excel';
+        var tabla_div = document.getElementById(tableid);
+        var tabla_html = tabla_div.outerHTML.replace(/ /g, '%20');
+        tmpElemento.href = data_type + ', ' + tabla_html;
+        tmpElemento.download = 'Movimiento_Diario_Prestamos.xls';
+        tmpElemento.click();
+    }
+</script>

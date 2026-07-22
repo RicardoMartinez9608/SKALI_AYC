@@ -1,0 +1,157 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Movimiento_Diario_Prestamos>
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/BordeCierre.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Reporte Movimiento Prestamos</title>
+</head>
+<body>
+    <table align="center">
+        <thead>
+            <tr>
+                <td style="width: 199px">
+                    <h6 align="left"> emision: @ViewBag.emision @ViewBag.usuario</h6>
+                </td>
+                <th style="width: 450px">
+                    <h2 align="center">@ViewBag.nombreEmpresa</h2>
+                </th>
+                <td style="width: 200px">
+                </td>
+            </tr>
+        </thead>
+    </table>
+    <h3 align="center">INFORME EN DETALLE DE CARGOS Y ABONOS</h3>
+    <p></p>
+    <h4 align="center"> Periodo: @ViewBag.fecha</h4>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cartera)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <b> @Html.DisplayFor(modelItem => item.Cartera)</b>
+
+                    </td>
+                </tr>
+                <tr>
+                </tr>
+                <tr>
+
+                    @foreach (var nombre in item.datos_linea)
+                    {
+                    <tr>
+                        <td>
+
+                            Linea
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => nombre.Linea_Credito)
+                        </td>
+                    </tr>
+                    @foreach (var datos in nombre.datos)
+                    {
+                        <tr>
+                            <td></td>
+                            <td>
+                                @Html.DisplayFor(modelItem => datos.codigo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => datos.persona)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => datos.valor)
+                            </td>
+                        </tr>
+                    }
+
+
+                }
+
+                    </tr>
+
+                }
+
+
+        </tbody>
+    </table>
+
+
+
+    @{ decimal total = 0.00M;}
+
+    <table class="table">
+        <thead>
+            <tr>
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                </tr>
+                <tr>
+
+                    @foreach (var nombre in item.datos_linea)
+                    {
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    @foreach (var datos in nombre.datos)
+                    {
+                        total += datos.valor;
+                    }
+
+
+                }
+
+                    </tr>
+
+                }
+
+
+        </tbody>
+    </table>
+    <table style="border-collapse:separate;
+                    border-spacing: 10px;
+                    border:solid black 1px;
+                    border-radius:10px;
+                    -moz-border-radius:10px;
+                    -webkit-border-radius: 5px;text-align: center">
+        <tbody style="text-align: center">
+            <tr>
+                <th style="text-align: center"></th>
+                <th style="text-align: center">Total</th>
+                <th style="text-align: center"></th>
+                <th style="text-align: center">  Total = @total.ToString("#.##")</th>
+            </tr>
+
+        </tbody>
+
+    </table>
+   
+</body>
+</html>
+

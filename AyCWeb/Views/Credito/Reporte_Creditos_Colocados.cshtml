@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewData["Title"] = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using DocumentFormat.OpenXml.Wordprocessing
+@model IEnumerable<ModelNucleo.Model.ModelView.Creditos_Colocados>
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="~/css/Reporte.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Reporte Créditos aprobados</title>
+
+</head>
+<body>
+
+<h3 align="center">@ViewBag.nombreEmpresa</h3>
+<table align="center">
+    <thead>
+    <tr>
+        <td style="width: 200px">
+            <h5 align="left">  @ViewBag.fechaactual</h5>
+        </td>
+        <th style="width: 400px">
+            <h2 align="center">DESEMBOLSO DE COMITE DE FECHA @ViewBag.fecha</h2>
+        </th>
+        <td style="width: 200px">
+            <h5 align="right">  N° Acta: --</h5>
+        </td>
+
+    </tr>
+
+    </thead>
+</table>
+
+<table class="greyGridTable">
+    <tbody>
+    <tr>
+        <th> Código</th>
+        <th> Nombre</th>
+        <th> Monto</th>
+        <th>Tramites</th>
+        <th>Refinanciamiento</th>
+        <th>Total</th>
+    </tr>
+    @{
+        int centinela = 0;
+    }
+    @foreach (var item in Model)
+    {
+        centinela += 1;
+        <tr>
+            <td>@item.Codigo_Credito</td>
+            <td>@item.Nombre_Cliente</td>
+            <td>@item.Monto.ToString("C")</td>
+            <td>@item.Tramites.ToString("C")</td>
+            <td>@item.Refinanciamiento.ToString("C")</td>
+            <td>@item.Total.ToString("C")</td>
+
+        </tr>
+    }
+
+    </tbody>
+</table>
+<br />
+<table style="border-collapse:separate;
+                    border-spacing: 10px;
+                    border:solid black 1px;
+                    border-radius:10px;
+                    -moz-border-radius:10px;
+                    -webkit-border-radius: 5px;text-align: center">
+    <tbody style="text-align: center">
+        <tr>
+            <th style="text-align: center">@centinela</th>
+            <th style="text-align: center">CRÉDITOS DESEMBOLSADOS </th>
+            <th style="text-align: center"> @Model.Sum(a => a.Monto).ToString("C") </th>
+            <th style="text-align: center"> @Model.Sum(a => a.Tramites).ToString("C")</th>
+            <th style="text-align: center"> @Model.Sum(a => a.Refinanciamiento).ToString("C")</th>
+            <th style="text-align: center"> @Model.Sum(a => a.Total).ToString("C")</th>
+        </tr>
+
+    </tbody>
+
+</table>
+<br />
+<br />
+
+<table cellspacing="10" align="center">
+    <thead>
+    <tr>
+        
+        <th>________________________________</th>
+        <th>________________________________</th>
+      
+    </tr>
+
+    <tr>
+        <th style="text-align:center">Firma y Nombre Responsable de Desembolso</th>
+        <th style="text-align:center">Firma y Nombre Responsable de Arqueo</th>
+
+    </tr>
+
+    </thead>
+
+</table>
+</body>
+</html>

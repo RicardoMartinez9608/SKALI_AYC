@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Fondo Agencia Inicial";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Asignación de Fondos a Agencia INICIAL</div>
+    <div class="panel-body">
+        <div class="form-group">
+            <label for="Id_Agencia" class="control-label">Agencia</label>
+            <div id="id_agencia_combo"></div>
+
+        </div>
+        
+        <div class="form-group">
+            <label for="Monto" class="control-label">Monto</label>
+            <input name="Monto" Id="Monto" class="form-control" />
+
+        </div>
+
+        <hr />
+
+        <div class="form-group">
+            <input type="button" id="Aplicar" class="btn btn-default" value="Aplicar" />
+        </div>
+
+    </div>
+</div>
+<script>
+    $(function() {
+        Cargar_Agencia();
+    });
+
+    function Cargar_Agencia() {
+        $.get("@Url.Action("Agencias_Combo", "Componentes")",
+            function(agencias) {
+                $("#id_agencia_combo").html(agencias);
+                Enviar_Fondos();
+            });
+    }
+
+    function Enviar_Fondos() {
+        $("#Aplicar").click(function () {
+            var monto = $("#Monto").val();
+            var id_agencia = $("#Id_Agencia").val();
+            $.post("@Url.Action("Remesar_Fondo_Inicial", "Caja_Boveda")",
+                { monto: monto,id_agencia:id_agencia},
+                function (resultado) {
+                    alertify.success(resultado);
+                }).fail(function (badrequest) {
+                alertify.error(badrequest.responseText);
+            });
+        });
+    }
+
+</script>

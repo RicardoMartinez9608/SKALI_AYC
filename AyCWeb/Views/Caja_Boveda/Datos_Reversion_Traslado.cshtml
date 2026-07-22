@@ -1,0 +1,81 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Transacciones_Reversion_Traslado>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            @*<th>
+                @Html.DisplayNameFor(model => model.id_Transaccion_Credito)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.id_Transaccion_Caja)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.id_Transaccion_Ahorro)
+            </th>*@
+            <th>
+                Cliente
+            </th>
+            <th>
+                Fecha de Traslado
+            </th>
+            <th>
+                Caja
+            </th>
+            <th>
+                Crédito
+            </th>
+            <th>
+                Monto de Traslado
+            </th>
+            <th>
+                Ahorro
+            </th>
+            <th>
+                Monto de Retiro
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            @*<td>
+            @Html.DisplayFor(modelItem => item.id_Transaccion_Credito)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.id_Transaccion_Caja)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.id_Transaccion_Ahorro)
+        </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.nombre_persona)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fecha_Traslado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.numero_caja)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.codigo_credito)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.valor_traslado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.codigo_ahorro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.valor_retiro)
+            </td>
+            <td>
+                <input type="hidden" class="id_transaccion_ahorro" value="@item.id_Transaccion_Ahorro" />
+                <input type="hidden" class="id_transaccion_credito" value="@item.id_Transaccion_Credito" />
+                <input type="button" value="Revertir"  data-toggle="modal" class="btn btn-primary revertir_traslado"/>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,79 @@
+﻿
+@{
+    ViewData["Title"] = "Impresion_Acciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Acciones pendientes de imprimir</div>
+    <div class="panel-body panel-body-personalizado">
+        <div class="impresiones"></div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="Mantenimiento">
+    <div class="modal-dialog" style="width:400px; height:200px">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title">Registrar certificado e imprimir</h4>
+            </div>
+
+            <div class="modal-body">
+                No Acción: <b class="codigo_seleccionado"></b>
+                <div class="form-group">
+                    <label class="control-label">Número de certificado</label>
+                    <input type="text" id="No_Certificado" name="No_Certificado" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <input type="button" id="registrar_certificado" value="Registrar certificado" class="form-control" />
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        Cargar_Acciones();
+    });
+
+    function Cargar_Acciones() {
+        $.get(
+            "@Url.Action("Acciones_Pendientes","Accion")",
+            {},
+            function (acciones) {
+                $("div.impresiones").html(acciones);
+                Imprimir_Accion();
+        });
+    }
+
+
+    function Imprimir_Accion() {
+        $("a.imprimir_accion").each(function (index) {
+            $("a.imprimir_accion").eq(index).click(function () {
+                var codigo = $("input.codigo").eq(index).val();
+                var id_accion = $("input.id_accion").eq(index).val();
+                ///llenar los datos del pop
+                $("b.codigo_seleccionado").html(codigo);
+                EjecutarCertificado(id_accion);
+            });
+        });
+    }
+
+    function EjecutarCertificado(id_accion) {
+        $("#registrar_certificado").click(function () {
+            var no_certificado = $("#No_Certificado").val();
+            window.open("@Url.Action("Registrar_Certificado", "Accion")?id_accion=" + id_accion + "&no_certificado=" + no_certificado);
+        });
+    }
+
+</script>

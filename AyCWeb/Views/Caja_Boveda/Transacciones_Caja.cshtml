@@ -1,0 +1,155 @@
+﻿@model IEnumerable<ModelNucleo.Model.Transaccion_Caja>
+
+@{
+    ViewData["Title"] = "Transacciones de Caja";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Transacciones de Caja</div>
+    <div class="panel-body">
+        <div class="well">
+            <form asp-action="Transacciones_Caja">
+                <input type="date" name="fecha" class="form-control"/>
+                <input type="hidden" name="id_caja" value="0"/>
+                <input type="submit" value="Filtrar"/>
+            </form>
+        </div>
+        <hr />
+
+    </div>
+</div>
+
+
+<h2>Transacciones_Caja</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id_Transaccion_Caja)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id_Caja)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id_Tipo_Transaccion)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Monto)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Fecha)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.No_Comprobante)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id_Transaccion_Credito)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id_Transaccion_Ahorro)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id_Transaccion_Simple)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Saldo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Creado_En)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Eliminado_En)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Modificado_En)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Creado_Por)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Eliminado_Por)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Modificado_Por)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Modificado)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Borrado_Logico)
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Transaccion_Caja)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Caja)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Tipo_Transaccion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Monto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fecha)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.No_Comprobante)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Transaccion_Credito)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Transaccion_Ahorro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Transaccion_Simple)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Saldo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Creado_En)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Eliminado_En)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Modificado_En)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Creado_Por)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Eliminado_Por)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Modificado_Por)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Modificado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Borrado_Logico)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

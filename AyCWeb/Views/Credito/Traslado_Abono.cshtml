@@ -1,0 +1,238 @@
+﻿
+@{
+    ViewData["Title"] = "Traslado_Abono";
+    Layout = "";
+}
+
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="form-group">
+
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div id="cargar_agencias"></div>
+    </div>
+    <div class="col-lg-6">
+        <div class="form-group">
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="form-group">
+            <input type="radio" name="fecha_traslado" id="fecha_traslado" checked="checked" value="false" />
+            <label for="fecha_traslado">Traslado fecha corriente</label>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="form-group">
+            <input type="radio" name="fecha_traslado" id="fecha_traslado" value="true" />
+            <label for="fecha_traslado">Traslado fecha diferente a la corriente</label>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        @DateTime.Now
+    </div>
+    <div class="col-lg-6">
+        <div class="form-group">
+            <input type="date" name="fecha_abono" id="fecha_abono" class="form-control" />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4">
+        <div class="form-group">
+            <input type="button" id="mostrar_traslados" value="Mostrar Traslados" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="form-group">
+            <input type="button" id="exportar_Excel" value="Exportar Excel" class="form-control"
+                   onclick="generateexcel('table_traslados')"/>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="form-group">
+            <input type="button" id="ejecutar_traslados" value="Ejecutar Traslados" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="form-group">
+            <input type="button" id="ejecutar_factura" value="Generar Factura" class="form-control" />
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="form-group">
+            <input type="button" id="generarDte" value="Generar DTE" class="form-control" />
+        </div>
+    </div>
+
+</div>
+<div id="customBlockUI" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; background:rgba(0,0,0,0.5); text-align:center;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 20px; background-color: #333; padding: 20px; border-radius: 10px;">
+        Generando DTE, por favor espera...
+    </div>
+</div>
+<p class="resultado_hecho"></p>
+<div class="mensaje"></div>
+<div class="traslados"></div>
+
+
+
+<script>
+    $(function () {
+        $.get("@Url.Action("Agencias_Combo","Componentes")", function (combo) {
+            $("#cargar_agencias").html(combo);
+            /*mostrar la lista*/
+            Obtener_Traslados();
+
+        });
+    });
+
+    function Obtener_Traslados()
+    {
+        $("#mostrar_traslados").click(function () {
+            var especificar_fecha = $('input:radio[name=fecha_traslado]:checked').val() == 'true' ? true : false;
+            var fecha_especifica = $("#fecha_abono").val();
+            var id_agencia = $("#Id_Agencia").val();
+
+            $.ajax({
+                url: "@Url.Action("Traslados","Credito")",
+                method: 'get',
+                data:{
+                    id_agencia: id_agencia,
+                    especificar_fecha: especificar_fecha,
+                    fecha_especifica: fecha_especifica
+                },
+                beforeSend: function () {
+                    $(".mensaje").html("<div class='alert alert-warning' role='alert'>Por favor, espere un momento</div>");
+                },
+                success: function (tabla) {
+                    $(".mensaje").html("");
+                    $(".traslados").html("");
+                    $(".traslados").html(tabla);
+                    CalcularTotalPagos();
+                    Ejecutar_Traslados();
+                    Facturar();
+                    GenerarDte();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".mensaje").html("<div class='alert alert-danger' role='alert'>" + thrownError + "</div>");
+                }
+            });
+
+        });
+    }
+    function CalcularTotalPagos() {
+        let total = 0;
+
+        // Itera sobre las filas de la tabla generada dinámicamente
+        $("#table_traslados tbody tr").each(function () {
+            const cellValue = $(this).find("td").eq(5).text() || "0"; // Obtiene la celda "Requerido"
+            total += parseFloat(cellValue.replace(/[^0-9.-]+/g, "")) || 0; // Suma el valor formateado
+        });
+
+        // Muestra el total en el elemento designado
+        $("#totalPagos").text(total.toLocaleString('es-MX', {
+            style: 'currency',
+            currency: 'MXN'
+        }));
+    }
+    function Ejecutar_Traslados() {
+        $("#ejecutar_traslados").click(function () {
+            var lista_pagos = $("#array_lista").val();
+
+            $.ajax({
+                url: "@Url.Action("Ejecutar_Traslados", "Credito")",
+                method: 'post',
+                data:{
+                    lista_pagos: lista_pagos
+                },
+                beforeSend: function () {
+                    $(".mensaje").html("<div class='alert alert-warning' role='alert'>Por favor, espere un momento...</div>");
+                },
+                success: function (respuesta) {
+                    $(".mensaje").html("");
+                    $("p.resultado_hecho").html(respuesta);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".mensaje").html("<div class='alert alert-danger' role='alert'>" + thrownError + "</div>");
+                }
+            });
+
+        });
+    }
+    function Facturar() {
+        $("#ejecutar_factura").click(function () {
+            var lista_pagos = $("#array_lista").val();
+           
+
+          
+                var form = $('<form>', {
+                    method: 'POST',
+                    action: '@Url.Action("Ejecutar_factura", "Credito")',
+                    target: '_blank'
+                });
+
+                form.append($('<input>', {
+                    type: 'hidden',
+                    name: 'lista_pagos',
+                    value: lista_pagos
+                }));
+
+                form.append($('<input>', {
+                    type: 'hidden',
+                    name: 'isDte',
+                    value: false
+                }));
+
+                $('body').append(form);
+                form.submit();
+                form.remove();
+            
+        });
+    }
+    function GenerarDte() {
+        $("#generarDte").click(function () {
+            var lista_pagos = $("#array_lista").val();
+            var isDte = true; 
+                document.getElementById("customBlockUI").style.display = "block";
+                // Si es DTE, usar AJAX y mostrar respuesta en el div
+                $.ajax({
+                    url: '@Url.Action("Ejecutar_factura", "Credito")',
+                    method: 'POST',
+                    data: {
+                        lista_pagos: lista_pagos,
+                        isDte: true
+                    },
+                    success: function (data) {
+                        document.getElementById("customBlockUI").style.display = "none";
+                        $(".mensaje").html("");
+                        $(".resultado_hecho").html("");
+                        $(".mensaje").html('<div class="alert alert-success">' + data + '</div>');
+                    },
+                    error: function (xhr) {
+                    $(".mensaje").html("");
+                    $(".resultado_hecho").html("");
+
+                        var err = xhr.responseText || "Error al generar DTE.";
+                        $(".mensaje").html('<div class="alert alert-danger">' + err + '</div>');
+                    }
+                });
+         
+        });
+    }
+    function generateexcel(tableid) {
+        var table= document.getElementById(tableid);
+        var html = table.outerHTML;
+        window.open('data:application/vnd.ms-excel,' + escape(html));
+    }
+</script>

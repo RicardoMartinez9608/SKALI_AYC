@@ -1,0 +1,63 @@
+﻿@model IEnumerable<ModelNucleo.Model.Accion>
+
+@{
+    Layout = null;
+}
+<p></p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Código
+                    </th>
+                    <th>
+                        Cliente
+                    </th>
+                    <th>
+                        Cantidad
+                    </th>
+                    <th>
+                        Precio unitario
+                    </th>
+                    <th>
+                        Precio total
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Codigo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Persona.NombreCompleto)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cantidad_Accion)
+                        </td>
+                        <td>
+                            @item.Valor_Unitario.ToString("C")
+                        </td>
+                        <td>
+                            @item.Valor_Total.ToString("C")
+                        </td>
+                        <td>
+                            <input type="hidden" value="@item.Id_Accion" class="id_accion" />
+                            <input type="hidden" value="@item.Codigo" class="codigo" />
+
+                            @*@if (!item.Cancelado)
+                            {
+                                <a href="#Mantenimiento_Adicional" data-toggle="modal" class="registrar_cobro_accion">Caja</a>
+                            }*@
+                            @if (!item.Esta_Impreso)
+                            {
+                                <a href="#Mantenimiento" data-toggle="modal" class="imprimir_accion">Imprimir acción</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>

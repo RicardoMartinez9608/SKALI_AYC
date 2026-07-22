@@ -1,0 +1,185 @@
+﻿@model ModelNucleo.Model.ModelView.Liquidez_Vista
+@{
+    Layout = null;
+
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    @if (Model.Agencia != null)
+    {
+        <link href="~/css/Reporte.css" rel="stylesheet"/>
+        <meta name="viewport" content="width=device-width"/>
+        <title>Reporte de Liquidez de @Model.Agencia</title>
+    }
+    else
+    {
+        <link href="~/css/Reporte.css" rel="stylesheet"/>
+        <meta name="viewport" content="width=device-width"/>
+        <title>Reporte de Liquidez de ---</title>
+    }
+   
+</head>
+<body>
+        <table align="left">
+        <tbody>
+         
+            <tr>
+                <td>
+                   @Model.Generado_Por
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+    <h3 align="center">@ViewBag.nombreEmpresa</h3>
+    <h4 align="center">REPORTE DE LIQUIDEZ</h4>
+    <table class="greyGridTable">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Fecha</th>
+                <th>Saldo Anterior</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tr>
+            <td></td>
+            <td> @Convert.ToDateTime(Model.Fecha_Reporte).ToString("dd/MM/yyyy")</td>
+           <td></td>
+             <td align="right">@Model.Ultimo_Saldo.ToString("C")</td>
+            <td></td>
+        </tr>
+
+    </table>
+
+    <p></p>
+
+    <h4 align="left">Remesas y Desembolsos</h4>
+
+    <table class="greyGridTable">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+                <th>Saldo</th>
+                <th>Caja</th>
+            </tr>
+        </thead>
+        @foreach (var fila in Model.Transacciones.Where(f => f.Flujo == ModelNucleo.Model.ModelView.Tipo_Flujo.Remesas_Desembolsos))
+        {
+            <tr>
+                <td>@Convert.ToDateTime(@fila.Fecha).ToString("dd/MM/yyyy") </td>
+                <td>@fila.Categoria_Tipo.Descripcion</td>
+                <td align="right">@fila.Monto.ToString("C")</td>
+                <td align="right">@fila.Saldo.ToString("C")</td>
+                <td>@fila.Categoria_Tipo.Caja</td>
+            </tr>
+        }
+
+        <tr>
+            <td></td>
+            <td></td>
+            <td align="right">@Model.Total_Remesas_Desembolso.ToString("C")</td>
+            <td></td>
+            <td></td>
+        </tr>
+
+    </table>
+
+
+    <h4 align="left">Facturas</h4>
+
+    <table class="greyGridTable">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+                <th>Saldo</th>
+                <th>Caja</th>
+            </tr>
+        </thead>
+        @foreach (var fila in Model.Transacciones.Where(f => f.Flujo == ModelNucleo.Model.ModelView.Tipo_Flujo.Facturas))
+        {
+            <tr>
+                <td>@Convert.ToDateTime(@fila.Fecha).ToString("dd/MM/yyyy")</td>
+                <td>@fila.Categoria_Tipo.Descripcion</td>
+                <td align="right">@fila.Monto.ToString("C")</td>
+                <td align="right">@fila.Saldo.ToString("C")</td>
+                <td>@fila.Categoria_Tipo.Caja</td>
+            </tr>
+        }
+
+        <tr>
+            <td></td>
+            <td></td>
+            <td align="right">@Model.Total_Facturas.ToString("C")</td>
+            <td></td>
+            <td></td>
+        </tr>
+
+    </table>
+
+
+    <h4 align="left">Colectas y Cheques</h4>
+
+    <table class="greyGridTable">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+                <th>Saldo</th>
+                <th>Caja</th>
+            </tr>
+        </thead>
+        @foreach (var fila in Model.Transacciones.Where(f => f.Flujo == ModelNucleo.Model.ModelView.Tipo_Flujo.Colecta_Cheque))
+        {
+            <tr>
+                <td>@Convert.ToDateTime(@fila.Fecha).ToString("dd/MM/yyyy")</td>
+                <td>@fila.Categoria_Tipo.Descripcion</td>
+                <td align="right">@fila.Monto.ToString("C")</td>
+                <td align="right">@fila.Saldo.ToString("C")</td>
+                <td>@fila.Categoria_Tipo.Caja</td>
+            </tr>
+        }
+
+        <tr>
+            <td></td>
+            <td></td>
+            <td align="right">@Model.Total_Colecta_Cheque.ToString("C")</td>
+            <td></td>
+            <td></td>
+        </tr>
+
+    </table>
+
+
+    <h4 align="left">Disponibilidad</h4>
+
+    <table class="greyGridTable">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Disponibilidad</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tr>
+            <td></td>
+            <td></td>
+            <td align="right">@Model.Disponibilidad.ToString("C")</td>
+            <td></td>
+            <td></td>
+        </tr>
+
+    </table>
+
+</body>
+</html>

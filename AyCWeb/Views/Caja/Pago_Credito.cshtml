@@ -1,0 +1,194 @@
+﻿
+@{
+    ViewData["Title"] = "Pago de Crédito";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string baseUrl = Html.ViewContext.HttpContext.Request.PathBase.Value.ToString();
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Pago de Crédito</div>
+    <div class="panel-body panel-body-personalizado">
+        <div id="mensajes"></div>
+        <p></p>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="input-group">
+                    <input type="text" name="dui_buscar" id="dui_buscar" placeholder="introduzca un DUI/Código válido completo" class="form-control" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="buscarpordui">Buscar</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <p></p>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <table>
+                    <tr>
+                        <th>Nombre completo: </th>
+                        <td><span class="nombre_completo"></span></td>
+                    </tr>
+                    <tr>
+                        <th>DUI: </th>
+                        <td><span class="dui"></span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <p></p>
+
+        <div class="well">
+            <div class="btn-group btn-group-lg" role="group" aria-label="...">
+                <div class="creditos btn-group" role="group">
+                    <input type="number" min="0" id="valor" placeholder="Monto Transacción" class="form-control limpiar" />
+                </div>
+                @*<div class="btn-group " role="group">
+                    <input type="number" id="valor" placeholder="Monto Transacción" class="form-control limpiar solo-numero" />
+                </div>*@
+                <div class="btn-group" role="group">
+                    <button class="btn btn-default abono" type="button">Registrar Abono</button>
+                </div>
+            </div>
+            @Html.Partial("_Herramienta_Caja_Transaccion")
+        </div>
+        <p></p>
+        <div class="transaccionesCredito" style="overflow-y: scroll; height:300px;"></div>
+        <p>
+            <table>
+                <tr>
+                    <td style="background-color:palegreen;padding:4px"> Puntual </td>
+                    <td style="background-color:lemonchiffon;padding:4px"> Anticipado </td>
+                    <td style="background-color:red;padding:4px"> Vencido </td>
+                </tr>
+            </table>
+        </p>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="Modal_Para_Abono" tabindex="-1" role="dialog" aria-labelledby="Modal_Para_AbonoLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Transacción de Crédito</h4>
+            </div>
+            <div class="modal-body">
+                <div class="consultaParaPago"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" id="guardar_pago_credito" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="Modal_Para_Abono_Ahorro" tabindex="-1" role="dialog" aria-labelledby="Modal_Para_AbonoLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Crédito Con Ahorro Programado</h4>
+            </div>
+            <div class="modal-body">
+                 <div id="mensaje_abono_ahorro"></div>
+                <div class="datos_para_deposito">
+                     <div class="datos_ahorro"></div>
+                <div class="row">
+                     <div class="col-md-3">
+                         <label  class="control-label">Cuenta Ahorro</label>
+                         <div class="Datos_Deposito"></div>
+                     </div>
+                     <div class="col-md-3">
+                          <label class="control-label">No Comprobante</label>
+                        <input class="form-control" id="comprobante_credito_ahorro" type="number" />
+                     </div>
+                     <div class="col-md-3">
+                          <label class="control-label">Monto</label>
+                        <input class="form-control" id="valor_credito_ahorro"  type="number" />
+                     </div>
+                      <div class="col-md-3">
+                           <label class="control-label">Depositar</label>
+                         <button type="button" id="guardar_deposito_credito" class="btn btn-primary">Depositar</button>
+                     </div>
+                </div>
+                </div>
+               
+                 <div class="detalle_abono_ahorro"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" id="guardar_pago_credito_ahorro" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="Modal_Calculadora" tabindex="-1" role="dialog" style="align-content: center !important">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Cálculo de Vuelto</h4>
+            </div>
+            <div class="modal-body" >
+                <div class="consultaCalculadora"></div>
+            </div>
+            <div class="modal-footer">
+              
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="Modal_Para_Comprobante" style="align-content: center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Ingrese el No. de Comprobante</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Ingrese el número de comprobante para realizar un pago</label>
+                        <br />
+                        <label class="control-label">No Comprobante</label>
+                        <input class="form-control" id="numero_comprobante" type="number" />
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" id="siguiente_comprobante" class="btn btn-primary">Continuar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="customBlockUI" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; background:rgba(0,0,0,0.5); text-align:center;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 20px; background-color: #333; padding: 20px; border-radius: 10px;">
+        Generando DTE, por favor espera...
+    </div>
+</div>
+<script src="~/js/manejo/manejo_caja.js"></script>
+
+<script>
+    $(function () {
+        constructor("@baseUrl");
+        $("#dui_buscar").mask("00000000-0");
+      
+    });
+
+    function BotonesAsesores() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol !== "Administrador" && rol !== "Jefe" && rol  ) {
+            $('.revertir').hide();
+          
+        }
+    }
+</script>

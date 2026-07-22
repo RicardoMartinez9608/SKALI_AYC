@@ -1,0 +1,14 @@
+﻿.round_table {
+    margin-top: .5em;
+    margin-bottom: .5em;
+    margin-left: 1em;
+    margin-right: .5em;
+    text-align: center;
+    width: 380px;
+    border-collapse: separate;
+    border-spacing: 10px;
+    border: solid black 1px;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 5px;
+}

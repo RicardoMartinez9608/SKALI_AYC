@@ -1,0 +1,91 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Detalle_Efectivo_Vista>
+@{
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="well">
+            Billetes
+        </div>
+        <table class="table table-striped">
+            <tr>
+                <th></th>
+                <th>Cantidad</th>
+                <th></th>
+                <th>Valor</th>
+            </tr>
+            @foreach (var item in Model.Where(c => c.Denominacion.tipo == "Billete"))
+            {
+                <tr>
+                    <th scope="col" style="height: 50px; text-align: right">
+                        @item.Denominacion.denominacion.ToString("C")
+                    </th>
+                    <td style="width: 225px">
+                        <input type="hidden" class="denominacion" name="denominacion[]" value="@item.Denominacion.Id_denominacion" />
+                        <input type="hidden" class="valor_denominiacion" value="@item.Denominacion.denominacion" />
+                        <input id="Billete_Cantidad_@item.Denominacion.denominacion" name="cantidad[]" class="form-control cantidad" style="border-radius: 5px; border: 1px solid black" />
+                    </td>
+                    <th style="text-align: center">
+                        -
+                    </th>
+                    <td style="width: 225px">
+                        <span id="Billete_Valor_@item.Denominacion.denominacion" class="form-control valor" style="border-radius: 5px; border: 1px solid black"></span>
+
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+
+    <div class="col-md-6">
+        <div class="well">
+            Monedas
+        </div>
+        <table class="table table-striped">
+            <tr>
+                <th></th>
+                <th>Cantidad</th>
+                <th></th>
+                <th>Valor</th>
+            </tr>
+            @foreach (var item in Model.Where(c => c.Denominacion.tipo == "Moneda"))
+            {
+                <tr>
+                    <td style="text-align: right">
+                        @item.Denominacion.denominacion.ToString("C")
+                    </td>
+                    <td style="width: 225px">
+                        <input type="hidden" class="denominacion" name="denominacion[]" value="@item.Denominacion.Id_denominacion" />
+                        <input type="hidden" class="valor_denominiacion" value="@item.Denominacion.denominacion" />
+                        <input id="Moneda_Cantidad_@item.Denominacion.denominacion" name="cantidad[]" class="form-control cantidad" style="border-radius: 5px; border: 1px solid black" />
+                    </td>
+                    <td style="text-align: center">
+                        -
+                    </td>
+                    <td style="width: 225px">
+                        <span id="Moneda_Valor_@item.Denominacion.denominacion" class="form-control valor" style="border-radius: 5px; border: 1px solid black"></span>
+
+                    </td>
+                </tr>
+            }
+
+            <tr>
+                <td style="text-align: right">
+                </td>
+                <td style="width: 225px">
+                    Total En Efectivo
+                </td>
+                <td style="text-align: center">
+                    -
+                </td>
+                <td style="width: 225px">
+                    <span id="efectivo_total" class="form-control" style="border-radius: 5px; border: 1px solid black"></span>
+
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+</div>

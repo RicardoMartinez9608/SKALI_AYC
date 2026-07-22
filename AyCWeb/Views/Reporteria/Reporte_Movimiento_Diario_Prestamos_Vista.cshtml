@@ -1,0 +1,62 @@
+﻿@model  IEnumerable< ModelNucleo.Model.ModelView.Movimiento_Diario_Prestamos>
+
+
+    <table class="table" id="movimientos_diario_prestamos">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cartera)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <b> @Html.DisplayFor(modelItem => item.Cartera)</b>
+
+                    </td>
+                </tr>
+                <tr>
+                </tr>
+                <tr>
+
+                    @foreach (var nombre in item.datos_linea)
+                    {
+                    <tr>
+                        <td>
+
+                            Linea
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => nombre.Linea_Credito)
+                        </td>
+                    </tr>
+                    @foreach (var datos in nombre.datos)
+                    {
+                        <tr>
+                            <td></td>
+                            <td>
+                                @Html.DisplayFor(modelItem => datos.codigo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => datos.persona)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => datos.valor)
+                            </td>
+                        </tr>
+                    }
+                   
+
+                }
+
+                    </tr>
+
+                }
+
+
+        </tbody>
+    </table>

@@ -1,0 +1,139 @@
+﻿
+@{
+    ViewData["Title"] = "Cálculo Crédito";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string baseUrl = Html.ViewContext.HttpContext.Request.PathBase.Value.ToString();
+}
+<script src="~/js/manejo/manejo_comun_credito.js"></script>
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Cálculo crédito</div>
+    <div class="panel-body">
+
+        <form id="form_credito">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Id_Linea" class="control-label">Línea de crédito</label>
+                        @Html.DropDownList("Id_Linea", null, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Monto_pago" class="control-label">Monto</label>
+                        <input id="Monto_pago" name="Monto_pago" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Plazo" class="control-label">Plazo</label>
+                        <input id="Plazo" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Id_Periodo" class="control-label">Frecuencia de pago</label>
+                        @Html.DropDownList("Id_Periodo", null, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+           
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <h4>Resultado</h4>
+                        </div>
+                        <div class="col-lg-6 text-right">
+                            <button type="button" class="btn btn-default" id="Calcular_Cuota">Calcular</button>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Numero_cuotas" class="control-label">Número de cuotas</label>
+                                <input id="Numero_cuotas" name="Numero_cuotas" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Interes_Comision" class="control-label">Tasa</label>
+                                <input id="Interes_Comision" name="Tasa_Interes" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="Cuota_Total" class="control-label">Cuota</label>
+                                <input id="Cuota_Total" name="Cuota_Total" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <h4></h4>
+                                    </div>
+                                    <div class="col-lg-6 text-right">
+                                        @*<button type="button"  class="btn btn-default" id="amortizacion"  onclick="MostrarAmortizacion()">Amortizacion</button>*@
+                                        <a href="#" class="btn btn-default" id="amortizacion_pdf" onclick="MostrarAmortizacion()">Amortización</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+<script>
+    $(function() {
+        constructor("@baseUrl");
+        Eventos_Inicial();
+        MostrarAmortizacion();
+    });
+
+    function MostrarAmortizacion() {
+        /*obtener los datos de linea de crédito*/
+        var lineaCredito = $("#Id_Linea").val();
+        var descripcion = $("#Id_Linea option:selected").text();
+        var interes = $("#Interes_Comision").val();
+        var id_linea = lineaCredito;
+        var monto = $("#Monto_pago").val();
+        var id_periodo = $("#Id_Periodo").val();
+        var plazo = $("#Plazo").val();
+        var id_credito = $("#form_credito #Id_Credito").val();
+        var numero_cuotas = $("#Numero_cuotas").val();
+
+        var enlace = document.getElementById("amortizacion_pdf");
+        enlace.href = "@Url.Action("Amortizacion","Reporteria")?id_linea=" + id_linea + "&monto=" + monto + "&id_periodo=" + id_periodo + "&plazo=" + plazo + "&numero_cuotas=" + numero_cuotas+"&descripcion_linea="+descripcion+"&interes="+interes;
+        enlace.target = "_blank";
+     //   enlace.click();
+
+
+    }
+   
+</script>

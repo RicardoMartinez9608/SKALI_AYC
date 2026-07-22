@@ -1,0 +1,34 @@
+﻿@model ModelNucleo.Model.Firma_Autorizada_Ahorro
+
+<div class="row">
+    <div class="col-md-8">
+        <form id="Nueva_Firma_Autorizada">
+
+            <input asp-for="Id_Firma_Autorizada_Ahorro" type="hidden" class="form-control" />
+            <input asp-for="Id_Ahorro" type="hidden" value="@ViewBag.Id_Ahorro" class="form-control" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Nombre_Completo" class="control-label"></label>
+                <input asp-for="Nombre_Completo" class="form-control" />
+                <span asp-validation-for="Nombre_Completo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DUI" class="control-label"></label>
+                <input asp-for="DUI" class="form-control" />
+                <span asp-validation-for="DUI" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Parentesco" class="control-label"></label>
+                <input asp-for="Parentesco" class="form-control" />
+                <span asp-validation-for="Parentesco" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="button" value="Guardar" id="guardar_firma_autorizacion" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+

@@ -1,0 +1,82 @@
+﻿@model IEnumerable<ModelNucleo.Model.Transaccion_Credito>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Código
+            </th>
+            <th>
+                Fecha
+            </th>
+            <th>
+               Comisión
+            </th>
+            <th>
+                Interés
+            </th>
+            <th>
+                IVA
+            </th>
+            <th>
+                Otros Cobros
+            </th>
+            <th>
+                Capital
+            </th>
+            <th>
+                Cuota
+            </th>
+            <th>
+                Saldo capital
+            </th>
+            <th>
+                Días
+            </th>
+            <th>
+                Recargo
+            </th>
+            
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.No)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaPago)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Interes_Comision)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Interes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IvaSobreComision)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Otros_Cobros)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Abono_capital)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Valor_Cuota)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Saldo_Capital)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dias)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Recargo)
+            </td>
+            
+        </tr>
+}
+    </tbody>
+</table>

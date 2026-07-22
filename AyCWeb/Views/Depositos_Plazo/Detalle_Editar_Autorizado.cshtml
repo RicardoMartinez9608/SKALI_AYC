@@ -1,0 +1,28 @@
+﻿@model ModelNucleo.Model.Autorizado
+
+<form id="Detalle_Editar_Autorizado">
+    <input type="hidden" asp-for="Id_Autorizado" class="form-control" />
+    <input type="hidden" asp-for="Id_Deposito_Plazo" class="form-control" />
+    <div class="row">
+        <div class="col-md-4">
+
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Dui" class="control-label"></label>
+                <input asp-for="Dui" class="form-control" />
+                <span asp-validation-for="Dui" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-default" id="Editar_Autorizado_Deposito" type="button">Editar</button>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+
+

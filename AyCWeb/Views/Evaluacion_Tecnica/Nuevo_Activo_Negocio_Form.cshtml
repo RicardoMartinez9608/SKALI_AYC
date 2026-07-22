@@ -1,0 +1,67 @@
+﻿@model ModelNucleo.Model.Evaluacion_Tecnica.Activo_Negocio
+@{
+    ViewData["Title"] = "Nuevo Activo Negocio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<br />
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Nuevo Activo Negocio</div>
+    <div class="panel-body panel-body-personalizado">
+        <form asp-action="Nuevo_Activo_Negocio">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Id_Activo_Negocio" type="hidden" class="form-control" />
+            <input asp-for="Id_Evaluacion" value="@ViewBag.Id_Evaluacion" type="hidden" class="form-control" />
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Nombre" class="control-label">Nombre</label>
+                        <input asp-for="Nombre" class="form-control" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Descripcion" class="control-label">Descripción</label>
+                        <input asp-for="Descripcion" class="form-control" />
+                        <span asp-validation-for="Descripcion" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Estado" class="control-label">Estado</label>
+                        <input asp-for="Estado" class="form-control" />
+                        <span asp-validation-for="Estado" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Precio_Compra" class="control-label">Precio de Compra</label>
+                        <input asp-for="Precio_Compra" class="form-control" />
+                        <span asp-validation-for="Precio_Compra" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Precio_Peritado" class="control-label">Precio Peritado</label>
+                        <input asp-for="Precio_Peritado" class="form-control" />
+                        <span asp-validation-for="Precio_Peritado" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <br />
+                        <input type="submit" value="Guardar" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,66 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Transaccion_Caja_Detalle_Vista>
+
+@{
+    ViewData["Title"] = "Transacciones Detalle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Transacciones Detalle</div>
+    <div class="panel-body panel-body-personalizado">
+
+        <div class="well">
+            <form action="@Url.Action("Transacciones_Detalle_Ejercicio","Caja_Boveda")">
+                Fecha del ejercicio: <input type="date" name="fecha" class="form-control" />
+                <input type="submit" class="btn btn-default" value="Cargar detalle" />
+            </form>
+        </div>
+
+        @if (Model != null)
+        {
+            <h4>Ejercicio de @Model.FirstOrDefault()?.Transaccion.Fecha.Date</h4>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Hora</th>
+                        <th>Descripción</th>
+                        <th>
+                            Monto
+                        </th>
+                        <th>
+                            Saldo
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @item.Transaccion.Creado_En.Hour:@item.Transaccion.Creado_En.Minute
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Transaccion_Credito.Credito.Codigo_Credito)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Transaccion_Simple.Tipo_Operacion_Simple.Descripcion)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Transaccion_Ahorro.Ahorro.No_Ahorro)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Transaccion.Monto)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Transaccion.Saldo)
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

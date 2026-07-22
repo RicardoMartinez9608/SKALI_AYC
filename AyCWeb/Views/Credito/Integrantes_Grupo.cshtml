@@ -1,0 +1,49 @@
+﻿@model IEnumerable<ModelNucleo.Model.Detalle_Credito_Grupal>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Cliente
+            </th>
+            <th>
+                Código Crédito
+            </th>
+            <th>
+                Monto
+            </th>
+            <th>
+                Es Lider
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <input type="hidden" class="id_detalle" value="@item.Id_Detalle_Credito_Grupal"/>
+                @Html.DisplayFor(modelItem => item.Id_Detalle_Credito_Grupal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Credito.Persona.NombreCompleto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Credito.Codigo_Credito)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Credito.Monto_pago)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lider)
+            </td>
+            <td>
+                <input type="button" value="Borrar" class="btn btn-default borrar_detalle"/>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

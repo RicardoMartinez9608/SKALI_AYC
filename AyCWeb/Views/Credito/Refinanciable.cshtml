@@ -1,0 +1,126 @@
+﻿@model ModelNucleo.Model.ModelView.Refinanciable
+
+<div >
+    <h4>Refinanciable</h4>
+    <hr />
+    <table>
+      
+        <tbody>
+        <tr>
+            <td>
+                Código Crédito
+            </td>
+            <th>
+                @Html.DisplayFor(model => model.Codigo_Refinanciable)
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Socio 
+            </td>
+            <th>
+                @Html.DisplayFor(model => model.Socio_Refinanciado)
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Dui del socio 
+            </td>
+            <th>
+                @Html.DisplayFor(model => model.Dui_Socio_Refinanciado)
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Monto a pagar para cancelar el crédito
+            </td>
+            <th>
+                <input type="hidden" value="@Model.Monto_Refinanciable.ToString("#.##")" id="valor_actual" />
+                @Html.DisplayFor(model => model.Monto_Refinanciable)
+            </th>
+            <th>
+                <input type="button" value="Cambiar Monto de Refinanciamiento" id="cambiar_valor" class="btn btn-primary" />
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Monto del nuevo crédito
+            </td>
+            <th>
+                @Html.DisplayFor(model => model.Monto_Nuevo)
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Remanente después de la refinanciación
+            </td>
+            <th>
+                @Html.DisplayFor(model => model.Remanente)
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Es refinanciable
+            </td>
+            <th>
+                @Html.DisplayFor(model => model.EsRefinanciable)
+            </th>
+        </tr>
+        </tbody>
+    </table>
+    @*<dl class="dl-horizontal" style="width: 2000px !important">
+        <dt >
+            Código Crédito 
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Codigo_Refinanciable)
+        </dd>
+        <dt>
+            Socio 
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Socio_Refinanciado)
+        </dd>
+        <dt>
+            Dui del socio 
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Dui_Socio_Refinanciado)
+        </dd>
+        <dt>
+            Monto a pagar para cancelar el crédito 
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Monto_Refinanciable)
+        </dd>
+        <dt>
+            Monto del nuevo crédito
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Monto_Nuevo)
+        </dd>
+        <dt>
+            Remanente después de la refinanciación
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Remanente)
+        </dd>
+        <dt>
+            Es refinanciable
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EsRefinanciable)
+        </dd>
+    </dl>*@
+</div>
+<div id="Detalle_Refinanciable">
+    <input type="hidden" asp-for="Id_Credito_Refinanciable" /> 
+    <input type="hidden" asp-for="Codigo_Refinanciable" />
+    <input type="hidden" asp-for="Socio_Refinanciado" />
+    <input type="hidden" asp-for="Dui_Socio_Refinanciado" />
+    <input type="hidden" asp-for="Id_Credito_Nuevo" />
+    <input type="hidden" asp-for="Monto_Refinanciable" />
+    <input type="hidden" asp-for="Monto_Nuevo" />
+    <input type="hidden" asp-for="Remanente" />
+</div>
+<a href="#" class="btn btn-default" id="procesar_refinanciado">Refinanciar</a>

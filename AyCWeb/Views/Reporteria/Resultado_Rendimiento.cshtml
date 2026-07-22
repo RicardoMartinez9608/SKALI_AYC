@@ -1,0 +1,299 @@
+﻿@using ModelNucleo.Model.ModelView
+@model ModelNucleo.Model.ModelView.Reporte_Vista<IEnumerable<ModelNucleo.Model.ModelView.Agencia_Rendimiento>>
+
+
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="~/css/Reporte.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Reporte de Rendimiento</title>
+</head>
+<body>
+        <table align="center">
+        <thead>
+            <tr>
+                <td style="width: 199px">
+                    <h6 align="left"> emision: @ViewBag.emision @ViewBag.usuario</h6>
+                </td>
+               <th style="width: 450px">
+                       <h2 align="center">@ViewBag.nombreEmpresa</h2>
+                </th>
+                <td style="width: 200px">
+                </td>
+            </tr>
+        </thead>
+    </table>
+    <h3 align="center">Reporte de Rendimiento Desde @Model.Encabezado.Fecha_Inicio  Hasta @Model.Encabezado.Fecha_Final</h3>
+
+    @foreach (var reporte in Model.Contenido)
+    {
+        <h3 align="left">Agencia: @reporte.Agencia</h3>
+        <table class="greyGridTable">
+            <thead>
+                <tr>
+                    <th>
+                        Cartera
+                    </th>
+                    <th>
+                        Cartera Refinanciada
+                    </th>
+                    <th>
+                        Retorno Colecta
+                    </th>
+                    <th>
+                        Recuperación Capital
+                    </th>
+                    <th>
+                        Cobertura Deuda
+                    </th>
+                    <th>
+                        Recargos
+                    </th>
+                    <th>
+                        Intereses
+                    </th>
+                    <th>
+                        Ingresos Percibidos
+                    </th>
+                    <th>
+                        IVA
+                    </th>
+                    <th>
+                        Reinverción Colocación
+                    </th>
+                    <th>
+                        Efectivo No Rotativo
+                    </th>
+                    <th>
+                        Comisión Estructural
+                    </th>
+                    <th>
+                        Ingresos Devengados
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in reporte.Rendimientos)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cartera)
+                        </td>
+                        <td align="right">
+                            @item.Cartera_Refinanciada.ToString("C")
+                        </td>
+                        <td align="right">
+                            @item.Retorno_Colecta.ToString("C")
+                        </td>
+                        <td align="right">
+                            @item.Recuperacion_Capital.ToString("C")
+                        </td>
+                        <td align="right">
+                            @item.Cobertura_Deuda.ToString("C")
+                        </td>
+                        <td align="right">
+                            @item.Recargos.ToString("C")
+                        </td>
+                        <td align="right">
+                            @item.Intereses.ToString("C")
+                        </td>
+                        <td align="right">
+                            @item.Ingresos_Percibidos.ToString("C")
+                        </td>
+                        <td align="right">
+                            @item.IVA.ToString("C")
+                        </td>
+                        <td align="right">
+                            @item.Reinversion_Colocacion.ToString("C")
+                        </td>
+                        <td align="right">
+                            @item.Efectivo_No_Rotativo.ToString("C")
+                        </td>
+                        <td align="right">
+                            @item.Comision_Estructural.ToString("C")
+                        </td>
+                        <td align="right">
+                            @item.Ingresos_Devengados.ToString("C")
+                        </td>
+
+                    </tr>
+                }
+
+                <tr>
+                    <td>
+                        TOTALES
+                    </td>
+                    <td align="right">
+                        @reporte.Rendimientos.Sum(c => c.Cartera_Refinanciada).ToString("C")
+                    </td>
+                    <td align="right">
+                        @reporte.Rendimientos.Sum(c => c.Retorno_Colecta).ToString("C")
+                    </td>
+                    <td align="right">
+                        @reporte.Rendimientos.Sum(c => c.Recuperacion_Capital).ToString("C")
+                    </td>
+                    <td align="right">
+                        @reporte.Rendimientos.Sum(c => c.Cobertura_Deuda).ToString("C")
+                    </td>
+                    <td align="right">
+                        @reporte.Rendimientos.Sum(c => c.Recargos).ToString("C")
+                    </td>
+                    <td align="right">
+                        @reporte.Rendimientos.Sum(c => c.Intereses).ToString("C")
+                    </td>
+                    <td align="right">
+                        @reporte.Rendimientos.Sum(c => c.Ingresos_Percibidos).ToString("C")
+                    </td>
+                    <td align="right">
+                        @reporte.Rendimientos.Sum(c => c.IVA).ToString("C")
+                    </td>
+                    <td align="right">
+                        @reporte.Rendimientos.Sum(c => c.Reinversion_Colocacion).ToString("C")
+                    </td>
+                    <td align="right">
+                        @reporte.Rendimientos.Sum(c => c.Efectivo_No_Rotativo).ToString("C")
+                    </td>
+                    <td align="right">
+                        @reporte.Rendimientos.Sum(c => c.Comision_Estructural).ToString("C")
+                    </td>
+                    <td align="right">
+                        @reporte.Rendimientos.Sum(c => c.Ingresos_Devengados).ToString("C")
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+
+
+    }
+    <br />
+    <br />
+    @if (Model.Contenido.Count() > 1)
+    {
+        <h3 align="left">Totales Generales</h3>
+
+        <table class="greyGridTable">
+            <thead>
+                <tr>
+                    <th>
+                        Cartera
+                    </th>
+                    <th>
+                        Cartera Refinanciada
+                    </th>
+                    <th>
+                        Retorno Colecta
+                    </th>
+                    <th>
+                        Recuperación Capital
+                    </th>
+                    <th>
+                        Cobertura Deuda
+                    </th>
+                    <th>
+                        Recargos
+                    </th>
+                    <th>
+                        Intereses
+                    </th>
+                    <th>
+                        Ingresos Percibidos
+                    </th>
+                    <th>
+                        IVA
+                    </th>
+                    <th>
+                        Reinverción Colocación
+                    </th>
+                    <th>
+                        Efectivo No Rotativo
+                    </th>
+                    <th>
+                        Comisión Estructural
+                    </th>
+                    <th>
+                        Ingresos Devengados
+                    </th>
+
+                </tr>
+            </thead>
+            <tr>
+                <td>
+                </td>
+                <td align="right">
+                    @Model.Contenido.Sum(c => c.Rendimientos.Sum(d => d.Cartera_Refinanciada)).ToString("c")
+                </td>
+                <td align="right">
+                    @Model.Contenido.Sum(c => c.Rendimientos.Sum(d => d.Retorno_Colecta)).ToString("c")
+                </td>
+                <td align="right">
+                    @Model.Contenido.Sum(c => c.Rendimientos.Sum(d => d.Recuperacion_Capital)).ToString("c")
+                </td>
+                <td align="right">
+                    @Model.Contenido.Sum(c => c.Rendimientos.Sum(d => d.Cobertura_Deuda)).ToString("c")
+                </td>
+                <td align="right">
+                    @Model.Contenido.Sum(c => c.Rendimientos.Sum(d => d.Recargos)).ToString("c")
+                </td>
+                <td align="right">
+                    @Model.Contenido.Sum(c => c.Rendimientos.Sum(d => d.Intereses)).ToString("c")
+                </td>
+                <td align="right">
+                    @Model.Contenido.Sum(c => c.Rendimientos.Sum(d => d.Ingresos_Percibidos)).ToString("c")
+                </td>
+                <td align="right">
+                    @Model.Contenido.Sum(c => c.Rendimientos.Sum(d => d.IVA)).ToString("c")
+                </td>
+                <td align="right">
+                    @Model.Contenido.Sum(c => c.Rendimientos.Sum(d => d.Reinversion_Colocacion)).ToString("c")
+                </td>
+                <td align="right">
+                    @Model.Contenido.Sum(c => c.Rendimientos.Sum(d => d.Efectivo_No_Rotativo)).ToString("c")
+                </td>
+                <td align="right">
+                    @Model.Contenido.Sum(c => c.Rendimientos.Sum(d => d.Comision_Estructural)).ToString("c")
+                </td>
+                <td align="right">
+                    @Model.Contenido.Sum(c => c.Rendimientos.Sum(d => d.Ingresos_Devengados)).ToString("c")
+                </td>
+            </tr>
+
+
+        </table>
+
+    }
+
+
+
+    <br />
+    <br />
+
+    <table cellspacing="10" align="center">
+        <thead>
+            <tr>
+                <th>________________________________</th>
+                <th>________________________________</th>
+                <th>________________________________</th>
+                <th>________________________________</th>
+            </tr>
+
+            <tr>
+                <th style="text-align:center">Informática</th>
+                <th style="text-align:center">Jefe de Agencia</th>
+
+            </tr>
+
+        </thead>
+
+    </table>
+
+</body>
+</html>

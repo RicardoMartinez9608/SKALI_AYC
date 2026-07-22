@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Mvc.ApiExplorer;
+@model ICollection<ApiDescription>
+
+@{
+    ViewData["Title"] = "Buscar Recursos";
+    Layout ="~/Views/_Layout.cshtml";
+}
+    
+<h1>Buscando recursos</h1>
+<p></p>
+<form action="BuscarRecursos" method="get">
+    Buscar: <input type="text" name="buscar" />
+    <input type="submit" value="Buscar"/>
+</form>
+<p></p>
+<table class="greyGridTable">
+    <tr>
+        <th>Verbo</th>
+        <th>Recurso</th>
+        <th>Detalle</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>@item.HttpMethod</td>
+        <td>@item.RelativePath</td>
+        <td><a href="@Url.Action("Detalle","Help")?recurso=@item.RelativePath">Detalle</a></td>
+    </tr>
+    }
+
+</table>

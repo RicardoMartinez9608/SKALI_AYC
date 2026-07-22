@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewData["Title"] = "Acciones_Por_Dia";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Acciones por Día</div>
+    <div class="panel-body">
+        <div class="well">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="fecha">Fecha:</label>
+                    <input name="fecha" id="fecha" type="date" class="form-control" />
+                </div>
+                <div class="form-group" id="agencias">
+                    <div class="form-group">
+                        <div id="id_agencia"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="button" value="Filtrar Créditos" id="Filtra_Acciones" class="btn btn-default" />
+                </div>
+                <p></p>
+
+            </form>
+        </div>
+    </div>
+</div>
+<div id="acciones_diarias">
+</div>
+<script>
+    $(document).ready(function () {
+        Cargar_Agencias();
+        Cargar_Tabla();
+    });
+
+        function Cargar_Agencias() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol == "Administrador") {
+            $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+                $("#id_agencia").html(agencias);;
+            });
+        }
+    }
+       function Cargar_Tabla() {
+        $("#Filtra_Acciones").click(function () {
+            var fecha = $("#fecha").val();
+            var id_agencia = $("#Id_Agencia").val();
+            $.get("@Url.Action("Acciones_Dia", "Accion")",
+                {
+                    fecha_nueva: fecha,
+                    id_agencia : id_agencia
+                },
+                function (lista) {
+                    $("#acciones_diarias").html(lista);
+                });
+
+        });
+    }
+
+    $(function () {
+        var now = new Date();
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+        var today = now.getFullYear() + "-" + (month) + "-" + (day);
+        $("#fecha").val(today);
+    });
+</script>
+

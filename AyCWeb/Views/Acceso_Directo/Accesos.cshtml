@@ -1,0 +1,10 @@
+﻿@model IEnumerable<ModelNucleo.Model.Categoria_Acceso_Directo>
+
+<select name="Id_Categoria_Acceso_Directo" id="Id_Categoria_Acceso_Directo" class="form-control">
+    <option value="0" selected>Seleccione una Categoria</option>
+    @foreach (var item in Model)
+    {
+        <option value="@item.Id_Categoria_Acceso_Directo">@item.Nombre_Categoria</option>
+    }
+</select>
+

@@ -1,0 +1,58 @@
+﻿@using System.Globalization
+@model IEnumerable<ModelNucleo.Model.Interes_Periodo_Linea_Credito>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            @*<th>
+                @Html.DisplayNameFor(model => model.Id_Interes_Periodo_Linea_Credito)
+            </th>*@
+            @*<th>
+                @Html.DisplayNameFor(model => model.Id_Linea_Credito)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Periodo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Interes_Comision)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Interes)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            @*<td>
+            @Html.DisplayFor(modelItem => item.Id_Interes_Periodo_Linea_Credito)
+        </td>*@
+            @*<td>
+                @Html.DisplayFor(modelItem => item.Id_Linea_Credito)
+            </td>*@
+            <td>
+                
+                @Html.DisplayFor(modelItem => item.Periodo.Descripcion)
+            </td>
+            <td>
+
+                @Html.DisplayFor(modelItem => item.Interes_Comision )%
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Interes )%
+            </td>
+            <td>
+                <input type="hidden" value="@item.Id_Interes_Periodo_Linea_Credito" class="id_Interes_Periodo" />
+                <a href="#Mantenimiento_Adicional" data-toggle="modal" class="ver_detalle_interes_periodo">Editar</a>
+            </td>
+            @*<td>
+            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+        </td>*@
+        </tr>
+}
+    </tbody>
+</table>

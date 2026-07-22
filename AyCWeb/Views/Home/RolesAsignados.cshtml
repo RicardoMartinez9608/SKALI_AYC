@@ -1,0 +1,25 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Role>
+
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.RoleNombre)
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoleNombre)
+            </td>
+            <td>
+                <input type="hidden" value="@item.RoleNombre" class="nombreRole"/>
+                <input type="button" value="Borrar" class="btn btn-default borrarRol" />
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,194 @@
+﻿
+@{
+    ViewData["Title"] = "Asignar Cartera";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        Carteras
+    </div>
+    <div class="panel-body">
+        <p></p>
+        <div id="combo_agencias"></div>
+        <p></p>
+        <div id="lista_carteras">
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal_detalle">
+    <div class="modal-dialog" style="width:40%">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div class="btn-group pull-right" role="group" aria-label="...">
+
+                    <button class="btn btn-default" id="Guardar_Cartera" aria-hidden="true">
+                        <span class="glyphicon glyphicon-floppy-disk"></span> Guardar
+                    </button>
+
+
+                    <button class="btn btn-danger " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span> Cerrar
+                    </button>
+                </div>
+
+                <h4 class="modal-title" id="titulo_socio">Nueva Cartera</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="detalle_cartera"></div>
+
+            </div> <!-- /.modal-body -->
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal_editar">
+    <div class="modal-dialog" style="width:40%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="btn-group pull-right" role="group" aria-label="...">
+                    <button class="btn btn-danger " data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span> Cerrar
+                    </button>
+                </div>
+                <h4 class="modal-title" id="titulo_socio">Editar Cartera</h4>
+            </div>
+            <div class="modal-body">
+                <div class="detalle"></div>
+            </div>  
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        Cargar_Combo_Agencias();
+        
+    });
+
+    function Cargar_Combo_Agencias() {
+        $.get("@Url.Action("Agencias_Combo","Componentes")", function (combo) {
+            $("#combo_agencias").html(combo);
+            Cargar_Carteras();
+        });
+    }
+
+    function Cargar_Carteras() {
+        $("#Id_Agencia").change(function () {
+            Lista_Carteras();
+        });
+    }
+
+    function Poner_Cartera_Defecto() {
+        $("a.poner_pordefecto").each(function (index) {
+            $("a.poner_pordefecto").eq(index).click(function(){
+                id_cartera = $("input.id_cartera_fila").eq(index).val();
+                $.get("@Url.Action("Poner_Cartera_Defecto","Cartera")",
+                    { id_cartera: id_cartera },
+                    function (respuesta) {
+                        alertify.success(respuesta);
+                        Lista_Carteras();
+                    }).fail(function (error) {
+                        alertify.error(error.responseText);
+                    });
+            });
+        });
+    }
+
+    function Lista_Carteras() {
+        var id_agencia = $("#Id_Agencia option:selected").val();
+        $.get("@Url.Action("CarterasPorAgencia","Cartera")",
+                { id_agencia: id_agencia },
+                function (agencias) {
+                    $("#lista_carteras").html(agencias);
+                    Nueva_Cartera();
+                    Poner_Cartera_Defecto();
+                    Editar_Cartera();
+            });
+    }
+
+    function Nueva_Cartera() {
+        $("#nueva_cartera").click(function () {
+            var id_agencia = $("#Id_Agencia").val();
+            
+            $.get("@Url.Action("Form_Cartera","Cartera")",
+                {
+                    id_agencia: id_agencia
+                },
+                function (form) {
+                    $("div.detalle_cartera").html(form);
+                    Cargar_Usuarios_Disponibles();
+            });
+        });
+    }
+
+    function Cargar_Usuarios_Disponibles() {
+        var id_agencia = $("#Id_Agencia").val();
+        var id_usuario = $("#Id_Usuario").val();
+        console.log(id_usuario);
+        $.get(
+            "@Url.Action("UsuariosPorAgencia","Cartera")",
+            {
+                id_agencia: id_agencia,
+                id_usuario:id_usuario
+            },
+            function (combo) {
+                $("div.lista_usuario").html(combo);
+                Guardar_Cartera();
+        });
+    }
+
+    function Guardar_Cartera() {
+        $("#Guardar_Cartera").click(function () {
+            var id_usuario = $("#id_usuario").val();
+            var nombre_cartera = $("#Nombre").val();
+            $.get("@Url.Action("AgregarCartera","Cartera")",
+                {
+                    id_usuario: id_usuario,
+                    nombre_cartera: nombre_cartera
+                },
+                function(resultado) {
+                    alertify.success(resultado);
+                    Lista_Carteras();
+                    $("#modal_detalle").modal("hide");
+                }).fail(function(error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+
+    //-------------------------------------------------------------------------------------------------------------//
+    function Editar_Cartera() {
+        $("a.Editar_Cartera").each(function(index) {
+            $("a.Editar_Cartera").eq(index).click(function() {
+                id_cartera = $("input.id_cartera_fila").eq(index).val();
+
+                $.get("@Url.Action("Contenido_Cartera", "Cartera")",
+                    { idcartera: id_cartera },
+                    function(form) {
+                        $("div.detalle").html(form);
+                        Cargar_Usuarios_Disponibles();
+                        Guardar_Edicion_Cartera();
+                    });
+            });
+        });
+    }
+    function Guardar_Edicion_Cartera() {
+        $("#guardar_edicion_cartera").click(function () {
+            var form_deduccion = $("#detalle").serializeAnything();
+            var direccion = "@Url.Action("Editar_Cartera", "Cartera")";
+            $.post(direccion, form_deduccion, function (resultado) {
+                Lista_Carteras();
+                alertify.success(resultado);
+            }).fail(function (error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+</script>

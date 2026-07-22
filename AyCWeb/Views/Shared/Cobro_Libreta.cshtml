@@ -1,0 +1,97 @@
+﻿@model ModelNucleo.Model.ModelView.Impresion
+@{
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/reporte_matricial.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Factura Crédito</title>
+</head>
+<body>
+    <div><br /></div>
+    <table class="matricial">
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="left">Concepto:</td>
+            <td colspan="2" align="left">REPOSICIÓN DE LIBRETA  </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="left">Agencia: </td>
+            <td colspan="2" align="left">@Model.Factura.Agencia</td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="left">Fecha: </td>
+            <td colspan="2" align="left">@Model.Factura.Fecha </td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="left">Comprobante:</td>
+            <td colspan="2" align="left">@Model.Factura.No_Ahorro </td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="left">Cliente: </td>
+            <td colspan="2" align="left">@Model.Factura.No_Ahorro </td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="left">Cajero: </td>
+            <td colspan="2" align="left">@Model.Factura.Cajero   (@Model.Factura.id_cajero)</td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="4" align="left">Nombre:  @Model.Factura.Cliente </td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td align="right" colspan="4">Total Pago: $ 3.00</td>
+        </tr>
+    </table>
+    <br />
+    <br />
+    @*Trabajado por Diego Huete*@
+</body>
+</html>

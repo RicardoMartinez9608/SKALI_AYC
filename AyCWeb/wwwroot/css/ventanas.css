@@ -1,0 +1,17 @@
+﻿#modal_detalle div.modal-body {
+    overflow-y: scroll;
+    height: 500px;
+    /*margin-top: -45%;*/
+}
+
+#Mantenimiento div.modal-body {
+    overflow-y: scroll;
+    height: 500px;
+    /*margin-top: -45%;*/
+}
+
+#Mantenimiento_Adicional div.modal-body {
+    overflow-y: scroll;
+    height: 500px;
+    /*margin-top: -45%;*/
+}

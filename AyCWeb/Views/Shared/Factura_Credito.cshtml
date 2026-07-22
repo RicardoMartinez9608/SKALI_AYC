@@ -1,0 +1,94 @@
+﻿@model ModelNucleo.Model.ModelView.Impresion
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/reporte_matricial.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Factura Crédito</title>
+</head>
+<body>
+    <br />
+    <br />
+    <table class="matricial_credito" style="width: 600px" border="0">
+        <tr class="AbonoCreditoEspacio">
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="left">Agencia: @Model.Factura.Agencia </td>
+            <td colspan="2" align="left"> Cajero: @Model.Factura.Cajero (@Model.Factura.id_cajero)</td>
+        </tr>
+
+        <tr>
+            <td align="left">Comprobante: @Model.Comprobante.NoComprobante </td>
+            <td colspan="2" align="left">Fecha: @Model.Factura.Fecha.ToString("dd/MM/yyyy hh:mm:ss")</td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td align="left">Cliente: @Model.Factura.No_Ahorro </td>
+            <td colspan="2" align="left">Proxima Cuota: @Model.Factura.Detalle_Factura_Credito.Proximo_Pago.ToString("--/--/----")</td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="left">Saldo Capital : @Model.Factura.Saldo_Capital.ToString("C") </td>
+            <td colspan="2" align="left">Línea: @Model.Factura.Linea </td>
+        </tr>
+        <tr>
+        </tr>
+        <tr>
+            <td style="width: 650px" align="left" colspan="4">Nombre: @Model.Factura.Cliente </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <table class="matricial" style="width: 500px">
+                    <tr>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+                        <td align="left" colspan="4">Concepto: @Model.Factura.Concepto </td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+                        <td align="left">No Sujeto : </td>
+                        <td align="left">Exento :  </td>
+                        <td align="left">Gravados :</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
+                    </tr>
+                    <tr>
+
+                    </tr>
+                    <tr>
+                        <td>Abono Capital @Model.Factura.Detalle_Factura_Credito.Abono_Capital.ToString("C")</td>
+                        <td>Interés @Model.Factura.Detalle_Factura_Credito.Interes.ToString("C")</td>
+                        <td colspan="2">Plan AyC @Model.Factura.Detalle_Factura_Credito.Plan_AyC.ToString("C")</td>
+                        <td colspan="2">Recargo  @Model.Factura.Detalle_Factura_Credito.Recargos.ToString("C")</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+        </tr>
+        @{
+            decimal num1 = @Model.Factura.Saldo_Capital;
+            decimal num2 = @Model.Factura.Detalle_Factura_Credito.Total_Pagar;
+            decimal suma = num1 - num2;
+        }
+        <tr>
+            <td colspan="2" align="left">Pendiente Pago: @suma.ToString("C")</td>
+            <td align="left">Total Pago: @Model.Factura.Detalle_Factura_Credito.Total_Pagar.ToString("C")</td>
+        </tr>
+    </table>
+</body>
+</html>

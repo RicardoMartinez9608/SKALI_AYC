@@ -1,0 +1,119 @@
+﻿@model IEnumerable<ModelNucleo.Model.Colecta_Diaria>
+
+@{
+    ViewData["Title"] = "Colectas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var fecha = DateTime.Now;
+    int mes = fecha.Month;
+    int year = fecha.Year;
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Colectas</div>
+    <div class="panel-body">
+
+        @if (ViewBag.ConRespuesta)
+        {
+            <ayc-alerta respuesta="ViewBag.Respuesta"></ayc-alerta>
+        }
+
+        <div class="well">
+            <form action="@Url.Action("Colectas_Diarias", "Colecta")" class="form-inline">
+               
+                <div class="form-group">
+                    <label for="fecha">Fecha:</label>
+                    <input name="fecha" id="fecha" type="date" class="form-control"/>
+                </div>
+                <div class="form-group" id="agencias">
+                    <div class="form-group">
+                        <div id="id_agencia"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="btn-group" role="group">
+                        <input type="submit" value="Filtrar" class="btn btn-default"/>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <a asp-action="Nueva_Colecta_Diaria" class="btn btn-default">Nueva Colecta</a>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <table class="table table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        Usuario
+                    </th>
+                    <th>
+                        Fecha
+                    </th>
+                    <th>
+                        Verificada
+                    </th>
+                    <th>
+                      Acciones
+                    </th>
+                   
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id_Colecta_Diaria)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id_Usuario)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Fecha)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Verificado)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Detalle", "Colectas", new { id_colecta_diaria = item.Id_Colecta_Diaria }) |
+                        @Html.ActionLink("Borrar", "Borrar_Colecta_Diaria", new { id_colecta_diaria = item.Id_Colecta_Diaria })
+                    </td>
+                  
+                   
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $("#month").val("@mes");
+        $("#year").val("@year");
+        Acciones();
+        Cargar_Agencias();
+    });
+    function Acciones() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol != "Administrador") {
+            $("#agencias").css("display", "none");
+        }
+     
+    }
+    function Cargar_Agencias() { 
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia").html(agencias);;
+        });
+    }
+    $(function () {
+        var now = new Date();
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+        var today = now.getFullYear() + "-" + (month) + "-" + (day);
+        $("#fecha").val(today);
+    });
+</script>

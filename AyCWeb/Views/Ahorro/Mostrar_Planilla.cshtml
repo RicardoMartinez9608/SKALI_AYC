@@ -1,0 +1,152 @@
+﻿@{
+    ViewData["Title"] = "Importar_Planillas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Importar Planillas</h4>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body panel-body-personalizado">
+        <form>
+            <p></p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="file" id="fileupload" name="files" class="form-control" />
+                        <span class="input-group-btn">
+                            <input type="button" name="Upload" value="Mostrar" id="mostrar" class="btn btn-primary" />
+                        </span>
+                        <span class="input-group-btn">
+                            <input type="button" name="Upload" value="Procesar" id="procesar" class="btn btn-primary" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <p></p>
+
+        </form>
+        <hr />
+        <div id="progressbar">
+                
+        </div>
+
+        <hr />
+        <div class="row">
+            <div id="planilla"></div>
+
+        </div>
+    </div>
+</div>
+<link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
+<script src="~/lib/jquery-ui/jquery-ui.js"></script>
+
+<script>
+
+    var time = null;
+
+    $(function () {
+
+        $('#procesar').prop("disabled", true);
+
+        $('#mostrar').on('click', function () {
+            MostrarProcesar(false);
+            $('#procesar').prop("disabled", false);
+        });
+
+        $('#procesar').on('click', function () {
+            $('#procesar').prop("disabled", true);
+            $('#planilla').html("");
+            MostrarProcesar(true);
+        });
+    });
+
+    function MostrarProcesar(procesar) {
+        var fileExtension = ['xls', 'xlsx'];
+        var filename = $('#fileupload').val();
+        if (filename.length == 0) {
+            alertify.warning("Seleccione un archivo");
+            return false;
+        }
+        else {
+            var extension = filename.replace(/^.*\./, '');
+            if ($.inArray(extension, fileExtension) == -1) {
+                alertify.warning("Por favor Seleccione Archivos de Excel");
+                return false;
+            }
+        }
+
+        var fdata = new FormData();
+        var fileUpload = $("#fileupload").get(0);
+        var files = fileUpload.files;
+        fdata.append(files[0].name, files[0]);
+
+        if (procesar) {
+            alertify.confirm('Confirmación',
+                'Seguro que desea Porcesar los montos enlistados',
+                function () {
+
+                    EnviarDocumento(fdata, procesar);
+
+                },
+                function () {
+                    alertify.warning('Operación Cancelada');
+                });
+        } else {
+            EnviarDocumento(fdata, procesar);
+        }
+    }
+
+
+    function EnviarDocumento(fdata, procesar) {
+        try {
+
+            var i = 0;
+            var timeout = 750;
+
+            (function progressbar() {
+                i++;
+                if (i < 1000) {
+                    
+                    $("#progressbar").progressbar({
+                        value: i
+                    });
+
+                    time=setTimeout(progressbar, timeout);
+                }
+            }
+            )();
+        }
+        catch (err) {
+            alert(err.message);
+        }
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Cargar_Planilla","Ahorro")?procesar=" + procesar,
+            data: fdata,
+            contentType: false,
+           processData: false,
+            success: function (response) {
+                if (response.length == 0)
+                    alertify.error("no se pudo subir el archivo");
+                else {
+                    $('#planilla').html(response);
+                }
+                clearTimeout(time);
+                $("#progressbar").progressbar({
+                    value: 100
+                });
+            },
+            error: function (e) {
+                alertify.error(e.responseText);
+            }
+            
+        });
+    }
+
+</script>

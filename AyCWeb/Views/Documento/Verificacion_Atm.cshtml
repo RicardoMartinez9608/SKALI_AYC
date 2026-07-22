@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Verificación ATM";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <h4>Verificación ATM</h4>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="inicio" class="control-label" id="etiqueta">Fecha de inicio</label>
+                    <input type="date" name="inicio" class="form-control" id="inicio" />
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="final" class="control-label" id="etiqueta">Fecha de final</label>
+                    <input type="date" name="final" class="form-control" id="final" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    
+                    <button type="button" class="btn btn-default" id="cargar">Cargar Datos</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+   
+    <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">Verificación ATM</div>
+            <div class="panel-body">
+                <div id="listapagos"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="Mantenimiento">
+    <div class="modal-dialog" style="width:80%">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title">Meta</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="agregar_meta"></div>
+
+            </div> <!-- /.modal-body -->
+
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        Reporte();
+    });
+    function Reporte() {
+        $("#cargar").click(function () {
+        
+            var inicio = $("#inicio").val();
+            var final = $("#final").val();
+           
+            $.get("@Url.Action("Listado_Verificacion", "Documento")",
+                {
+                    inicio: inicio,
+                    fin: final
+                },
+                function (lista) {
+                    $("#listapagos").html(lista);
+                    Abrir_Documentos();
+                });
+        });
+    }
+    function Abrir_Documentos() {
+        $("a.editar_meta").each(function (index) {
+            $("a.editar_meta").eq(index).click(function () {
+                var id_foto_atm = $("input.id_fotografia_atm").eq(index).val();
+              
+                    $.get("@Url.Action("Detalle_Fotografia_Atm", "Documento")",
+                        { id_fotografia_atm: id_foto_atm },
+                        function (perfil) {
+                            $("div.agregar_meta").html(perfil);
+                        });
+                
+            });
+        });
+    }
+</script>

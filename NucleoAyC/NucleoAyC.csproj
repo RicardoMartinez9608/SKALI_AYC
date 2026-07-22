@@ -1,0 +1,160 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <Configurations>Debug;Release;SOLOTEST</Configurations>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>aspnet-WebApiJwt-9EB56A08-D5EE-4EEF-B339-DEE0A5CA6277</UserSecretsId>
+    <StartupObject></StartupObject>
+    <Version>2.03.01.22</Version>
+    <Authors>Skali Núcleo</Authors>
+    <Product>Skali Núcleo</Product>
+    <Company>Skali Núcleo</Company>
+    <PackageId>Skali</PackageId>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netcoreapp2.0\DocumentoNucleoAyC.xml</DocumentationFile>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>TRACE;RELEASE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <AssemblyVersion>1.18.9.20</AssemblyVersion>
+    <FileVersion>1.18.9.20</FileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SOLOTEST|AnyCPU'">
+    <DefineConstants>TRACE;SOLOTEST</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Migrations\20180925203239_credito_linea_credito.cs" />
+    <Compile Remove="Migrations\20180925203239_credito_linea_credito.Designer.cs" />
+    <Compile Remove="Migrations\20181206203945_credito_a_cartera.cs" />
+    <Compile Remove="Migrations\20181206203945_credito_a_cartera.Designer.cs" />
+    <Compile Remove="Migrations\20181206212412_cartera_credito_todo.cs" />
+    <Compile Remove="Migrations\20181206212412_cartera_credito_todo.Designer.cs" />
+    <Compile Remove="Migrations\20190110211152_lista_descrpcion_dcumento.cs" />
+    <Compile Remove="Migrations\20190110211152_lista_descrpcion_dcumento.Designer.cs" />
+    <Compile Remove="Migrations\20190205225854_actualizar_maquina.cs" />
+    <Compile Remove="Migrations\20190205225854_actualizar_maquina.Designer.cs" />
+    <Compile Remove="Migrations\20190401215512_quitar_el_credito_ahorro_relacionado.cs" />
+    <Compile Remove="Migrations\20190401215512_quitar_el_credito_ahorro_relacionado.Designer.cs" />
+    <Compile Remove="Migrations\20200111162232_equivocado_llaves_libres_Lineas.cs" />
+    <Compile Remove="Migrations\20200111162232_equivocado_llaves_libres_Lineas.Designer.cs" />
+    <Compile Remove="Migrations\20200111165731_otro_intento.cs" />
+    <Compile Remove="Migrations\20200111165731_otro_intento.Designer.cs" />
+    <Compile Remove="Migrations\20200203223321_cambiando_nombrecolumna_interes_comision.cs" />
+    <Compile Remove="Migrations\20200203223321_cambiando_nombrecolumna_interes_comision.Designer.cs" />
+    <Compile Remove="Migrations\20200203224719_renombrarcolumnasinteresperiodo.cs" />
+    <Compile Remove="Migrations\20200203224719_renombrarcolumnasinteresperiodo.Designer.cs" />
+    <Compile Remove="Migrations\20200207215740_LlaveCompuestaNoPrimaria.cs" />
+    <Compile Remove="Migrations\20200207215740_LlaveCompuestaNoPrimaria.Designer.cs" />
+    <Compile Remove="Migrations\20200208141557_LlaveCompuestaNoPrimaria.cs" />
+    <Compile Remove="Migrations\20200208141557_LlaveCompuestaNoPrimaria.Designer.cs" />
+    <Compile Remove="Migrations\20200208163156_LlaveCompuestaNoAutoincrementable.cs" />
+    <Compile Remove="Migrations\20200208163156_LlaveCompuestaNoAutoincrementable.Designer.cs" />
+    <Compile Remove="Migrations\20200224173802_Libreta_Transaccion.cs" />
+    <Compile Remove="Migrations\20200224173802_Libreta_Transaccion.Designer.cs" />
+    <Compile Remove="Migrations\20200616204152_Documentos_Legales.cs" />
+    <Compile Remove="Migrations\20200616204152_Documentos_Legales.Designer.cs" />
+    <Compile Remove="Migrations\20200921155040_tipo_documento.cs" />
+    <Compile Remove="Migrations\20200921155040_tipo_documento.Designer.cs" />
+    <Compile Remove="Migrations\20210122185448_Otras_Operaciones.cs" />
+    <Compile Remove="Migrations\20210122185448_Otras_Operaciones.Designer.cs" />
+    <Compile Remove="Migrations\20210126175556_defaul_value.cs" />
+    <Compile Remove="Migrations\20210126175556_defaul_value.Designer.cs" />
+    <Compile Remove="Migrations\20210126181340_Tabla_Refinanciamientos.cs" />
+    <Compile Remove="Migrations\20210126181340_Tabla_Refinanciamientos.Designer.cs" />
+    <Compile Remove="Migrations\20210126182622_Tabla_Refinanciamientos.cs" />
+    <Compile Remove="Migrations\20210126182622_Tabla_Refinanciamientos.Designer.cs" />
+    <Compile Remove="Migrations\20210504163509_Mantenimiento_Grupales.cs" />
+    <Compile Remove="Migrations\20210504163509_Mantenimiento_Grupales.Designer.cs" />
+    <Compile Remove="Migrations\20210504164528_Mantenimiento_Grupales.cs" />
+    <Compile Remove="Migrations\20210504164528_Mantenimiento_Grupales.Designer.cs" />
+    <Compile Remove="Migrations\20210504171344_Mantenimiento_Grupales.cs" />
+    <Compile Remove="Migrations\20210504171344_Mantenimiento_Grupales.Designer.cs" />
+    <Compile Remove="Migrations\20210504172440_Mantenimiento_Grupales.cs" />
+    <Compile Remove="Migrations\20210504172440_Mantenimiento_Grupales.Designer.cs" />
+    <Compile Remove="Migrations\20210630145012_Columna_Excluido_Cartera.cs" />
+    <Compile Remove="Migrations\20210630145012_Columna_Excluido_Cartera.Designer.cs" />
+    <Compile Remove="Migrations\20210812181201_fechas_codeudores_mutuos.cs" />
+    <Compile Remove="Migrations\20210812181201_fechas_codeudores_mutuos.Designer.cs" />
+    <Compile Remove="Migrations\20211119145649_Deposio.cs" />
+    <Compile Remove="Migrations\20211119145649_Deposio.Designer.cs" />
+    <Compile Remove="Migrations\20211129171700_forma_pago.cs" />
+    <Compile Remove="Migrations\20211129171700_forma_pago.Designer.cs" />
+    <Compile Remove="Migrations\20211129173628_forma_pago.cs" />
+    <Compile Remove="Migrations\20211129173628_forma_pago.Designer.cs" />
+    <Compile Remove="Migrations\20211129175310_forma_pago.cs" />
+    <Compile Remove="Migrations\20211129175310_forma_pago.Designer.cs" />
+    <Compile Remove="Migrations\20220615151155_Creditos_Ahorro.cs" />
+    <Compile Remove="Migrations\20220615151155_Creditos_Ahorro.Designer.cs" />
+    <Compile Remove="Migrations\20220620145852_porcentaje_ahorro_credito.cs" />
+    <Compile Remove="Migrations\20220620145852_porcentaje_ahorro_credito.Designer.cs" />
+    <Compile Remove="Migrations\20220620160806_quitar_columna_porcentaje.cs" />
+    <Compile Remove="Migrations\20220620160806_quitar_columna_porcentaje.Designer.cs" />
+    <Compile Remove="Migrations\20220620163417_porcentaje_Ahorro_credito.cs" />
+    <Compile Remove="Migrations\20220620163417_porcentaje_Ahorro_credito.Designer.cs" />
+    <Compile Remove="Migrations\20220620165306_porcentaje_ahorro_credito.cs" />
+    <Compile Remove="Migrations\20220620165306_porcentaje_ahorro_credito.Designer.cs" />
+    <Compile Remove="Migrations\20220823161226_fotografia_Atm.cs" />
+    <Compile Remove="Migrations\20220823161226_fotografia_Atm.Designer.cs" />
+    <Compile Remove="Migrations\20221228212818_Comite_Ampliado.cs" />
+    <Compile Remove="Migrations\20221228212818_Comite_Ampliado.Designer.cs" />
+    <Compile Remove="Migrations\20240818192609_tipoGarantia.cs" />
+    <Compile Remove="Migrations\20240818192609_tipoGarantia.Designer.cs" />
+    <Compile Remove="Migrations\20240818200526_TipoGarantia.cs" />
+    <Compile Remove="Migrations\20240818200526_TipoGarantia.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <!--<PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.8" />-->
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.1" />
+   
+  
+ 
+    
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="MySql.Data" Version="8.0.19" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1" PrivateAssets="all">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+ 
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ModelNucleo\ModelNucleo.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\scanning\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+</Project>

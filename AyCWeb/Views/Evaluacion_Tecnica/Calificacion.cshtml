@@ -1,0 +1,298 @@
+﻿@model ModelNucleo.Model.ModelView.Calificacion_Vista
+
+@{
+    Layout = "";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/Reporte.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Informe de Calificación</title>
+</head>
+<body>
+    <br />
+    <h1>Memorandum Crediticio de Clasificación</h1>
+    <br />
+    <br />
+    <br />
+    <p>
+        <table class="widget">
+            <tr>
+                <td>DUI:</td>
+                <td>@Model.Persona.Dui</td>
+                <td>Línea:</td>
+            </tr>
+            <tr>
+                <td>Nombre:</td>
+                <td>@Model.Persona.NombreCompleto</td>
+            </tr>
+        </table>
+    </p>
+
+    <br />
+    <br />
+    <br />
+
+    <table cellpadding="20">
+        <tr>
+            <td style="vertical-align:top">
+                <table class="widget">
+                    <tr>
+                        <td colspan="2"><h4>Propuesto por asesor</h4></td>
+                    </tr>
+                    <tr>
+                        <td>Monto Pruesto</td>
+                        <td>@Model.Monto_Propuesto.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <td>Plazo Pruesto</td>
+                        <td>@Model.Plazo_Propuesto</td>
+                    </tr>
+                    <tr>
+                        <td>Cuota Pruesta</td>
+                        <td>@Model.Cuota_Propuesta.ToString("C")</td>
+                    </tr>
+                </table>
+            </td>
+            <td style="vertical-align:top">
+                <table class="widget">
+                    <tr>
+                        <td colspan="2"><h4>Propuesto por calificación</h4></td>
+                    </tr>
+                    <tr>
+                        <td>Monto Ideal</td>
+                        <td>@Model.Monto_Ideal.ToString("C")</td>
+                    </tr>
+                    <tr>
+                        <td>Plazo Ideal</td>
+                        <td>@Model.Plazo_Ideal</td>
+                    </tr>
+                    <tr>
+                        <td>Cuota Ideal</td>
+                        <td>@Model.Cuota_Ideal.ToString("C")</td>
+                    </tr>
+                </table>
+            </td>
+            <td style="vertical-align:top">
+                <table class="widget">
+                    <tr>
+                        <td colspan="2"><h4>Datos Auxiliares</h4></td>
+                    </tr>
+                    <tr>
+                        <td>Total Garantías</td>
+                        <td>@Model.Total_Garantias</td>
+                    </tr>
+                    <tr>
+                        <td>Solvencia</td>
+                        <td>@Model.Solvencia</td>
+                    </tr>
+                    <tr>
+                        <td>Capacidad de Pago</td>
+                        <td>@Model.Capacidad_pago</td>
+                    </tr>
+                </table>
+            </td>
+            <td style="vertical-align:top">
+                <table class="widget">
+                    <tr>
+                        <td colspan="2"><h4>Datos de calificación</h4></td>
+                    </tr>
+                    <tr>
+                        <td>Caracter</td>
+                        <td>@Model.Caracter.Operacion</td>
+                        <td>@Model.Caracter.Resultado</td>
+                    </tr>
+                    <tr>
+                        <td>Capacidad</td>
+                        <td>@Model.Capacidad.Operacion</td>
+                        <td>@Model.Capacidad.Resultado</td>
+                    </tr>
+                    <tr>
+                        <td>Capital</td>
+                        <td>@Model.Capital.Operacion</td>
+                        <td>@Model.Capital.Resultado</td>
+                    </tr>
+                    <tr>
+                        <td>Condiciones</td>
+                        <td>@Model.Condiciones.Operacion</td>
+                        <td>@Model.Condiciones.Resultado</td>
+                    </tr>
+                    <tr>
+                        <td>Colateral</td>
+                        <td>@Model.Colateral.Operacion</td>
+                        <td>@Model.Colateral.Resultado</td>
+                    </tr>
+                    <tr>
+                        <td>Calificación Total</td>
+                        <td>@Model.Calificacion_Total.Operacion</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+    <br />
+
+    <p>
+        <table class="greyGridTable">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Apertura</th>
+                    <th>Monto</th>
+                    <th>Saldo</th>
+                    <th>Plazo</th>
+                    <th>Forma Pago</th>
+                    <th>Cuota</th>
+                    <th>Días Mora</th>
+                    <th>Cuota Mora</th>
+                    <th>Cuota Día</th>
+                    <th>Cancelado</th>
+                    <th>Fecha Cancelado</th>
+                    <th>Vencido</th>
+                    <th>Fecha Vencido</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Historial)
+                {
+                    <tr>
+                        <td>@item.Codigo</td>
+                        <td>@item.Fecha_Apertura</td>
+                        <td>@item.Monto</td>
+                        <td>@item.Saldo</td>
+                        <td>@item.Plazo</td>
+                        <td>@item.Forma_Pago</td>
+                        <td>@item.Cuota</td>
+                        <td>@item.Dias_Mora</td>
+                        <td>@item.Cuota_Mora</td>
+                        <td>@item.Cuota_Dia</td>
+                        <td>@item.Cancelado</td>
+                        <td>@item.Cancelado_En</td>
+                        <td>@item.Vencido</td>
+                        <td>@item.Vencido_En</td>
+                    </tr>
+                }
+            <tbody>
+        </table>
+    </p>
+
+    <br />
+    <br />
+    <br />
+
+    <p>
+        <table class="widget">
+            <tr>
+                <td colspan="2"><h4>Indicadores</h4></td>
+            </tr>
+            <tr>
+                <td>Razón Circulante</td>
+                <td>@Model.Razon_Circulante</td>
+            </tr>
+            <tr>
+                <td>Capital de Trabajo</td>
+                <td>@Model.Capital_Trabajo</td>
+            </tr>
+            <tr>
+                <td>Rotación de Inventario</td>
+                <td>@Model.Rotacion_Inventario</td>
+            </tr>
+            <tr>
+                <td>Rotación de Cuentas por Cobrar</td>
+                <td>@Model.Rotacion_Cuenta_Cobrar</td>
+            </tr>
+            <tr>
+                <td>Endeudamiento</td>
+                <td>@Model.Endeudamiento</td>
+            </tr>
+            <tr>
+                <td>Margen Bruto</td>
+                <td>@Model.Margen_Bruto</td>
+            </tr>
+            <tr>
+                <td>Margen Operativo</td>
+                <td>@Model.Margen_Operativo</td>
+            </tr>
+            <tr>
+                <td>Punto de Equilibrio</td>
+                <td>@Model.Punto_Equilibrio</td>
+            </tr>
+            <tr>
+                <td>Relación Utilidad Negocio</td>
+                <td>@Model.Relacion_Utilidad_Negocio</td>
+            </tr>
+        </table>
+    </p>
+
+    <br />
+    <br />
+    <br />
+
+    <p>
+        <table>
+            <tr>
+                <td>
+                    <table class="widget">
+                        <tr>
+                            <td><h4></h4></td>
+                        </tr>
+                        <tr>
+                            <td>Monto: </td>
+                            <td>________________________________ </td>
+                        </tr>
+                        <tr>
+                            <td>Plazo: </td>
+                            <td>________________________________ </td>
+                        </tr>
+                        <tr>
+                            <td>Cuota: </td>
+                            <td>________________________________ </td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <table class="widget">
+                        <tr>
+                            <td><h4>Comentarios del Oficial de Evaluación</h4></td>
+                        </tr>
+                        <tr>
+                            <td>_________________________________________________________________________________________ </td>
+                        </tr>
+                        <tr>
+                            <td>_________________________________________________________________________________________ </td>
+                        </tr>
+                        <tr>
+                            <td>_________________________________________________________________________________________ </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </p>
+
+    <br />
+    <br />
+    <br />
+
+    <p>
+        <table class="widget">
+            <tr>
+                <td>F: </td>
+                <td>_______________________________________________________ </td>
+                <td>F: </td>
+                <td>_______________________________________________________ </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Gerencia</td>
+                <td></td>
+                <td>Asesor</td>
+            </tr>
+        </table>
+    </p>
+</body>
+</html>

@@ -1,0 +1,196 @@
+﻿@{
+    ViewData["Title"] = "Manejo de carteras";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Manejo de Carteras</h4>
+            </div>
+            <div class="col-lg-6 text-right">
+                <a href="@Url.Action("Asignacion_Cartera","Cartera")" class="btn btn-default">Nueva Cartera</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body panel-body-personalizado">
+
+        <div id="mensaje"></div>
+
+        <div class="bs-example bs-example-tabs" data-example-id="togglable-tabs">
+            <ul id="myTabs" class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#fuente" id="fuente-tab" role="tab" data-toggle="tab" aria-controls="fuente" aria-expanded="true">Fuente</a></li>
+                <li role="presentation"><a href="#destino" role="tab" id="destino-tab" data-toggle="tab" aria-controls="destino">Destino</a></li>
+            </ul>
+
+            <div id="myTabContent" class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="fuente" aria-labelledBy="fuente-tab">
+                    <div class="well fuente">
+                        <h5>Seleccionar una agencia:</h5>
+                        <label id="Nombre" style="color:white"> @ViewBag.NombreAgencia</label>
+                        <input type="hidden" id="Id_Agencia_noadmon" value="@ViewBag.IdAgencia">
+                        <div class="listaAgencia"></div>
+                        <h5>Usuarios:</h5>
+                        <div class="listaUsuarios"></div>
+                    </div>
+                </div>
+
+                <div role="tabpanel" class="tab-pane fade" id="destino" aria-labelledBy="destino-tab">
+                    <div class="well destino">
+                        <h5>Seleccionar una agencia:</h5>
+                        <label id="Nombre" style="color:white"> @ViewBag.NombreAgencia</label>
+                        <input type="hidden" id="Id_Agencia_noadmon" value="@ViewBag.IdAgencia">
+                        <div class="listaAgencia"></div>
+                        <h5>Usuarios:</h5>
+                        <div class="listaUsuarios"></div>
+                    </div>
+                    <input type="button" name="Cambiar" id="Cambiar" class="btn btn-default right" value="Cambiar" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Detalle de la cartera</div>
+    <div class="panel-body">
+        <div class="listaClientes"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        ListaAgenciasFuente();
+        ListaAgenciasDestino();
+    });
+
+    function ListaAgenciasFuente() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol == "Administrador") {
+            $.get("@Url.Action("Agencias_Radio","Componentes")",
+                function (agencias) {
+                    $("div.fuente div.listaAgencia").html(agencias);
+                    ListaUsuariosFuente();
+                });
+        } else {
+            ListaUsuariosFuente();
+        }
+    }
+
+    function ListaUsuariosFuente() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol == "Administrador") {
+            $("div.fuente .id_agencia").each(function (index) {
+                $("div.fuente .id_agencia").eq(index).click(function () {
+                    id_agencia = $("div.fuente .id_agencia").eq(index).val();
+                    CarterasAgencia(id_agencia);
+                });
+            });
+        } else {
+            id_agencia = $("#Id_Agencia_noadmon").val();
+            CarterasAgencia(id_agencia);
+        }
+    }
+
+    function CarterasAgencia(id_agencia) {
+        $.get("@Url.Action("UsuariosPorAgencia","Cartera")",
+            { id_agencia: id_agencia},
+        function (lista) {
+            $("div.fuente .listaUsuarios").html(lista);
+            ListaClientes();
+        });
+    }
+     function CarterasAgenciaDestino(id_agencia) {
+        $.get("@Url.Action("UsuariosPorAgencia","Cartera")",
+            { id_agencia: id_agencia},
+        function (lista) {
+            $("div.destino .listaUsuarios").html(lista);
+            ListaClientes();
+        });
+    }
+    function ListaAgenciasDestino() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol == "Administrador") {
+            $.get("@Url.Action("Agencias_Radio","Componentes")",
+                function (agencias) {
+                    $("div.destino div.listaAgencia").html(agencias);
+                    ListaUsuariosDestino();
+                });
+        } else {
+            ListaUsuariosDestino();
+        }
+    }
+
+    function ListaUsuariosDestino() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol == "Administrador") {
+            $("div.destino .id_agencia").each(function (index) {
+                $("div.destino .id_agencia").eq(index).click(function () {
+                    id_agencia = $("div.fuente .id_agencia").eq(index).val();
+                    CarterasAgenciaDestino(id_agencia);
+                });
+            });
+        } else {
+            id_agencia = $("#Id_Agencia_noadmon").val();
+            CarterasAgenciaDestino(id_agencia);
+        }
+    }
+
+    function ListaClientes() {
+        $("div.fuente div.listaUsuarios #id_usuario").change(function () {
+            var id_usuario = $(this).val();
+            $.get("@Url.Action("PersonasPorUsuario", "Persona")", {
+                id_usuario: id_usuario
+            }, function (listaPersona) {
+                $(".listaClientes").html(listaPersona);
+                /*donde pondremos el envío de ids*/
+                SeleccionarTodos();
+                EnviarPersonas();
+            });
+        });
+    }
+
+    function EnviarPersonas() {
+        $("#Cambiar").click(function () {
+            var ids = [];
+            $.each($("input[name='Id_Persona']:checked"), function (index) {
+                ids.push($(this).val());
+            });
+            var id_usuario = $("div.destino #id_usuario").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("CambiarCartera","Cartera")',
+                data: { values: ids, id_usuario: id_usuario }
+            }).done(function (result) {
+                alertify.confirm('Desea cambiar clientes a una cartera diferente', function () { alertify.success('Operación Exitosa') });
+                ListaClienteDestino(id_usuario);
+            });
+        });
+    }
+
+    function ListaClienteDestino(id_usuario) {
+        $.get("@Url.Action("PersonasPorUsuario", "Persona")", {
+                id_usuario: id_usuario
+        }, function (listaPersona) {
+            $(".listaClientes").html(listaPersona);
+            SeleccionarTodos();
+        });
+    }
+
+    function SeleccionarTodos() {
+        $("input[name='todo']").click(function () {
+            $("input[name='Id_Persona']").not(this).prop('checked', this.checked);
+        });
+    }
+
+    function Mensaje(respuesta) {
+        $("#mensaje").html("");
+        $("#mensaje").html(respuesta);
+    }
+
+</script>

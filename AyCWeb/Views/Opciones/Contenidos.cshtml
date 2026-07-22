@@ -1,0 +1,60 @@
+﻿@model IEnumerable<ModelNucleo.Model.Menu_Contenido_Vista>
+
+@*<p>
+    <a asp-action="Create">Create New</a>
+</p>*@
+<table class="table">
+    <thead>
+        <tr>
+            @*<th>
+                @Html.DisplayNameFor(model => model.Id_Menu_Contenido_Vista)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Id_Menu_Categoria_Vista)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Titulo)
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.Controller)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Action)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Icono)
+            </th>*@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.Id_Menu_Contenido_Vista)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Menu_Categoria_Vista)
+            </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.Titulo)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.Controller)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Action)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Icono)
+            </td>*@
+            <td>
+                <input type="hidden" class="id_contenido" value="@item.Id_Menu_Contenido_Vista"/>
+                <a href="#" class="editar_contenido">Editar</a>
+                @*@Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

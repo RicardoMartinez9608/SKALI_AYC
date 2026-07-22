@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ModelNucleo.Model.Libreta_Transaccion>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                No Libreta
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Activo)
+            </th>
+            <th>
+                Tipo Pago
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.No_Libreta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Activo)
+            </td>
+            <td>
+                <div class="form-group">
+                    <input type="radio" name="descuento" id="descuento" value="true" />
+                    <label for="descuento" class="control-label">Descuento Ahorro</label>
+                </div>
+            </td>
+            <td>
+                <input type="hidden" id="Id_Ahorro_Libreta" value="@item.Id_Ahorro" class="btn btn-default"/>
+                <input type="submit" value="Postear" id="Postear_Libreta" class="btn btn-default"/>
+                @*<a href="@Url.Action("Mostrar_Factura_Libreta", "Caja")?id_ahorro= @item.Id_Ahorro" class="btn btn-default" target="_blank">Postear</a>*@
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNetCore.Mvc.ApiExplorer;
+@model IApiDescriptionGroupCollectionProvider
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/_Layout.cshtml";
+}
+<div id="body">
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>Núcleo Obelia</h1>
+            </hgroup>
+        </div>
+    </section>
+    <section class="content-wrapper main-content clear-fix">
+        <h3>Grupos de Recursos, version @*@Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion*@</h3>
+        @foreach (var group in Model.ApiDescriptionGroups.Items)
+        {
+            <h3>@group.GroupName</h3>
+            <table class="greyGridTable">
+                <tr>
+                    <th>Verbo</th>
+                    <th>Recurso</th>
+                    <th>Respuesta</th>
+                    <th>Parametros</th>
+                </tr>
+                @foreach (var api in group.Items)
+                {
+                    <tr>
+                        <td>@api.HttpMethod</td>
+                        <td>@api.RelativePath</td>
+                        <td style="width:40px">
+                            @foreach (var response in api.SupportedResponseTypes)
+                            {
+                                @response.Type?.FullName
+                            }
+                        </td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                </tr>
+                                @foreach (var parameter in api.ParameterDescriptions)
+                                {
+                                    <tr>
+                                        <td>@parameter.Name,  (@parameter.Source.Id)</td>
+                                        <td>@parameter.Type?.Name</td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </table>
+
+        }
+    </section>
+</div>

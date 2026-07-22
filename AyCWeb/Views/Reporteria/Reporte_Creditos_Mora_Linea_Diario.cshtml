@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Reporte_Creditos_Mora";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Reporte de Mora Crédito Ágil Efectivo</div>
+    <div class="panel-body">
+
+        <form id="form_credito">
+
+            <div class="row">
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="inicio" class="control-label" id="etiqueta">Fecha de inicio</label>
+                        <input type="date" name="inicio" class="form-control" id="inicio" />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="final" class="control-label" id="etiqueta">Fecha de final</label>
+                        <input type="date" name="final" class="form-control" id="final" />
+                    </div>
+                </div>
+
+                <div class="col-md-3" id="agencias">
+                    <div class="form-group">
+                        <label for="Id_Agencia"> Agencia</label>
+                        <div id="id_agencia"></div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="Id_Cartera">Carteras</label>
+                        <div id="id_cartera"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <button type="button" class="btn btn-default" id="imprimir">Imprimir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        ListaCarteras();
+        Reporte_Mora();
+        Cargar_Agencias();
+    });
+    function ListaCarteras() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol == "Administrador") {
+            $("#Id_Agencia").change(function () {
+                var id_agencia = $("#Id_Agencia").val();
+                $.get("@Url.Action("Carteras", "Componentes")?id_agencia="+id_agencia, function (agencias) {
+                    $("#id_cartera").html(agencias);
+                });
+            });
+
+        } else {
+            $("#agencias").css("display", "none");
+            Cargar_Carteras_Agencia();
+        }
+    }
+    function Cargar_Agencias() {
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia").html(agencias);
+            ListaCarteras();
+        });
+    }
+    function Cargar_Carteras_Agencia() {
+        $.get("@Url.Action("Carteras", "Componentes")",function (agencias) {
+            $("#id_cartera").html(agencias);
+        });
+    }
+
+
+    function Reporte_Mora() {
+        $("#imprimir").click(function () {
+            var inicio = $("#inicio").val();
+            var final = $("#final").val();
+            var id_cartera = $("#Id_Cartera").val();
+            window.open("@Url.Action("Reporte_Mora_Linea_Diario", "Reporteria")?id_cartera=" + id_cartera + "&inicio=" + inicio + "&final=" + final);
+        });
+    }
+</script>

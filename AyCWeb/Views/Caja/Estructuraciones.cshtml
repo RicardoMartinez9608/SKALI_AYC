@@ -1,0 +1,37 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Deduccion_Estructuriacion>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Fecha
+            </th>
+            <th>
+                Concepto
+            </th>
+            <th>
+                Monto
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.Transaciccion.Creado_En
+            </td>
+            <td>
+                @item.Concepto
+            </td>
+            <td>
+                @item.Transaciccion.Monto.ToString("C")
+            </td>
+            <td>
+                <a href="@Url.Action("Mostrar_Comprobante_Factura","Caja")?id_transaccion_simple=@item.Transaciccion.Id_Transaccion_Simple" class="btn btn-default" target="_blank">Postear</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

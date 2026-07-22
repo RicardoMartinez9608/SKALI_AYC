@@ -1,0 +1,113 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.ComiteUsuarioCredito>
+@{
+    ViewData["Title"] = "Comités pendientes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Comités pendientes</div>
+    <div class="panel-body panel-body-personalizado">
+
+        <p>
+            @*<input type="hidden" name="verificado" value="true" id="verificado"/>*@
+            <input type="checkbox" name="chbx_verificado" id="chbx_verificado" /> Verificado
+        </p>
+
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        IdCrédito
+                    </th>
+                    <th>
+                        Cliente
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Comite.Verificado)
+                    </th>
+                    <th>
+                        Monto
+                    </th>
+                    <th>Agencia</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Credito.Id_Credito)
+                    </td>
+                    <td>
+                        @item.Cliente.Nombres @item.Cliente.Apellidos
+                    </td>
+                    <td>
+                     
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Credito.Monto_pago)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Agencia.Nombre)
+                    </td>
+                    <td>
+                    <input type="hidden" value="@item.Comite.Id_Comite" class="id_comite" />
+                     <a href="#Mantenimiento" data-toggle="modal" class="ver_detalle">Aprobar</a>
+                    @* <a asp-action="DetalleComitePendiente" asp-route-id_comite="@item.Comite.Id_Comite">Aprobar</a>*@
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="Mantenimiento">
+    <div class="modal-dialog" style="width:800px">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title">Detalle Comité de Crédito</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="detalle_linea_credito"></div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        Mostrar_Detalle();
+    });
+
+   
+    function Mostrar_Detalle() {
+        $("a.ver_detalle").each(function (index) {
+            $("a.ver_detalle").eq(index).click(function () {
+                var id_comite = $("input.id_comite").eq(index).val();
+                Detalle_Comite(id_comite);
+            });
+        });
+    }
+    function Detalle_Comite(id_comite) {
+        $.get("@Url.Action("DetalleModalComitePendiente", "Comite")",
+            {
+                id_comite: id_comite
+            },
+            function (detalle) {
+                $("div.detalle_linea_credito").html(detalle);
+               
+            });
+    }
+</script>

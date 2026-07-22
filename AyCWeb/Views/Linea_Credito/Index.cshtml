@@ -1,0 +1,399 @@
+﻿@using DevExtreme.AspNet.Mvc
+@model IEnumerable<ModelNucleo.Model.Linea_Credito>
+
+@{
+    ViewData["Title"] = "Líneas de crédito";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Líneas de crédito</h4>
+            </div>
+            <div class="col-lg-6 text-right">
+                <a href="#Mantenimiento" data-toggle="modal" class="btn btn-default nuevo_linea_credito">Nueva línea crédito</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body panel-body-personalizado">
+
+        @(Html.DevExtreme().DataGrid().ID("ListaLineaCredito")
+                                .ShowBorders(false)
+                                .DataSource(d => d.Mvc()
+                                .Controller("Linea_Credito")
+                                .Key("Id_Linea")
+                                .LoadAction("Lineas_Creditos"))
+                                .Columns(columns =>
+                                {
+                                columns.Add().DataField("Id_Linea").DataType(GridColumnDataType.Number).VisibleIndex(0).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Id_Linea")));
+                                columns.Add().DataField("Codigo").DataType(GridColumnDataType.String).VisibleIndex(1).FormItem(fi => fi.Editor(e => e.TextBox().ID("Codigo")));
+                                columns.Add().Width(300).DataField("Descripcion_linea").DataType(GridColumnDataType.String).VisibleIndex(2).FormItem(fi => fi.Editor(e => e.TextArea().ID("Descripcion_linea")));
+                                //columns.Add().DataField("Tipo_Garantia").DataType(GridColumnDataType.Number).VisibleIndex(3).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Tipo_Garantia")));
+                                columns.Add().DataField("Interes_Comision").DataType(GridColumnDataType.Number).VisibleIndex(4).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Interes_Comision")));
+                                //columns.Add().DataField("Tasa_Mora").DataType(GridColumnDataType.Number).VisibleIndex(5).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Tasa_Mora")));
+                                columns.Add().DataField("Recargo").DataType(GridColumnDataType.Number).VisibleIndex(6).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Recargo")));
+                                //columns.Add().DataField("Dia_Gracia").DataType(GridColumnDataType.Number).VisibleIndex(7).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Dia_Gracia")));
+                                columns.Add().DataField("Interes").DataType(GridColumnDataType.Number).VisibleIndex(8).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Interes")));
+                                columns.Add().DataField("Movible").DataType(GridColumnDataType.Boolean).VisibleIndex(9).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Movible")));
+
+                                //columns.Add().DataField("Plazo_Rango_Inicial").DataType(GridColumnDataType.Number).VisibleIndex(9).Visible(false).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Plazo_Rango_Inicial")));
+                                //columns.Add().DataField("Plazo_Rango_Final").DataType(GridColumnDataType.Number).VisibleIndex(10).Visible(false).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Plazo_Rango_Final")));
+                                columns.Add().DataField("Estructuracion").DataType(GridColumnDataType.Number).VisibleIndex(11).Visible(false).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Estructuracion")));
+                                columns.Add().DataField("Monto_Rango_Inicial").DataType(GridColumnDataType.Number).VisibleIndex(12).Visible(false).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Monto_Rango_Inicial")));
+                                columns.Add().DataField("Monto_Rango_Final").DataType(GridColumnDataType.Number).VisibleIndex(13).Visible(false).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Monto_Rango_Final")));
+                                columns.Add().DataField("Destino_Credito").DataType(GridColumnDataType.Number).VisibleIndex(14).Visible(false).FormItem(fi => fi.Editor(e => e.NumberBox().ID("Destino_Credito")));
+
+                                columns.Add().DataField("PlanAyC_Cobros_Periodico_Dinero").DataType(GridColumnDataType.Boolean).VisibleIndex(14).Visible(false).FormItem(fi => fi.Editor(e => e.CheckBox().ID("PlanAyC_Cobros_Periodico_Dinero")));
+                                columns.Add().CellTemplate(@<text>
+                                        <input type="hidden" value="<%=data.Id_Linea%>" class="id_linea_valor" />
+                                        <a href="#Mantenimiento" data-toggle="modal" class="ver_detalle">Detalle</a>
+                                        <a href="@Url.Action("Mutuos_Linea","Linea_Credito")?id_liena_credito=<%=data.Id_Linea%>" data-toggle="modal" class="ver_mutuos">Mutuos</a>
+                                    </text>);
+                                                            }).OnContentReady("Preparado")
+                                                                                .Paging(p => p.Enabled(false))
+
+                                                                                .FilterRow(f => f.Visible(false))
+                                                                                .HeaderFilter(f => f.Visible(false))
+                                                                                .GroupPanel(p => p.Visible(false))
+                                                                                .Grouping(g => g.AutoExpandAll(true))
+                                                                                .RemoteOperations(true))
+    </div>
+
+    <div class="modal fade" id="Mantenimiento">
+        <div class="modal-dialog" style="width:800px">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </a>
+                    <h4 class="modal-title">Detalle</h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="detalle_linea_credito"></div>
+
+                </div> <!-- /.modal-body -->
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="Mantenimiento_Adicional">
+        <div class="modal-dialog" style="width:750px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </a>
+                    <h4 class="modal-title" id="titulo_sub_modal">Mantenimiento</h4>
+                </div>
+                <div class="modal-body Cargar_Mantenimiento_Adicional" id="cerrar">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <link href="~/css/ventanas.css" rel="stylesheet" />
+
+    <script>
+        function GuardaryCerrar(e) {
+            var grid = $("#ListaLineaCredito").dxDataGrid("instance");
+            grid.saveEditData();
+        }
+
+        function Cobros_Periodicos(e) {
+            var id_linea_credito = $("#Id_Linea").dxNumberBox("instance").option("value");
+            location.href = "@Url.Action("Index","Cobro_Periodico")?id_linea_credito=" + id_linea_credito;
+        }
+
+        function Modificar_Columna(e) {
+            if (e.rowType === "data" && e.column.command === "edit") {
+                $editLink = e.cellElement.find(".dx-link:contains(Edit)");
+                $editLink.text("Detalle");
+            }
+        }
+
+        /*Nueva implementación */
+     
+        function Preparado() {
+            Mostrar_Detalle();
+            Nueva_Linea_Credito();
+        }
+
+        function Guardar_Linea_Credito() {
+            $("#Guardar_Linea_Credito").click(function () {
+                var linea_credito = $("#linea_credito").serializeAnything();
+                var id_linea = $("#linea_credito #Id_Linea").val();
+                var url = "@Url.Action("Nueva_Linea_Credito", "Linea_Credito")";
+                if (id_linea > 0)
+                    url = "@Url.Action("Editar_Linea_Credito", "Linea_Credito")";
+
+                $.post(url,
+                    linea_credito,
+                    function (resultado) {
+                        alertify.success(resultado);
+                    }).fail(function (error) {
+                        alertify.error(error.responseText);
+                    });
+            });
+        }
+
+        function Nueva_Linea_Credito() {
+            $("a.nuevo_linea_credito").click(function () {
+                Detalle_Linea(0,true);
+            });
+        }
+
+        function Detalle_Linea(id_linea,esNuevo) {
+            $.get("@Url.Action("LineaDetalleParcial", "Linea_Credito")",
+                        { 
+                            id_linea: id_linea,
+                            esNuevo: esNuevo
+                        },
+                        function (detalle) {
+                            $("div.detalle_linea_credito").html(detalle);
+                            Guardar_Linea_Credito();
+                            Cobros_Periodicos_Lista();
+                            Deducciones_Desembolso_Lista();
+                            Nuevo_Cobro_Periodico();
+                            Nuevo_Deduccion_Desembolso();
+                            Interes_Linea_Lista();
+                            Nuevo_Interes_Periodo();
+                        });
+        }
+
+        function Mostrar_Detalle() {
+            $("a.ver_detalle").each(function (index) {
+                $("a.ver_detalle").eq(index).click(function () {
+                    var id_linea = $("input.id_linea_valor").eq(index).val();
+                    Detalle_Linea(id_linea, false);
+                });
+            });
+        }
+
+        function Cobros_Periodicos_Lista() {
+            var id_linea_credito = $("#linea_credito #Id_Linea").val();
+            $.get("@Url.Action("Cobros_Periodicos", "Cobro_Periodico")",
+                {
+                    id_linea_credito: id_linea_credito
+                },
+                function (lista) {
+                    $("#cobros_periodicos_lista").html(lista);
+                    Mostrar_Cobro_Periodico();
+            });
+        }
+
+        function Nuevo_Cobro_Periodico() {
+            $("#nuevo_cobro_periodico").click(function () {
+                var id_linea_credito = $("#linea_credito #Id_Linea").val();
+                Detalle_Cobro_Periodico(true, id_linea_credito, 0);
+            });
+        }
+
+        function Mostrar_Cobro_Periodico() {
+            $("a.ver_detalle_cobro_periodico").each(function (index) {
+                $("a.ver_detalle_cobro_periodico").eq(index).click(function () {
+                    var id_cobro_periodico = $("input.id_cobro_periodico_valor").eq(index).val();
+                    Detalle_Cobro_Periodico(false,0,id_cobro_periodico);
+                });
+            });
+        }
+
+        function Detalle_Cobro_Periodico(esNuevo, id_linea_credito, id_cobro_periodico) {
+            $.get("@Url.Action("Detalle","Cobro_Periodico")",
+                {
+                    esNuevo: esNuevo,
+                    id_linea_credito: id_linea_credito,
+                    id_cobro_periodico: id_cobro_periodico
+                }, function (detalle) {
+                    $("div.Cargar_Mantenimiento_Adicional").html(detalle);
+                    Guardar_Cobro_Periodico(esNuevo);
+                });
+        }
+
+        function Guardar_Cobro_Periodico(esNuevo) {
+            $("#Guardar_Cobro_Periodico").click(function () {
+                
+                var detalle = $("#Detalle_Cobro_Periodico").serializeAnything();
+                var url = "@Url.Action("Editar_Cobro_Periodico", "Cobro_Periodico")";
+                if (esNuevo)
+                    url = "@Url.Action("Nuevo_Cobro_Periodico", "Cobro_Periodico")";
+                
+                $.post(url, 
+                    detalle,
+                    function (resultado) {
+                        alertify.success(resultado);
+                        Cobros_Periodicos_Lista();
+                }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+            });
+        }
+
+        //agregar manejo de deduccion_desembolso
+        function Deducciones_Desembolso_Lista() {
+            var id_linea_credito = $("#linea_credito #Id_Linea").val();
+            $.get("@Url.Action("Deducciones_Desembolso", "Linea_Credito")",
+                {
+                    id_linea_credito: id_linea_credito
+                },
+                function (lista) {
+                    $("#deducciones_desembolso_lista").html(lista);
+                    Mostrar_Deduccion_Desembolso();
+            });
+        }
+
+        function Nuevo_Deduccion_Desembolso() {
+            $("#nuevo_deduccion_desembolso").click(function () {
+                var id_linea_credito = $("#linea_credito #Id_Linea").val();
+                Detalle_Deduccion_Desembolso(true, id_linea_credito, 0);
+            });
+        }
+
+        function Mostrar_Deduccion_Desembolso() {
+            $("a.ver_detalle_deduccion_desembolso").each(function (index) {
+                $("a.ver_detalle_deduccion_desembolso").eq(index).click(function () {
+                    var id_deduccion_desembolso = $("input.id_deduccion_desembolso_valor").eq(index).val();
+                    console.log(id_deduccion_desembolso);
+                    Detalle_Deduccion_Desembolso(false, 0, id_deduccion_desembolso);
+                });
+            });
+        }
+
+        function Detalle_Deduccion_Desembolso(esNuevo, id_linea_credito, id_deduccion_desembolso) {
+            $.get("@Url.Action("Detalle_Deduccion_Desembolso", "Linea_Credito")",
+                {
+                    esNuevo: esNuevo,
+                    id_linea_credito: id_linea_credito,
+                    id_deduccion_desembolso: id_deduccion_desembolso
+                }, function (detalle) {
+                    $("div.Cargar_Mantenimiento_Adicional").html(detalle);
+                    Guardar_Deduccion_Desembolso(esNuevo);
+                });
+        }
+
+        function Guardar_Deduccion_Desembolso(esNuevo) {
+            $("#Guardar_Deduccion_Desembolso").click(function () {
+                var deduccion = $("#Detalle_Dedduccion_Desembolso").serializeAnything();
+                var url = "@Url.Action("Editar_Deduccion_Desembolso", "Linea_Credito")";
+                if (esNuevo)
+                    url = "@Url.Action("Nuevo_Deduccion_Desembolso", "Linea_Credito")";
+
+                $.post(url, 
+                    deduccion,
+                    function (resultado) {
+                        alertify.success(resultado);
+                        Deducciones_Desembolso_Lista();
+                }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+            });
+        }
+        //-------------------------Interes Linea credito periodo
+        function Interes_Linea_Lista() {
+            var id_linea_credito = $("#linea_credito #Id_Linea").val();
+            $.get("@Url.Action("ListarInteresPeriodo", "Linea_Credito")",
+                {
+                    id_linea_credito: id_linea_credito
+                },
+                function (lista) {
+                    $("#interes_periodos_lista").html(lista);
+                  //  Mostrar_Cobro_Periodico();
+                    Mostrar_Editar_Interes();
+                });
+        }
+        //function Mostrar_Cobro_Periodico() {
+        //    $("a.ver_detalle_interes_periodo").each(function (index) {
+        //        $("a.ver_detalle_interes_periodo").eq(index).click(function () {
+        //            var id_cobro_periodico = $("input.id_Interes_Periodo").eq(index).val();
+        //            Detalle_Interes_Periodo(id_cobro_periodico);
+        //        });
+        //    });
+        //}
+
+        function Nuevo_Interes_Periodo() {
+            $("#nuevo_interes_periodo").click(function () {
+                var id_linea_credito = $("#linea_credito #Id_Linea").val();
+               
+                Detalle_Interes_Periodo(id_linea_credito);
+            });
+        }
+        function Detalle_Interes_Periodo() {
+            var id_linea_credito = $("#linea_credito #Id_Linea").val();
+
+            $.get("@Url.Action("EditarInteresPeriodo", "Linea_Credito")",
+                {
+                    id_linea_credito: id_linea_credito
+                    
+                }, function (detalle) {
+                    $("div.Cargar_Mantenimiento_Adicional").html(detalle);
+                    Guardar_Interes_Periodo();
+             
+                });
+        }
+        function Guardar_Interes_Periodo() {
+            $("#Guardar_Interes_Periodo").click(function () {
+                var detalle = $("#detalle_interes_periodo").serializeAnything();
+                var url = "@Url.Action("Nuevo_Interes_Periodo", "Linea_Credito")";
+                @*if (esNuevo)
+                    url = "@Url.Action("Nuevo_Interes_Periodo", "Linea_Credito")";*@
+                $.post(url, 
+                    detalle,
+                    function (resultado) {
+                        alertify.success(resultado);
+                      Interes_Linea_Lista();
+                    }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+            });
+        }
+        //------------------- editar interes
+
+        function Mostrar_Editar_Interes() {
+            $("a.ver_detalle_interes_periodo").each(function (index) {
+                $("a.ver_detalle_interes_periodo").eq(index).click(function () {
+                    var idinteres = $("input.id_Interes_Periodo").eq(index).val();
+                    Detalle_Editar_Interes_Periodo(idinteres);
+                   
+                });
+            });
+        }
+        function Detalle_Editar_Interes_Periodo(idinteres) {
+          //  var idinteres =  $("input.id_Interes_Periodo").eq(index).val();
+          $.get("@Url.Action("Editar_Interes", "Linea_Credito")",
+                {
+                    idinteres: idinteres
+                }, function (detalle) {
+                    $("div.Cargar_Mantenimiento_Adicional").html(detalle);
+                    Guardar_Edicion_Interes();
+               
+              });
+        }
+        function Guardar_Edicion_Interes() {
+            $("#guardar_edicion_interes").click(function () {
+                var form_editar = $("#editar_periodo").serializeAnything();
+                var direccion = "@Url.Action("Editar_Interes_Exe", "Linea_Credito")";
+                console.log(direccion);
+                $.post(direccion, form_editar, function (resultado) {
+                    alertify.success(resultado);
+                    Interes_Linea_Lista();
+                    CierraPopup();
+                }).fail(function (error) {
+                    alertify.error(error.responseText);
+                });
+            });
+        }
+        function CierraPopup() {
+            $("#cerrar").modal('hide');//ocultamos el modal
+        }
+    </script>
+</div>
+
+

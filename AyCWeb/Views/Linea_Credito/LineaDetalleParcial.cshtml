@@ -1,0 +1,272 @@
+﻿@model ModelNucleo.Model.Linea_Credito
+
+<form id="linea_credito">
+    <input asp-for="Id_Linea" type="hidden" class="form-control" />
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <ul id="tab_linea" class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a href="#informacion_general" aria-controls="informacion_general" data-toggle="tab">
+                        Información general
+                    </a>
+                <li role="presentation">
+                    <a href="#otros_acuerdos" aria-controls="otros_acuerdos" data-toggle="tab">
+                        Otros acuerdos
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#rango_plazo" aria-controls="rango_plazo" data-toggle="tab">
+                        Rango de plazo
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#rango_monto" aria-controls="rango_monto" data-toggle="tab">
+                        Rango del monto
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="panel-body">
+            <div id="tab_contenido_linea" class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="informacion_general">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Codigo" class="control-label">Código</label>
+                                <input asp-for="Codigo" class="form-control" />
+                                <span asp-validation-for="Codigo" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Descripcion_linea" class="control-label">Descripción línea</label>
+                                <input asp-for="Descripcion_linea" class="form-control" />
+                                <span asp-validation-for="Descripcion_linea" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Tipo_Garantia" class="control-label">Tipo garantía</label>
+                                <div id="tipoGarantia"></div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Interes_Comision" class="control-label">Interés más comisión</label>
+                                <input asp-for="Interes_Comision" class="form-control" />
+                                <span asp-validation-for="Interes_Comision" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Interes" class="control-label">Interés</label>
+                                <input asp-for="Interes" class="form-control" />
+                                <span asp-validation-for="Interes" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Destino_Credito" class="control-label">Destino crédito</label>
+                                <div id="tipoDestino"></div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Dia_Gracia" class="control-label">Día gracia</label>
+                                <input asp-for="Dia_Gracia" class="form-control" />
+                                <span asp-validation-for="Dia_Gracia" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="otros_acuerdos">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Tasa_Mora" class="control-label"></label>
+                                <input asp-for="Tasa_Mora" class="form-control" />
+                                <span asp-validation-for="Tasa_Mora" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Recargo" class="control-label"></label>
+                                <input asp-for="Recargo" class="form-control" />
+                                <span asp-validation-for="Recargo" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input asp-for="Activar_Deducciones" />
+                                <label asp-for="Activar_Deducciones" class="control-label">Agregar deducciones</label>
+                                <span asp-validation-for="Activar_Deducciones" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Cancelacion_anticipada" class="control-label">Cancelación anticipada</label>
+                                <input asp-for="Cancelacion_anticipada" class="form-control" />
+                                <span asp-validation-for="Cancelacion_anticipada" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input asp-for="PlanAyC_Cobros_Periodico_Dinero" />
+                                <label asp-for="PlanAyC_Cobros_Periodico_Dinero" class="control-label">Agregar cobros periódicos</label>
+                                <span asp-validation-for="PlanAyC_Cobros_Periodico_Dinero" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="rango_plazo">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Plazo_Rango_Inicial" class="control-label">Plazo rango inicial</label>
+                                <input asp-for="Plazo_Rango_Inicial" class="form-control" />
+                                <span asp-validation-for="Plazo_Rango_Inicial" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Plazo_Rango_Final" class="control-label">Plazo rango final</label>
+                                <input asp-for="Plazo_Rango_Final" class="form-control" />
+                                <span asp-validation-for="Plazo_Rango_Final" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="rango_monto">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Monto_Rango_Inicial" class="control-label">Monto rango inicial</label>
+                                <input asp-for="Monto_Rango_Inicial" class="form-control" />
+                                <span asp-validation-for="Monto_Rango_Inicial" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Monto_Rango_Final" class="control-label">Monto rango final</label>
+                                <input asp-for="Monto_Rango_Final" class="form-control" />
+                                <span asp-validation-for="Monto_Rango_Final" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <p></p>
+    <input type="button" class="btn btn-default" value="Guardar" id="Guardar_Linea_Credito" />
+</form>
+
+<p></p>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <ul id="tab_linea" class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#cobros_periodicos_principal" aria-controls="cobros_periodicos_principal" data-toggle="tab">
+                    Cobros periodicos
+                </a>
+            <li role="presentation">
+                <a href="#deducciones_desembolso_principal" aria-controls="deducciones_desembolso_principal" data-toggle="tab">
+                    Deducciones en el desembolso
+                </a>
+            </li>
+            <li role="presentation">
+                <a href="#intereses_periodos" aria-controls="intereses_periodos" data-toggle="tab">
+                    Intereses y Periodos
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="panel-body">
+        <div id="tab_contenido_linea_principal" class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="cobros_periodicos_principal">
+                <a href="#Mantenimiento_Adicional" class="btn btn-default" data-toggle="modal" id="nuevo_cobro_periodico">Nuevo cobro periodico</a>
+                <p></p>
+                <div id="cobros_periodicos_lista"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="deducciones_desembolso_principal">
+                <a href="#Mantenimiento_Adicional" class="btn btn-default" data-toggle="modal" id="nuevo_deduccion_desembolso">Nueva deducción en desembolso</a>
+                <p></p>
+                <div id="deducciones_desembolso_lista"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="intereses_periodos">
+                <a href="#Mantenimiento_Adicional" class="btn btn-default" data-toggle="modal" id="nuevo_interes_periodo">Nuevo Intereses y Periodos</a>
+                <p></p>
+                <div id="interes_periodos_lista"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        CargarGarantias();
+        CargarDestinoCredito();
+    });
+    function CargarGarantias() {
+       
+        $.get("@Url.Action("getTipoGarantias", "Componentes")", function (agencias) {
+            $("#tipoGarantia").html(agencias);;
+        });
+        
+    }
+    function CargarDestinoCredito() {
+
+        $.get("@Url.Action("getTipoDestinoCredito", "Componentes")", function (agencias) {
+            $("#tipoDestino").html(agencias);;
+        });
+
+    }
+</script>

@@ -1,0 +1,189 @@
+﻿@model ModelNucleo.Model.Transaccion_Credito
+
+@{
+    bool aldia = ViewBag.AlDia;
+    string estado_dia = "";
+    string estado_total = "";
+    if (aldia)
+    {
+        estado_dia = "checked";
+        estado_total = "";
+    }
+    else
+    {
+        estado_dia = "";
+        estado_total = "checked";
+    }
+
+    bool recargo_c = ViewBag.Recargo;
+    string r_credito = "";
+
+    if (recargo_c)
+    {
+        r_credito = "checked";
+    }
+    else
+    {
+        r_credito = "";
+    }
+}
+<div id="ConsultaParaPago">
+
+    <ayc-alerta respuesta="ViewBag.Respuesta"></ayc-alerta>
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row">
+
+        <div class="col-lg-6">
+            <strong>Cuota: </strong> @ViewBag.Cuota
+        </div>
+    </div>
+    <p></p>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="form-group">
+                <input type="text" value="@ViewBag.Valor" class="form-control solo-numero valor_tomado" />
+                <input asp-for="Valor_Cuota" type="hidden" class="form-control" />
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <input type="button" id="ActualizarPago" class="btn btn-primary form-control" value="Actualizar" />
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <input type="button" id="Calculadora" class="btn btn-primary form-control" value="Calcular Vuelto" />
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <fieldset>
+                    <input type="radio" name="mod_call" class="mod_call" @estado_dia value="true" />
+                    <label for="pago_al_dia">Pago parcial o al día</label>
+                </fieldset>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <fieldset>
+                    <input type="radio" name="mod_call" class="mod_call" @estado_total value="false" />
+                    <label for="pago_al_dia">Pago para cancelar</label>
+                </fieldset>
+
+            </div>
+        </div>
+      @*  <div class="col-lg-4">
+            <div class="form-group">
+                <fieldset>
+                    <input type="checkbox" name="quitar_recargo" class="quitar_recargo" @r_credito value="true" />
+                    <label for="pago_al_dia">Condonar Recargos</label>
+                </fieldset>
+            </div>
+        </div>*@
+    </div>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="FechaPago" class="control-label"></label>
+                <input asp-for="FechaPago" class="form-control"  />
+                <span asp-validation-for="FechaPago" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Interes_Comision" class="control-label"></label>
+                <input asp-for="Interes_Comision" class="form-control" />
+                <span asp-validation-for="Interes_Comision" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Abono_capital" class="control-label"></label>
+                <input asp-for="Abono_capital" class="form-control" />
+                <span asp-validation-for="Abono_capital" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Dias" class="control-label"></label>
+                <input asp-for="Dias" class="form-control" />
+                <span asp-validation-for="Dias" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Recargo" class="control-label"></label>
+                <input asp-for="Recargo" class="form-control" />
+                <span asp-validation-for="Recargo" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Otros_Cobros" class="control-label"></label>
+                <input asp-for="Otros_Cobros" class="form-control" />
+                <span asp-validation-for="Otros_Cobros" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Pagos_Acumulado" class="control-label"></label>
+                <input asp-for="Pagos_Acumulado" class="form-control" />
+                <span asp-validation-for="Pagos_Acumulado" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Saldo_Capital" class="control-label">Saldo capital</label>
+                <input asp-for="Saldo_Capital" class="form-control" />
+                <span asp-validation-for="Saldo_Capital" class="text-danger"></span>
+            </div>
+        </div>
+
+
+    </div>
+
+    <input asp-for="Id_Transaccion_Credito" type="hidden" class="form-control" />
+    <input asp-for="Id_Tipo_Operecion_Credito" type="hidden" class="form-control" />
+    <input asp-for="Id_Credito" type="hidden" class="form-control" />
+    <input asp-for="Al_Dia" type="hidden" class="form-control" />
+
+    <input asp-for="Pago_para_cancelar" type="hidden" class="form-control" />
+
+    <input asp-for="No" type="hidden" class="form-control" />
+    <input asp-for="Interes" type="hidden" class="form-control" />
+    <input asp-for="IvaSobreComision" type="hidden" class="form-control" />
+    @*<input asp-for="Saldo_Capital" type="hidden" class="form-control" onchange="ObtenerData(this.value);" />*@
+
+    <div style="display:none;">
+        <input asp-for="Puntual" />
+        <input asp-for="Vencido" />
+        <input asp-for="Anticipado" />
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        BotonesAsesores();
+        $('.solo-numero').keyup(function () {
+            var exp = /^[+]?([0-9]+(?:[\.][0-9]*)?|\.[0-9]+)$/;
+            if (!exp.test(this.value))
+                this.value = "";
+        });
+    });
+</script>

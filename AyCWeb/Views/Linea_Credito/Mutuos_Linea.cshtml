@@ -1,0 +1,72 @@
+﻿@model ModelNucleo.Model.Linea_Credito
+
+@{
+    ViewData["Title"] = "Mutuos_Linea";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Mutuos_Linea</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Líneas de crédito</h4>
+            </div>
+            <div class="col-lg-6 text-right">
+                <a href="#Mantenimiento" data-toggle="modal" class="btn btn-default" id="Nuevo_mutuo">Nueva Mutuo</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body panel-body-personalizado">
+
+
+
+        <br />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        Documento
+                    </th>
+                    <th>
+                        Es Copia
+                    </th>
+                    <th>
+                        Con Huella
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Tipo_Mutuos)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id_Tipo_Mutuo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombre_Extencion_Documento)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Copia)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Huella)
+                        </td>
+                        <td>
+                            
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

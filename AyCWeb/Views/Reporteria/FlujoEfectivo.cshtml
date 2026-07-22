@@ -1,0 +1,807 @@
+﻿@model ModelNucleo.Model.ModelView.Reporte_Flujo_Efectivo_Vista
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="~/css/BordeCierre.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+  
+    <title>FlujoEfectivo</title>
+</head>
+<body>
+    <h3 align="center">@ViewBag.nombreEmpresa</h3>
+    <h4 align="center">FLUJO DE EFECTIVO</h4>
+
+    <table style="border-bottom: 1pt solid black">
+        <thead>
+            <tr>
+                <th style="width: 680px">
+                    Nombre
+                </th>
+                <th style="width: 250px">
+                    Monto
+                </th>
+                <th style="width: 170px">
+                    Saldo
+                </th>
+            </tr>
+        </thead>
+    </table>
+    @if (Model.Saldo_Anterior != null)
+    {
+        <table align="center">
+            <thead>
+                <tr>
+                    <td style="width: 200px">
+                        Fecha:
+                    </td>
+                    <th style="width: 200px">
+                        @ViewBag.fecha
+                    </th>
+                    <td style="width: 200px">
+                        Agencia:
+                    </td>
+                    <th style="width: 200px">
+                        @ViewBag.agencia
+                    </th>
+                    <td style="width: 200px">
+                        Saldo Ultimo Cierre:
+                    </td>
+                    <th style="width: 200px">
+                        @Model.Saldo_Anterior.ToString("C")
+                    </th>
+                </tr>
+
+            </thead>
+        </table>
+    }
+    else
+    {
+        <table align="center">
+            <thead>
+                <tr>
+                    <td style="width: 200px">
+                        Fecha:
+                    </td>
+                    <th style="width: 200px">
+                        @ViewBag.fecha
+                    </th>
+                    <td style="width: 200px">
+                        Agencia:
+                    </td>
+                    <th style="width: 200px">
+                        @ViewBag.agencia
+                    </th>
+                    <td style="width: 200px">
+                        Saldo Ultimo Cierre:
+                    </td>
+                    <th style="width: 200px">
+                        0.00
+                    </th>
+                </tr>
+
+            </thead>
+        </table>
+    }
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    OPERACIONES ORDINARIAS
+                </th>
+            </tr>
+        </thead>
+    </table>
+    @if (Model != null)
+    {
+        <table class="greyGridTable">
+            <tbody>
+
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (+) Ingreso pago de créditos
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Ingreso_pago_creditos.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (+) Fondos de Administración
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Fondos_de_Administracion.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (+) Depósitos en cuentas de ahorro
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Depositos_en_cuenta_de_Ahorro.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (+) Fondos de Depósitos a plazo
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Fondos_de_Deposito_a_plazo.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (+) Depositos de Prestamos en CHC
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Depositos_a_Prestamos_en_CHC.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (+) Colectores AKI
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Colectores_AKI.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width: 400px; text-align: left;border: none">
+                        SubTotal
+                    </th>
+                    <td style="width: 200px;border: none">
+                    </td>
+                    <th style="width: 200px;text-align: center">
+                        @Model.Subtotal_Entradas_ordinario.ToString("C")
+                    </th>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Desembolsos prestamos
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Desembolsos_prestamos.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Pago de depositos a plazo fijo
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Pago_de_depositos_a_plazo_fijo.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Retiro de ahorros
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Retiro_de_ahorros.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Remesas
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Remesas.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Remesas AKI
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Resemas_AKI.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width: 400px; text-align: left;border: none">
+                        SubTotal
+                    </th>
+                    <td style="width: 200px;border: none">
+                    </td>
+                    <th style="width: 200px; text-align: center">
+                        @Model.Subtotal_Salidas_ordinario.ToString("C")
+                    </th>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <table style="border-bottom:1px solid black ">
+            <tbody>
+                <tr>
+                    <th style="width: 687px">
+                        SUBTOTAL DE OPERACIONES:
+                    </th>
+                    <th style="width: 200px;text-align: center">
+                        @Model.Subtotal_de_operaciones.ToString("C")
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        PENDIENTES DE LIQUIDAR
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <table class="greyGridTable">
+            <tbody>
+
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Impuestos Municipales
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Impuestos_municipales.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Alquiler
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Alquiler.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-)Combustible
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Combustible.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Mantenimientos y Reparaciones
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Mantenimientos_y_Reparaciones.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Servicios TV por Cable
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Servicios_TV_por_cable.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Billetes Promocionales
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Billetes_promocionales.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Servicios Basicos
+                    </td>
+                    <td style="width: 200px">
+                        @Model.Servicios_basicos.ToString("C")
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <table>
+            <tbody>
+                <tr>
+                    <th style="width: 687px">
+                        SUBTOTAL DE PENDIENTES:
+                    </th>
+                    <th style="width: 200px;text-align: center">
+                        @Model.Subtotal_de_pendendientes.ToString("C")
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+
+        <table align="center">
+            <tbody>
+                <tr>
+                    <th style="width: 200px">
+                        DISPONIBLE A LA FECHA:
+                    </th>
+                    <th style="width: 200px;text-align: center">
+                        @ViewBag.fecha
+                    </th>
+                    <th style="width: 200px">
+                        @Model.Disponible_a_la_fecha.ToString("C")
+                    </th>
+
+                </tr>
+            </tbody>
+        </table>
+        @if (Model.Efectivo_Detallado != null)
+        {
+
+            <table class="greyGridTable" align="center">
+                <thead>
+
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Efectivo_Detallado)
+                    {
+                        <tr>
+
+                            <td style="width: 50px">
+                                @item.Denominacion.denominacion.ToString("N")
+                            </td>
+                            <td style="width: 50px">
+                                @item.Denominacion.tipo
+                            </td>
+                            <td style="width: 40px; border: none">
+                                --
+                            </td>
+                            <td style="width: 180px">
+                                @item.Efectivo.cantidad.ToString("N")
+                            </td>
+                            <td style="width: 40px; border: none">
+                                --
+                            </td>
+                            <td style="width: 180px">
+                                @item.Efectivo.monto.ToString("C")
+                            </td>
+
+                        </tr>
+
+                    }
+
+                </tbody>
+            </table>
+
+
+            <br />
+            <table class="greyGridTable">
+                <tr>
+                    <td style="width: 520px; text-align: left; border: none"> Cheques Recibidos:</td>
+                    <td style="border: none">@Model.Cheques_Recibidos_Cantidad</td>
+                    <td style="border: none;text-align: right">@Model.Cheques_Recibidos_Monto.ToString("C")</td>
+                </tr>
+            </table>
+            <br />
+            <table class="greyGridTable">
+                <tr>
+                    <td style="width: 520px; text-align: left; border: none"> Detalle Bolsa AKI:</td>
+                    <td style="border: none;text-align: right">@Model.Detalle_bolsa_AKI.ToString("C")</td>
+                </tr>
+            </table>
+            <br />
+            <table class="greyGridTable">
+                <tr>
+                    <td style="width: 220px; text-align: left; border: none">Efectivo Neto en Caja:</td>
+                    <td>@Model.Disponible_a_la_fecha.ToString("C")</td>
+                    <td style="width: 220px; text-align: left; border: none">Pendiente de Desembolso:</td>
+                    <td>$0.00</td>
+                </tr>
+            </table>
+            <br />
+            <table cellspacing="10" align="center">
+                <thead>
+                    <tr>
+                        <th>________________________________</th>
+                        <th>________________________________</th>
+
+                    </tr>
+
+                    <tr>
+                        <th style="text-align:center">Responsable</th>
+                        <th style="text-align:center">Contabilidad</th>
+
+                    </tr>
+
+                </thead>
+
+            </table>
+
+
+        }
+    }
+    else
+    {
+        <table class="greyGridTable">
+            <tbody>
+
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (+) Ingreso pago de créditos
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (+) Fondos de Administración
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (+) Depósitos en cuentas de ahorro
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (+) Fondos de Depósitos a plazo
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (+) Depositos de Prestamos en CHC
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (+) Colectores AKI
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width: 400px; text-align: left;border: none">
+                        SubTotal
+                    </th>
+                    <td style="width: 200px;border: none">
+                    </td>
+                    <th style="width: 200px;text-align: center">
+                        0.00
+                    </th>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Desembolsos prestamos
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Pago de depositos a plazo fijo
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Retiro de ahorros
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Remesas
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Remesas AKI
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width: 400px; text-align: left;border: none">
+                        SubTotal
+                    </th>
+                    <td style="width: 200px;border: none">
+                    </td>
+                    <th style="width: 200px; text-align: center">
+                        0.00
+                    </th>
+                </tr>
+
+            </tbody>
+        </table>
+        <table style="border-bottom:1px solid black ">
+            <tbody>
+                <tr>
+                    <th style="width: 687px">
+                        SUBTOTAL DE OPERACIONES:
+                    </th>
+                    <th style="width: 200px;text-align: center">
+                        0.00
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        PENDIENTES DE LIQUIDAR
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <table class="greyGridTable">
+            <tbody>
+
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Impuestos Municipales
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Alquiler
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-)Combustible
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Mantenimientos y Reparaciones
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Servicios TV por Cable
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Billetes Promocionales
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="width: 400px; text-align: left">
+                        (-) Servicios Basicos
+                    </td>
+                    <td style="width: 200px">
+                        0.00
+                    </td>
+                    <td style="width: 200px;border: none">
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <table>
+            <tbody>
+                <tr>
+                    <th style="width: 687px">
+                        SUBTOTAL DE PENDIENTES:
+                    </th>
+                    <th style="width: 200px;text-align: center">
+                        0.00
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+
+        <table border="1px">
+            <tbody>
+                <tr>
+                    <th style="width: 900px">
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+        <table align="center">
+            <tbody>
+                <tr>
+                    <th style="width: 200px">
+                        DISPONIBLE A LA FECHA:
+                    </th>
+                    <th style="width: 200px;text-align: center">
+                        DD/MM/YYYY
+                    </th>
+                    <th style="width: 200px">
+                        $0.00
+                    </th>
+
+                </tr>
+            </tbody>
+        </table>
+        <table class="greyGridTable" align="center">
+            <thead>
+
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Efectivo_Detallado)
+                {
+                    <tr>
+
+                        <td style="width: 50px">
+                            0.00
+                        </td>
+                        <td style="width: 50px">
+                            0.00
+                        </td>
+                        <td style="width: 40px; border: none">
+                            --
+                        </td>
+                        <td style="width: 180px">
+                            0
+                        </td>
+                        <td style="width: 40px; border: none">
+                            --
+                        </td>
+                        <td style="width: 180px">
+                            0
+                        </td>
+
+                    </tr>
+
+                }
+
+            </tbody>
+        </table>
+
+
+        <br />
+        <table class="greyGridTable">
+            <tr>
+                <td style="width: 520px; text-align: left; border: none"> Cheques Recibidos:</td>
+                <td style="border: none">0</td>
+                <td style="border: none;text-align: right">$0.00</td>
+            </tr>
+        </table>
+        <br />
+        <table class="greyGridTable">
+            <tr>
+                <td style="width: 520px; text-align: left; border: none"> Detalle Bolsa AKI:</td>
+                <td style="border: none;text-align: right">$0.00</td>
+            </tr>
+        </table>
+        <br />
+        <table class="greyGridTable">
+            <tr>
+                <td style="width: 220px; text-align: left; border: none">Efectivo Neto en Caja:</td>
+                <td>$0.00</td>
+                <td style="width: 220px; text-align: left; border: none">Pendiente de Desembolso:</td>
+                <td>$0.00</td>
+            </tr>
+        </table>
+        <br />
+        <table cellspacing="10" align="center">
+            <thead>
+                <tr>
+                    <th>________________________________</th>
+                    <th>________________________________</th>
+
+                </tr>
+
+                <tr>
+                    <th style="text-align:center">Responsable</th>
+                    <th style="text-align:center">Contabilidad</th>
+
+                </tr>
+
+            </thead>
+
+        </table>
+
+    }
+
+</body>
+</html>

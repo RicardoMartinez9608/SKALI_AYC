@@ -1,0 +1,102 @@
+﻿@model ModelNucleo.Dto.TicketCapitalizacionDto
+@{
+    Layout = null;
+  
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Ticket Capitalización</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            font-size: 12px;
+        }
+
+        .titulo {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 4px;
+        }
+
+        .valor {
+            text-align: right;
+        }
+
+        hr {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="titulo">
+        COMPROBANTE DE CAPITALIZACIÓN
+    </div>
+
+    <hr />
+
+    <table>
+        <tr>
+            <td><b>No Deposito Plazo:</b></td>
+            <td>@Model.Cuenta</td>
+        </tr>
+
+        <tr>
+            <td><b>Cliente:</b></td>
+            <td>@Model.CuentaHabiente</td>
+        </tr>
+
+        <tr>
+            <td><b>Fecha:</b></td>
+            <td>@Model.FechaCapitalizacion.ToString("dd/MM/yyyy")</td>
+        </tr>
+
+        <tr>
+            <td><b>Forma Pago:</b></td>
+            <td>@Model.FormaPago</td>
+        </tr>
+
+        <tr>
+            <td><b>Tasa:</b></td>
+            <td>@Model.TasaInteres.ToString("N2") %</td>
+        </tr>
+
+    </table>
+
+    <hr />
+
+    <table>
+
+
+        <tr>
+            <td><b>Interés Pagado</b></td>
+            <td class="valor">
+                @Model.InteresCapitalizado.ToString("N2")
+            </td>
+        </tr>
+
+      
+
+    </table>
+
+    <hr />
+
+    <div style="text-align:center;margin-top:25px;">
+        Documento generado automáticamente
+    </div>
+
+</body>
+</html>

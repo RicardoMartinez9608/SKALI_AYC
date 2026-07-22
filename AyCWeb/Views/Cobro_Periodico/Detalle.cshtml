@@ -1,0 +1,27 @@
+﻿@model ModelNucleo.Model.Cobro_Periodico
+
+<form id="Detalle_Cobro_Periodico">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="Id_Cobro_Periodico" type="hidden" class="form-control" />
+    <input id="Id_Linea_Credito" name="Id_Linea_Credito" type="hidden" class="form-control" value="@Model.Id_Linea_Credito" />
+
+    <div class="form-group">
+        <label asp-for="Nombre" class="control-label"></label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Descripcion" class="control-label">Descripción</label>
+        <input asp-for="Descripcion" class="form-control" />
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Valor" class="control-label"></label>
+        <input asp-for="Valor" class="form-control" />
+        <span asp-validation-for="Valor" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="button" value="Guardar" class="btn btn-default" id="Guardar_Cobro_Periodico" />
+    </div>
+</form>
+    

@@ -1,0 +1,110 @@
+﻿
+@{
+    ViewData["Title"] = "Consulta_Movimientos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Consulta de Movimientos</div>
+    <div class="panel-body">
+
+        <div class="row">
+            <div class="col-md-3" id="agencias">
+                <div class="form-group">
+                    <div id="id_agencia"></div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <div id="id_caja"></div>
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <input type="date" name="fecha_inicio" class="form-control" id="fecha_inicio" value="2"/>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <button type="button" id="Filtrar" class="btn btn-default">Filtrar</button>
+                    <button type="button" id="cargar_excel" class="btn btn-default">Excel</button>
+                </div>
+            </div>
+        </div>
+            <div id="movimientos"></div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        ListaCajas();
+        MostrarMovimientos();
+        Cargar_Agencias();
+    });
+
+    function MostrarMovimientos() {
+        $("#Filtrar").click(function () {
+            var fecha_inicio = $("#fecha_inicio").val();
+            var id_caja = $("#Id_Caja").val();
+            $.get("@Url.Action("Mostrar_Movimientos_Partida", "Caja")",
+                {
+                    rango:true,
+                    fecha_inicio: fecha_inicio,
+                    fecha_final:"",
+                    id_caja: id_caja
+                },
+                function (tabla) {
+                    $("#movimientos").html(tabla);
+                    CargarExcel();
+                });
+            });
+    }
+
+    function ListaCajas() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol == "Administrador") {
+            $("#Id_Agencia").change(function () {
+                var id_agencia = $("#Id_Agencia").val();
+                $.get("@Url.Action("Cajas_Combo", "Caja_Boveda")?id_agencia="+id_agencia, function (agencias) {
+                    $("#id_caja").html(agencias);
+                    
+                });
+            });
+            @*$.get("@Url.Action("Cajas_Agencia","Caja")",
+                function (cajas) {
+                    $("div.cajas ").html(cajas);
+                    MostrarMovimientos();
+                });*@
+        } else {
+            $("#agencias").css("display", "none");
+            Cargar_Cajas_Agencia();
+        }
+    }
+    function Cargar_Agencias() { 
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia").html(agencias);
+            ListaCajas();
+        });
+    }
+    function Cargar_Cajas_Agencia() {
+        $.get("@Url.Action("Cajas_Combo_Agencia", "Caja_Boveda")",function (agencias) {
+            $("#id_caja ").html(agencias);
+        });
+    }
+
+    function CargarExcel() {
+        $("#cargar_excel").click(function () {
+            generateexcel("movimientos_caja_all");
+        });
+    }
+
+    function generateexcel(tableid) {
+        var table = document.getElementById(tableid);
+        var html = table.outerHTML;
+        window.open('data:application/vnd.ms-excel,' + escape(html));
+    }
+
+</script>
+

@@ -1,0 +1,128 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Cartera_Asesor>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="~/css/BordeCierre.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+
+    <title>Reporte de Cartera</title>
+</head>
+<body>
+    <h5 align="left">@ViewBag.solicitado</h5>
+    <h2 align="center">@ViewBag.nombreEmpresa</h2>
+    <h3 align="center">Reporte de Cartera de @ViewBag.asesor</h3>
+    <h4 align="center">@Convert.ToDateTime(ViewBag.inicio).ToString("dd/MM/yyyy")  </h4>
+
+    <br /><br />
+    <table class="greyGridTable" >
+        
+    @{
+        int centinela = 0;
+      
+    }
+    <thead>
+        <tr style="align-content:center">
+            <th align="center">
+                No.
+            </th>
+            <th align="center">
+                Código
+            </th>
+            <th align="center">
+                Nombre Cliente
+            </th>
+            <th align="center">
+                Dirección Cliente
+            </th>
+            <th align="center">
+                Teléfono Cliente
+            </th>
+            <th align="center">
+                Monto Crédito
+            </th>
+            <th align="center">
+                Saldo Crédito
+            </th>
+            <th align="center">
+                Cuota Crédito
+            </th>
+            <th align="center">
+                Apertura Crédito
+            </th>
+            <th align="center">
+                Vencimiento Crédito
+            </th>
+          
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+    centinela += 1;
+        <tr>
+            <td>
+               @centinela
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Codigo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre_Persona)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Direccion_Persona)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Telefono_Persona)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Monto_Credito)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Saldo_Credito)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cuota_Credito)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fecha_Apertura)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fecha_Vencimiento)
+            </td>
+        
+        </tr>
+}
+    </tbody>
+</table>
+   <br />
+    <table style="border-collapse:separate;
+                    border-spacing: 10px;
+                    border:solid black 1px;
+                    border-radius:10px;
+                    -moz-border-radius:10px;
+                    -webkit-border-radius: 5px;text-align: center">
+        <tbody style="text-align: center">
+            <tr>
+                <th style="text-align: center">Totales </th>
+                @if (Model != null)
+        {
+                <th style="text-align: center">Totales por Asesor @centinela</th>
+                <th style="text-align: center">Valor Cartera @Model.Sum(a=>a.Saldo_Credito).ToString("C")</th>
+               
+        }
+            </tr>
+
+        </tbody>
+
+    </table>
+   
+  
+
+
+  
+</body>
+</html>

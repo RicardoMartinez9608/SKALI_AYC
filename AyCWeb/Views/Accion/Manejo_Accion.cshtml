@@ -1,0 +1,134 @@
+﻿@using DevExtreme.AspNet.Mvc
+@model ModelNucleo.Model.ModelView.CreditoFiltro
+@{
+    ViewData["Title"] = "Acciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Acciones</h4>
+            </div>
+            <div class="col-lg-6 text-right">
+                <a href="#modal_detalle" data-toggle="modal" class="btn btn-default nueva_accion">Nueva acción</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body panel-body-personalizado">
+
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Filtros <span class="caret"></span>
+        </button>
+        <p></p>
+        <div class="collapse" id="collapseExample">
+            <div class="well">
+                <form id="enviar_persona">
+
+                    <div class="form-group">
+                        Nombre o DUI: @(Html.DevExtreme().Lookup()
+                        .ID("Datos")
+                        .ElementAttr("class", "field-customization")
+                        .DataSource(
+                        d => d.Mvc().Controller("Persona").LoadAction("Personas").Key("Id_Persona")
+                        ).DisplayExpr(new JS("lookup_displayExpr")).DisplayValue("Nombres").ValueExpr("Id_Persona")
+                        .SearchExpr(new[] { "Nombres", "Apellidos", "Dui", "Id_Persona" })
+                        .ItemTemplate(@<text>
+                                    <div class="custom-item">
+                                        <div><%= Nombres %> <%= Apellidos %> <%= Dui %></div>
+                                    </div>
+                        </text>).OnSelectionChanged("ObtenerPersona")
+                        )
+                    </div>
+
+                    <div class="form-group">
+                        <input type="button" value="Filtrar" id="filtrar" class="btn btn-default" />
+                    </div>
+                </form>
+            </div>
+            <p>Detalle Acciones:</p>
+            <div id="mostrar_acciones"></div>
+        </div>
+
+    </div>
+</div>
+<input type="hidden" id="id_persona" name="id_persona"/>
+
+<div class="modal fade" id="modal_detalle">
+    <div class="modal-dialog" style="width:800px">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title">Detalle</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="detalle_accion"></div>
+
+            </div> <!-- /.modal-body -->
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function lookup_displayExpr(item) {
+        if (!item) {
+            return "";
+        }
+        return item.Nombres + " " + item.Apellidos + " " + item.Dui;
+    }
+
+    function ObtenerPersona(item) {
+        var id_persona = item.selectedItem.Id_Persona;
+        $("#id_persona").val(id_persona);
+    }
+
+    $("#filtrar").click(function () {
+        var id_persona = $("#id_persona").val();
+        $.get("@Url.Action("Acciones","Accion")",
+            { id_persona: id_persona }, function (acciones) {
+                $("#mostrar_acciones").html(acciones);
+            });
+    });
+
+    $("a.nueva_accion").click(function () {
+        Refrescar_Modales();
+        var id_persona = $("#id_persona").val();
+        $.get("@Url.Action("Detalle", "Accion")",
+            {
+                esNuevo: true,
+                id_persona: id_persona
+            },
+            function (detalle) {
+                $("div.detalle_accion").html(detalle);
+                Guardar_Nueva_Accion();
+        });
+    });
+
+    function Guardar_Nueva_Accion() {
+        $("#Guardar_Nueva_Accion").click(function () {
+            $.post("@Url.Action("Guardar", "Accion")",
+            $("#detalle_accion").serializeAnything(),
+            function (resultado) {
+                /*manejo de resultado*/
+                $("#Mantenimiento").modal("hide");
+                Cargar_Acciones();
+            });
+        });
+    }
+
+    function Refrescar_Modales() {
+        $("#modal_detalle").on("hidden.bs.modal", function (e) {
+            $("div.detalle_accion").html("");
+        });
+    }
+
+</script>

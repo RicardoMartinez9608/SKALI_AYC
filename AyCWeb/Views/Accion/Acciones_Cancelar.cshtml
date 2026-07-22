@@ -1,0 +1,60 @@
+﻿@model IEnumerable<ModelNucleo.Model.Accion>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Código
+            </th>
+            <th>
+                Certificado
+            </th>
+            <th>
+                Cantidad
+            </th>
+            <th>
+                Precio unitario
+            </th>
+            <th>
+                Precio total
+            </th>
+            <th>
+                Cancelado
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="accion_fila">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Persona.NombreCompleto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Codigo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.No_Certificado)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cantidad_Accion)
+                </td>
+                <td>
+                    @item.Valor_Unitario.ToString("C")
+                </td>
+                <td>
+                    @item.Valor_Total.ToString("C")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cancelado)
+                </td>
+                <td>
+                    <input type="hidden" value="@item.Id_Accion" class="id_accion" />
+                    <input type="hidden" value="@item.Codigo" class="codigo" />
+                    <a href="#modal_detalle_cobro" data-toggle="modal" class="registrar_cobro_accion">Registrar cobro</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

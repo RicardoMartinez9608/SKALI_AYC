@@ -1,0 +1,136 @@
+﻿@model ModelNucleo.Model.Persona
+
+
+<div class="bs-example bs-example-tabs" data-example-id="togglable-tabs">
+    <ul id="myTabs" class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#generales" id="generales-tab" role="tab" data-toggle="tab" aria-controls="generales" aria-expanded="true">Generales</a></li>
+        <li role="presentation"><a href="#documentacion" role="tab" id="documentacion-tab" data-toggle="tab" aria-controls="documentacion">Documentación</a></li>
+        <li role="presentation"><a href="#tipos" role="tab" id="referencias-tab" data-toggle="tab" aria-controls="referencias">Tipos</a></li>
+        <li role="presentation"><a href="#referencias" role="tab" id="referencias-tab" data-toggle="tab" aria-controls="referencias">Referencias</a></li>
+        <li role="presentation"><a href="#sistema" role="tab" id="sistema-tab" data-toggle="tab" aria-controls="sistema">Sistema</a></li>
+    </ul>
+
+    <form asp-action="CrearPersona" data-ajax="true" data-ajax-method="POST">
+        <input asp-for="Id_Persona" type="hidden" class="form-control" />
+        <div id="myTabContent" class="tab-content">
+            <div role="tabpanel" class="tab-pane fade in active" id="generales" aria-labelledBy="generales-tab">
+                <div class="form-group">
+                    <label asp-for="Nombres" class="control-label"></label>
+                    <input asp-for="Nombres" class="form-control" />
+                    <span asp-validation-for="Nombres" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Apellidos" class="control-label"></label>
+                    <input asp-for="Apellidos" class="form-control" />
+                    <span asp-validation-for="Apellidos" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EstadoFamiliar" class="control-label"></label>
+                    <input asp-for="EstadoFamiliar" class="form-control" />
+                    <span asp-validation-for="EstadoFamiliar" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Sexo" class="control-label"></label>
+                    <input asp-for="Sexo" class="form-control" />
+                    <span asp-validation-for="Sexo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Ocupacion" class="control-label"></label>
+                    <input asp-for="Ocupacion" class="form-control" />
+                    <span asp-validation-for="Ocupacion" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Profesion" class="control-label"></label>
+                    <input asp-for="Profesion" class="form-control" />
+                    <span asp-validation-for="Profesion" class="text-danger"></span>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="documentacion" aria-labelledBy="documentacion-tab">
+                <div class="form-group">
+                    <label asp-for="Dui" class="control-label"></label>
+                    <input asp-for="Dui" class="form-control" />
+                    <span asp-validation-for="Dui" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Pasaporte" class="control-label"></label>
+                    <input asp-for="Pasaporte" class="form-control" />
+                    <span asp-validation-for="Pasaporte" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Domicilio" class="control-label"></label>
+                    <input asp-for="Domicilio" class="form-control" />
+                    <span asp-validation-for="Domicilio" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FechaNacimiento" class="control-label"></label>
+                    <input asp-for="FechaNacimiento" class="form-control" />
+                    <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Nacionalidad" class="control-label"></label>
+                    <input asp-for="Nacionalidad" class="form-control" />
+                    <span asp-validation-for="Nacionalidad" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConocidoPor" class="control-label"></label>
+                    <input asp-for="ConocidoPor" class="form-control" />
+                    <span asp-validation-for="ConocidoPor" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ExpedicionDocumentoIdentifcacion" class="control-label"></label>
+                    <input asp-for="ExpedicionDocumentoIdentifcacion" class="form-control" />
+                    <span asp-validation-for="ExpedicionDocumentoIdentifcacion" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ExpiracionDocumentoIdentificacion" class="control-label"></label>
+                    <input asp-for="ExpiracionDocumentoIdentificacion" class="form-control" />
+                    <span asp-validation-for="ExpiracionDocumentoIdentificacion" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ISSS" class="control-label"></label>
+                    <input asp-for="ISSS" class="form-control" />
+                    <span asp-validation-for="ISSS" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NUP" class="control-label"></label>
+                    <input asp-for="NUP" class="form-control" />
+                    <span asp-validation-for="NUP" class="text-danger"></span>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="tipos" aria-labelledBy="tipos-tab">
+                <p>
+                    <div class="CargarTipoPersona"> </div>
+                    <div class="CargarTipoPersonaPorPersona"></div>
+                </p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="referencias" aria-labelledBy="referencias-tab">
+                <p>
+                    <div class="formReferencia"></div>
+                    <div class="ListaReferencias"></div>
+                </p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="sistema" aria-labelledBy="sistema-tab">
+                <div class="form-group">
+                    <label asp-for="Usuario" class="control-label"></label>
+                    <input asp-for="Usuario" class="form-control" />
+                    <span asp-validation-for="Usuario" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Contrasena" class="control-label"></label>
+                    <input asp-for="Contrasena" class="form-control" />
+                    <span asp-validation-for="Contrasena" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Correo" class="control-label"></label>
+                    <input asp-for="Correo" class="form-control" />
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Guardar" class="btn btn-default" />
+        </div>
+
+    </form>
+
+</div>

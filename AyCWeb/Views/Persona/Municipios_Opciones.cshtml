@@ -1,0 +1,5 @@
+﻿@model IEnumerable<ModelNucleo.Model.Municipio_Departamento>
+@foreach (var item in Model)
+{
+    <option value="@item.Id_Municipio_Departamento">@item.Nombre_Municipio</option>
+}

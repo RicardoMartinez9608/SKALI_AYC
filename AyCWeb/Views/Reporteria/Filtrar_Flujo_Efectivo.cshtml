@@ -1,0 +1,351 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Detalle_Efectivo_Vista>
+
+@{
+    ViewData["Title"] = "Filtrar Flujo de Efectivo";
+    Layout = "";
+}
+@*<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Filtrar Flujo de Efectivo</div>
+    <div class="panel-body panel-body-personalizado">*@
+<form action="@Url.Action("Reporte_Flujo_Efectivo","Reporteria")" method="post" target="_blank">
+    <!--enviar el nombre de la agencia-->
+    <input type="hidden" name="Nombre_Agencia" id="Nombre_Agencia" />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                Agencia:
+                <div id="id_agencia_combo" class="form-group"></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                Fecha:
+                <input type="date" id="fecha" name="fecha_flujo" class="form-control" readonly="true"/>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="well">
+                Billetes
+            </div>
+            <table class="table table-striped">
+                <tr>
+                    <th></th>
+                    <th>Cantidad</th>
+                    <th></th>
+                    <th>Valor</th>
+                </tr>
+                @foreach (var item in Model.Where(c => c.Denominacion.tipo == "Billete"))
+                {
+                    <tr>
+                        <th scope="col" style="height: 50px; text-align: right">
+                            @item.Denominacion.denominacion.ToString("C")
+                        </th>
+                        <td style="width: 225px">
+                            <input type="hidden" class="denominacion" name="denominacion[]" value="@item.Denominacion.Id_denominacion" />
+                            <input type="hidden" class="valor_denominiacion" name="dinero[]" value="@item.Denominacion.denominacion" />
+                            <input type="hidden" class="tipo_denominiacion" name="tipo[]" value="@item.Denominacion.tipo" />
+                            <input id="Billete_Cantidad_@item.Denominacion.denominacion" name="cantidad[]" class="form-control cantidad" style="border-radius: 5px; border: 1px solid black" value="0.0" />
+                        </td>
+                        <th style="text-align: center">
+                            -
+                        </th>
+                        <td style="width: 225px">
+                            <span id="Billete_Valor_@item.Denominacion.denominacion" class="form-control valor" style="border-radius: 5px; border: 1px solid black"></span>
+
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <div class="well">
+                Monedas
+            </div>
+            <table class="table table-striped">
+                <tr>
+                    <th></th>
+                    <th>Cantidad</th>
+                    <th></th>
+                    <th>Valor</th>
+                </tr>
+                @foreach (var item in Model.Where(c => c.Denominacion.tipo == "Moneda"))
+                {
+                    <tr>
+                        <td style="text-align: right">
+                            @item.Denominacion.denominacion.ToString("C")
+                        </td>
+                        <td style="width: 225px">
+                            <input type="hidden" class="denominacion" name="denominacion[]" value="@item.Denominacion.Id_denominacion" />
+                            <input type="hidden" class="valor_denominiacion" name="dinero[]" value="@item.Denominacion.denominacion" />
+                            <input type="hidden" class="tipo_denominiacion" name="tipo[]" value="@item.Denominacion.tipo" />
+                            <input id="Moneda_Cantidad_@item.Denominacion.denominacion" name="cantidad[]" class="form-control cantidad" style="border-radius: 5px; border: 1px solid black" />
+                        </td>
+                        <td style="text-align: center">
+                            -
+                        </td>
+                        <td style="width: 225px">
+                            <span id="Moneda_Valor_@item.Denominacion.denominacion" class="form-control valor" style="border-radius: 5px; border: 1px solid black"></span>
+
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td style="text-align: right">
+                    </td>
+                    <td style="width: 225px">
+                        Total En Efectivo
+                    </td>
+                    <td style="text-align: center">
+                        -
+                    </td>
+                    <td style="width: 225px">
+                        <span id="efectivo_total" class="form-control" style="border-radius: 5px; border: 1px solid black"></span>
+
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+        <div class="col-md-6">
+            <div class="well">Cheques</div>
+            <table class="table table-striped">
+                <tr>
+                    <th>Número</th>
+                    <th>Cantidad</th>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="NumeroCheque" name="NumeroCheque" class="form-control" style="border-radius: 5px; border: 1px solid black" />
+                    </td>
+                    <td>
+                        <input id="CantidadCheque" name="CantidadCheque" class="form-control cantidadcheques" style="border-radius: 5px; border: 1px solid black" />
+                        <input id="valor_Cheque" type="hidden" class="form-control" style="border-radius: 5px; border: 1px solid black" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <div class="well">Bolsa AKI</div>
+            <table class="table table-striped">
+                <tr>
+                    <th>
+                        Cantidad
+                    </th>
+                    <td>
+                        <input id="CantidadAki" name="CantidadAki" class="form-control aki_pago" style="border-radius: 5px; border: 1px solid black" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+       
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="well"> Disponible</div>
+            <table class="table table-striped">
+                <tr>
+                    <th>
+                        Cantidad
+                    </th>
+                    <td>
+                        <input id="Cantidad_Saldo" name="Disponible" class="form-control" style="border-radius: 5px; border: 1px solid black" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <div class="well">Diferencia</div>
+            <table class="table table-striped">
+                <tr>
+                    <th>
+                        Cantidad
+                    </th>
+                    <td>
+                        <input id="Diferencia" name="Disponible" class="form-control" style="border-radius: 5px; border: 1px solid black" disabled="true" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <input type="submit" class="form-control btn btn-primary" value="Generar Reporte" id="CargarGrid" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <input type="button" class="form-control btn btn-primary" value="Cerrar Día" id="cerrar_dia" />
+            </div>
+        </div>
+    </div>
+
+</form>
+
+
+
+<script>
+    $(document).ready(function () {
+        Agencia_Combo();
+        Obtener_Nombre_Agencia();
+        CalcularDenominacion();
+        valores();
+        cerrar_dia();
+        Obtener_Cheques();
+        Obtener_Aki();
+        Acciones();
+        
+    });
+
+    function Agencia_Combo() {
+         $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia_combo").html(agencias);
+            Obtener_Nombre_Agencia();
+        });
+    }
+
+    function Obtener_Nombre_Agencia() {
+        $("#Id_Agencia").change(function () {
+            var nombre_agencia = $("#Id_Agencia").find('option:selected').text();
+            $("#Nombre_Agencia").val(nombre_agencia);
+            Saldo_Actual();
+        });
+    }
+    function Saldo_Actual() {
+        var Id_Agencia = $("#Id_Agencia").find('option:selected').val();
+        var fecha = $("#fecha").val();
+        $.get("@Url.Action("Obtener_Saldo", "Reporteria")",
+            {
+                fecha_flujo: fecha,
+                Id_Agencia: Id_Agencia
+            },
+            function(agencias) {
+                $("#Cantidad_Saldo").val(agencias);
+            });
+    }
+
+    function CalcularDenominacion() {
+        $("input.cantidad").each(function(index) {
+            $("input.cantidad").eq(index).keyup(function() {
+                var cantidad = Number($("input.cantidad").eq(index).val());
+                var denominacion = Number($("input.valor_denominiacion").eq(index).val());
+                var valor = cantidad * denominacion;
+                $("span.valor").eq(index).text(valor.toFixed(2));
+                TotalEfectivo();
+                Obtener_Diferencia();
+            });
+        });
+    }
+
+    function TotalEfectivo() {
+        var total = 0;
+        $("span.valor").each(function(index) {
+            var valor = Number($("span.valor").eq(index).text());
+            total += valor;
+        });
+        $("#efectivo_total").text(total.toFixed(2));
+    }
+
+    function Obtener_Diferencia() {
+        var total = $("#efectivo_total").text();
+        var total_flujo = $("#Cantidad_Saldo").val();
+        var cantidad_cheque = $("#valor_Cheque").val();
+        var aki = $("#CantidadAki").val();
+        var total_verdadero = total_flujo - total - cantidad_cheque - aki;
+        $("#Diferencia").val(total_verdadero.toFixed(2));
+    }
+
+    function Obtener_Cheques() {
+        $("input.cantidadcheques").each(function(index) {
+            $("input.cantidadcheques").eq(index).keyup(function() {
+                var cantidad_cheque = $("#CantidadCheque").val();
+                $("#valor_Cheque").val(cantidad_cheque);
+                //redimencionar
+                var total = $("#efectivo_total").text();
+                var total_flujo = $("#Cantidad_Saldo").val();
+                var cantidad = $("#valor_Cheque").val();
+                var total_verdadero = total_flujo - total - cantidad;
+                $("#Diferencia").val(total_verdadero.toFixed(2));
+            });
+        });
+    }
+
+    function Obtener_Aki() {
+        $("input.aki_pago").each(function(index) {
+            $("input.aki_pago").eq(index).keyup(function() {
+                //var numero_cheque = $("#NumeroCheque").val();
+                //var cantidad_cheque = $("#CantidadCheque").val();
+                //$("#valor_Cheque").val(numero_cheque * cantidad_cheque);
+                //redimencionar
+                var total = $("#efectivo_total").text();
+                var total_flujo = $("#Cantidad_Saldo").val();
+                var cantidad = $("#valor_Cheque").val();
+                var total_aki = $("#CantidadAki").val();
+                var total_verdadero = total_flujo - total - cantidad - total_aki;
+                $("#Diferencia").val(total_verdadero.toFixed(2));
+            });
+        });
+    }
+    function cerrar_dia() {
+        $("#cerrar_dia").click(function() {
+            var diferencia = $("#Diferencia").val();
+            if (diferencia == '' ||diferencia !=0) {
+                alertify.error('El efectivo no cuadra no puede cerrar el día');
+            } else {
+                alertify.confirm('Confirmación',
+                    '¿Quieres cerrar el día?',
+                    function() {
+                        $.post("@Url.Action("Cerrar_Dia", "Reporteria")",
+                            function(resultado) {
+                                alertify.success(resultado);
+                            }).fail(function(error) {
+                            alertify.error(error.responseText);
+                        });
+                    },
+                    function() {
+                        alertify.error('Operación Cancelada');
+                    });
+            }
+        });
+    }
+    function valores() {
+        $("input.cantidad").each(function (index) {
+            $('input.cantidad').eq(index).val(0.00);
+            $('#NumeroCheque').eq(index).val(0.00);
+            $('#CantidadCheque').eq(index).val(0.00);
+            $('#CantidadAki').eq(index).val(0.00);
+            $('input.cantidad').eq(index).focus(function () {
+                $('input.cantidad').eq(index).val("");
+            });
+
+            $('input.cantidad').eq(index).blur(function () {
+                if ($('input.cantidad').eq(index).val()=="")
+                    $('input.cantidad').eq(index).val(0.00);
+            });
+        });
+    }
+    $(function () {
+        var now = new Date();
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+        var today = now.getFullYear() + "-" + (month) + "-" + (day);
+        $("#fecha").val(today);
+    });
+
+    function Acciones() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol == "Administrador") {
+            $("#fecha").prop("readonly", false); 
+        }
+    }
+</script>

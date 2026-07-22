@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Usuario>
+
+<div class="formRegistrarUsuario"></div>
+<div class="listaUsuario">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Usuario
+                </th>
+                <th>
+                    Correo
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UsuarioNombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Correo)
+                </td>
+                <td>
+                    @Html.ActionLink("Contraseña", "CambiarContrasena", new { id_usuario = item.UsuarioNombre })
+                </td>
+                <td>
+                    @Html.ActionLink("Roles y Agencias", "AgregarRoles", new { usuario = item.UsuarioNombre })
+                </td>
+                <td>
+                    @Html.ActionLink("Cajas", "Cajas", "Caja_Boveda", new { id_usuario = item.UsuarioNombre })
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

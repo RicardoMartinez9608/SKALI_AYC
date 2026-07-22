@@ -1,0 +1,182 @@
+﻿@model ModelNucleo.Model.ModelView.CambiarContrasenaAdmin
+@{
+    ViewData["Title"] = "Cambiar Contraseña";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Cambiar Contraseña de @ViewBag.Id_Usuario</div>
+    <div class="panel-body">
+        @*<form asp-action="CambiarContrasena">*@
+        <form id="contrasena">
+            <div class="form-group">
+                <label asp-for="Id_Usuario" class="control-label">Usuario</label>
+                <input asp-for="Id_Usuario" class="form-control" />
+                <span asp-validation-for="Id_Usuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Contrasena" class="control-label" for="pswd">Contraseña</label>
+                <input asp-for="Contrasena" class="form-control limpiar" />
+                <span asp-validation-for="Contrasena" class="text-danger" id="pswd" type="password" name="pswd"></span>
+                <div id="pswd_info">
+                    <h4>La Contraseña debe cumplir con los siguientes requisitos:</h4>
+                    <ul>
+                        <li id="letter" class="invalid"><strong>Al menos una letra</strong></li>
+                        <li id="capital" class="invalid"><strong>Al menos una letra Mayuscula</strong></li>
+                        <li id="number" class="invalid"><strong>Al menos un número</strong></li>
+                        <li id="length" class="invalid"><strong>Minimo 6 caracteres</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group ">
+                <input type="button" value="Cambiar" class="btn btn-default " id="guardar_edicion_contraseña" />
+            </div>
+        </form>
+        @*</form>*@
+    </div>
+ 
+</div>
+@*<h1>Password Verification</h1>
+<form>
+    <ul>
+        <li>
+            <label for="username">Username:</label>
+            <span><input id="username" name="username" type="text" /></span>
+        </li>
+        <li>
+            <label for="pswd">Password:</label>
+            <span><input id="pswd" type="password" name="pswd" /></span>
+        </li>
+        <li>
+            <button type="submit">Register</button>
+        </li>
+    </ul>
+</form>*@
+
+<style type="text/css">
+    #pswd_info {
+        /*position: absolute;*/
+        bottom: -75px;
+        bottom: -115px\9; /* IE Specific */
+        right: 100px;
+        width: 750px;
+        padding: 15px;
+        background: #fefefe;
+        font-size: .875em;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px #ccc;
+        border: 1px solid #ddd;
+    }
+
+        #pswd_info h4 {
+            margin: 0 0 10px 0;
+            width: 800px;
+            padding: 0;
+            font-weight: normal;
+        }
+
+        #pswd_info:before {
+            content: "\25B2";
+            position: absolute;
+            top: -12px;
+            /*left: 45%;*/
+            font-size: 14px;
+            line-height: 14px;
+            color: #ddd;
+            text-shadow: none;
+            display: block;
+        }
+
+    .invalid {
+        padding-left: 22px;
+        line-height: 24px;
+        color: #ec3f41;
+    }
+
+    .valid {
+        padding-left: 22px;
+        line-height: 24px;
+        color: #3a7d34;
+    }
+
+    #pswd_info {
+        display: none;
+    }
+    .btn {
+        display: none;
+    }
+</style>
+<script>
+    $(function() {
+        Guardar_Edicion_Contraseña();
+    });
+    
+    $('input[type=password]').keyup(function() {
+        var pswd = $(this).val();
+        var p = '';
+        var l = '';
+        var L = '';
+        var n = '';
+        //validate the length
+        if ( pswd.length < 6 ) {
+            $('#length').removeClass('valid').addClass('invalid');
+        } else {
+            $('#length').removeClass('invalid').addClass('valid');
+            p = 1;
+        }
+        //validate letter
+        if ( pswd.match(/[A-z]/) ) {
+            $('#letter').removeClass('invalid').addClass('valid');
+            l = 1;
+        } else {
+            $('#letter').removeClass('valid').addClass('invalid');
+            
+        }
+
+//validate capital letter
+        if ( pswd.match(/[A-Z]/) ) {
+            $('#capital').removeClass('invalid').addClass('valid');
+            L = 1;
+        } else {
+            $('#capital').removeClass('valid').addClass('invalid');
+           
+        }
+
+//validate number
+        if ( pswd.match(/\d/) ) {
+            $('#number').removeClass('invalid').addClass('valid');
+            n = 1;
+        } else {
+            $('#number').removeClass('valid').addClass('invalid');
+           
+        }
+        if (p ===1 && l === 1 && L === 1 && n === 1 ) {
+            $('#guardar_edicion_contraseña').show();
+        } else {
+            $('#guardar_edicion_contraseña').hide();
+        }
+    }).focus(function() {
+        $('#pswd_info').show();
+    });
+    function Guardar_Edicion_Contraseña() {
+        $("#guardar_edicion_contraseña").click(function () {
+            var form_deduccion = $("#contrasena").serializeAnything();
+            var direccion = "@Url.Action("CambiarContrasena", "Home")";
+            alertify.confirm('Confirmación', '¿Quieres cambiar la contraseña de usuario?',
+                function() {
+                    $.post(direccion, form_deduccion, function (resultado) {
+                        $('.limpiar').val('');
+                        alertify.success(resultado);
+                    }).fail(function (error) {
+                        alertify.error(error.responseText);
+                    });
+                },
+                function() {
+                    alertify.error('Operación Cancelada');
+                });
+        
+        });
+    }
+</script>

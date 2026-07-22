@@ -1,0 +1,239 @@
+﻿@model ModelNucleo.Model.Condonacion
+
+@{
+    ViewData["Title"] = "Detalle Condonación";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<p></p>
+<div class="panel panel-default">
+
+    <div class="panel-heading panel-heading-personalizado">
+        Detalle de Condonación
+    </div>
+    <div class="panel-body panel-body-personalizado">
+
+
+        <input asp-for="Id_Condonacione" type="hidden" class="form-control" />
+        <input asp-for="Id_Credito" type="hidden" class="form-control" />
+        <input asp-for="Fecha" type="hidden" class="form-control" />
+        <input asp-for="Id_Usuario" type="hidden" class="form-control" />
+
+        @*<div class="row">
+            <div class="col-md-3">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Condonar_Penalizacion" /> @Html.DisplayNameFor(model => model.Condonar_Penalizacion)
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="Valor_Dinero_Penalizacion" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                
+            </div>
+        </div>*@
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Condonar_Recargos" /> @Html.DisplayNameFor(model => model.Condonar_Recargos)
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="Valor_Dinero_Recargos" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <a href="#Mantenimiento" class="btn btn-default ver_detalle" data-toggle="modal">Seleccionar</a>
+            </div>
+        </div>
+
+
+        @*<div class="row">
+            <div class="col-md-3">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Permitir_Gracia" /> @Html.DisplayNameFor(model => model.Permitir_Gracia)
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="Valor_Dinero_Gracia" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                
+            </div>
+        </div>*@
+
+        @*<div class="row">
+            <div class="col-md-3">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Permitir_Gracia_Moratoria" /> @Html.DisplayNameFor(model => model.Permitir_Gracia_Moratoria)
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="Valor_Dinero_Gracia_Moratoria" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <input asp-for="Lapso_Tiempo_Moratoria" class="form-control" />
+            </div>
+        </div>*@
+
+
+     @*   <div class="row">
+            <div class="col-md-3">
+                <label asp-for="Pago_Antes" class="control-label"></label>
+                <input asp-for="Pago_Antes" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Condonacion_Total" class="control-label"></label>
+                <input asp-for="Condonacion_Total" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Pago_Despues" class="control-label"></label>
+                <input asp-for="Pago_Despues" class="form-control" />
+            </div>
+        </div>*@
+        <p></p>
+        <hr />
+        <div class="row">
+            <div class="col-md-3">
+                <input type="button" value="Procesar" id="procesar" class="btn btn-default" />
+            </div>
+            <div class="col-md-3">
+                
+            </div>
+            <div class="col-md-3">
+                
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<input type="hidden" id="ids" />
+
+<div class="modal fade" id="Mantenimiento">
+    <div class="modal-dialog" style="width:40%">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Cerrar</span>
+                </a>
+                <h4 class="modal-title">Recargos</h4>
+            </div>
+
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Fecha</th>
+                            <th>Recargo</th>
+                            <th>Condonar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.RecargoCondonacionVista)
+                       {
+                            <tr>
+                                <td>@item.No</td>
+                                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                                <td>@item.Recargo.ToString("C")</td>
+                                <td>
+                                    @if (item.Cubierto)
+                                    {
+                                        <input type="hidden" class="id_amortizacion" value="@item.Id_Amortizacion">
+                                        <input type="hidden" class="recargo" value="@item.Recargo">
+                                        <input type="checkbox" name="condonar" class="btn btn-default condonacion_cuota" value="@item.Condonar" />
+                                    }
+                                </td>
+                            </tr>
+                       }
+                    </tbody>
+                </table>
+            </div> <!-- /.modal-body -->
+
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(function(){
+            $("a.ver_detalle").hide();
+            ToggleSeleccionarRecargos();
+            AgregarCondonar();
+        });
+
+        function ToggleSeleccionarRecargos()
+        {
+            $("#Condonar_Recargos").click(function(){
+                if($("#Condonar_Recargos").is(':checked'))
+                {
+                    $("a.ver_detalle").show();
+                }
+                else
+                    $("a.ver_detalle").hide();
+            });
+        }
+
+        function AgregarCondonar()
+        {
+            $("input.condonacion_cuota").click(function(){
+                $("#Valor_Dinero_Recargos").val("");
+                $("#ids").val("");
+                var suma_condonacion = 0;
+                var ids=[];
+                $("input.condonacion_cuota").each(function(index){
+                    if($('input.condonacion_cuota').eq(index).is(':checked'))
+                    {
+                        suma_condonacion += Number($("input.recargo").eq(index).val());
+                        var id=$('input.id_amortizacion').eq(index).val();
+                        ids.push(id);
+                    }
+                });
+                $("#Valor_Dinero_Recargos").val(suma_condonacion);
+                $("#ids").val(ids);
+            });
+            ProcesarCondonacion();
+        }
+
+        function ProcesarCondonacion()
+        {
+            $("#procesar").click(function(){
+                if($("#Condonar_Recargos").is(':checked'))
+                {
+                    var ids=$("#ids").val();
+                    var recargo = $("#Valor_Dinero_Recargos").val();
+                    $.post("@Url.Action("ProcesarCondonacion","Condonacion")",
+                    {
+                        ids:ids,
+                        recargo:recargo
+                    },
+                    function(resultado){
+                        alertify.success(resultado);
+                    }).fail(function (error) {
+                        alertify.error(error.responseText);
+                    });
+                    ResetAll();
+                }
+            });
+        }
+
+        function ResetAll()
+        {
+            $("#Condonar_Recargos").prop("checked",false);
+            $("#Valor_Dinero_Recargos").val("");
+            $("input.condonacion_cuota").prop("checked",false);
+        }
+
+    </script>
+}

@@ -1,0 +1,74 @@
+﻿@model IEnumerable<ModelNucleo.Model.Acta>
+
+@{
+    ViewData["Title"] = "Consulta de actas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Actas</div>
+    <div class="panel-body">
+        <div class="well">
+            <form asp-action="Index" method="get">
+                <div class="form-group"> 
+                    <label for="inicio" class="control-label">Fecha Inicial</label>
+                    <input name="inicio" type="date" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="final" class="control-label">fecha Final</label>
+                    <input name="final" type="date" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Filtrar" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+        <table class="table table-responsive table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        No
+                    </th>
+                    <th>
+                        Celebrado
+                    </th>
+                    <th>
+                        Completado
+                    </th>
+                    <th>
+                        Completado En
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id_Acta)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Fecha_Celebrado)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Completado)
+                        </td>
+                        <td>
+                            @if (item.Completado)
+                            {
+                                @item.Fecha_Completado
+                            }
+                        </td>
+                        <td>
+                            @Html.ActionLink("Detalle", "Detalle_Acta", new { id_acta = item.Id_Acta }) |
+                            @Html.ActionLink("Exportar", "ActaPorId", "Credito", new { id_acta = item.Id_Acta },new {@target="_blank" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+

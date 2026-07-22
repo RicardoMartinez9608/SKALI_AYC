@@ -1,0 +1,10 @@
+﻿@model IEnumerable<ModelNucleo.Model.Tipo_Persona>
+
+@foreach (var item in Model)
+{
+    <li class="list-group-item">
+        <p>Nombre: @Html.DisplayFor(modelItem => item.Tipo_Persona_definicion)</p>
+        <input type="hidden" value="@item.Id_Tipo_Persona" class="valorParaDetalle" />
+        <button type="button" class="btn btn-default borrarTipo">Borrar</button>
+    </li> 
+}

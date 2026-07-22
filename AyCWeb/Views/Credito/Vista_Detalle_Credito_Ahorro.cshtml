@@ -1,0 +1,27 @@
+﻿@model ModelNucleo.Model.ModelView.Detalle_Credito_Ahorro
+
+<div>
+  
+    <dl class="dl-horizontal">
+        <dt>
+            Código Crédito:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Codigo_Credito)
+        </dd>
+        <dt>
+            Cliente
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nombre_Cliente)
+        </dd>
+        <dt>
+            Cuota de Ahorro
+        </dt>
+        <dd>
+             <input type="hidden" class="valor_ahorro" value="@Model.Porcentaje_Ahorro">
+            @Html.DisplayFor(model => model.Porcentaje_Ahorro)
+        </dd>
+    </dl>
+</div>
+

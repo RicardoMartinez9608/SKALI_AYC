@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Seleccionar Fecha para Cierre";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Seleccione la fecha de cierre o mostrar el actual</div>
+    <div class="panel-body">
+        <div class="well">
+            <form asp-action="Transacciones_Boveda" method="get" target="_blank">
+                <div class="input-group">
+                    <div class="input-group-btn">
+                        <input type="date" name="fecha" id="fecha" class="form-control col-md-4" />
+                    </div>
+                    <div class="input-group-btn">
+                        <input type="submit" value="Mostrar Reporte" class="btn btn-default" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

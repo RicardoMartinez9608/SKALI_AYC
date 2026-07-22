@@ -1,0 +1,37 @@
+﻿@model IEnumerable<ModelNucleo.Model.Persona_Relaciones>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Codeudor
+            </th>
+            <th>
+                Dui
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+
+    string stilo = "#fff";
+    if (item.Activo)
+    {
+        stilo = "#dffba2";
+    }
+        <tr style="background:@stilo">
+            <td>
+                @item.Predicado.NombreCompleto
+            </td>
+            <td>
+                @item.Predicado.Dui
+            </td>
+            <td>
+                <input type="hidden" class="id_relacion_valor" value="@item.Id_Persona_Relaciones"/>
+                <a href='#' class='btn btn-default activar_codeudor'>Activar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,223 @@
+﻿@model ModelNucleo.Model.ModelView.Reporte_Vencimiento_Cuotas_Mora_Diaria
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+@*     <title>@titulo</title> *@
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            font-size: 12px;
+            color: #333;
+            margin: 30px;
+        }
+
+        h3, h4, h5 {
+            margin: 5px 0;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #004080;
+            text-transform: uppercase;
+        }
+
+        h4 {
+            font-size: 16px;
+            color: #222;
+            border-bottom: 2px solid #004080;
+            display: inline-block;
+            padding-bottom: 4px;
+            margin-bottom: 10px;
+        }
+
+        .info {
+            margin-bottom: 20px;
+            font-size: 11px;
+        }
+
+            .info td {
+                padding: 2px 6px;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        th {
+            background-color: #004080;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+            padding: 6px;
+            border: 1px solid #ccc;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 5px 8px;
+            font-size: 12px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .totales {
+            margin-top: 15px;
+            border-top: 2px solid #004080;
+            padding-top: 10px;
+            font-size: 13px;
+        }
+
+            .totales th, .totales td {
+                border: none;
+            }
+
+            .totales th {
+                text-align: left;
+                color: #004080;
+            }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align:center; margin-bottom:10px;">
+        <img src="@ViewBag.LogoEmpresa" alt="Logo de la empresa" style="width:120px; height:auto;" />
+    </div>
+    <h3>@ViewBag.nombreEmpresa</h3>
+    <div class="info">
+        <table>
+            <tr>
+                <td><strong>Fecha de ejecución:</strong> @Model.Encabezado.dia_ejecucion</td>
+                <td><strong>Hora:</strong> @Model.Encabezado.hora_ejecucion</td>
+                <td><strong>Usuario:</strong> @Model.Encabezado.agencia.Usuario_Agencias.Max(a => a.Id_Usuario)</td>
+            </tr>
+            <tr>
+                <td colspan="3"><strong>Periodo:</strong> @Convert.ToDateTime(ViewBag.inicio).ToString("dd/MM/yyyy") - @Convert.ToDateTime(ViewBag.final).ToString("dd/MM/yyyy")</td>
+            </tr>
+        </table>
+    </div>
+
+ @*    <h4>@titulo</h4> *@
+    <h5>Asesor: @Model.Encabezado.nombre_asesor</h5>
+
+    <table>
+        <thead>
+            @if (ViewBag.es_mora)
+            {
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Fecha Pago</th>
+                    <th>Cuota</th>
+                    <th>Pago al Día</th>
+                    <th>Capital en Mora</th>
+                    <th>Interes Pendiente</th>
+                    <th>Interes Corriente</th>
+                    <th>Multa</th>
+                    <th>Telefono</th>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Fecha Pago</th>
+                    <th>Cuota</th>
+                    <th>Pago al Día</th>
+                    <th>Último Movimiento</th>
+                    <th>Monto</th>
+                    <th>Saldo</th>
+                    <th>Teléfono</th>
+                    <th>Vencimiento</th>
+                    <th>Saldo AH</th>
+                    <th>Abono Capital</th>
+                    <th>% Pendiente</th>
+                </tr>
+            }
+        </thead>
+        <tbody>
+            @if (Model.Detalle_Vencimiento_Cuotas_Mora_Diaria != null && Model.Detalle_Vencimiento_Cuotas_Mora_Diaria.Any())
+            {
+                foreach (var item in Model.Detalle_Vencimiento_Cuotas_Mora_Diaria)
+                {
+                    if (ViewBag.es_mora)
+                    {
+                        <tr>
+                            <td>@item.Datos_Generales.Codigo_Credito</td>
+                            <td>@item.Datos_Generales.Nombre_Cliente</td>
+                            <td class="center">@item.Datos_Generales.Fecha_Pago.ToString("dd/MM/yyyy")</td>
+                            <td class="right">@item.Datos_Generales.Cuota.ToString("C")</td>
+                            <td class="right">@item.Datos_Generales.Pago_Al_Dia.ToString("C")</td>
+                            <td class="center">@item.Mora_Asesor.CapitalMora.ToString("C")</td>
+                            <td class="center">@item.Mora_Asesor.InteresPendiente.ToString("C")</td>
+                            <td class="right">@item.Mora_Asesor.InteresCorriente.ToString("C")</td>
+                            <td class="center">@item.Mora_Asesor.Multa.ToString("C")</td>
+                            <td class="center">@item.Datos_Generales.Telefono</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>@item.Datos_Generales.Codigo_Credito</td>
+                            <td>@item.Datos_Generales.Nombre_Cliente</td>
+                            <td class="center">@item.Datos_Generales.Fecha_Pago.ToString("dd/MM/yyyy")</td>
+                            <td class="right">@item.Datos_Generales.Cuota.ToString("C")</td>
+                            <td class="right">@item.Datos_Generales.Pago_Al_Dia.ToString("C")</td>
+                            <td class="center">@item.Datos_Generales.Ultimo_Movimiento.ToString("dd/MM/yyyy")</td>
+                            <td class="right">@item.Vencimiento_Cuotas.Monto.ToString("C")</td>
+                            <td class="right">@item.Datos_Generales.Saldo.ToString("C")</td>
+                            <td class="center">@item.Datos_Generales.Telefono</td>
+                            <td class="center">@item.Datos_Generales.Vencimiento.ToString("dd/MM/yyyy")</td>
+                            <td class="right">@item.Vencimiento_Cuotas.Saldo_Cuenta_Ahorro.ToString("C")</td>
+                            <td class="right">@item.Vencimiento_Cuotas.Abono_Capital.ToString("C")</td>
+                            <td class="center">@item.Vencimiento_Cuotas.Porcentaje_Saldo_Pendiente</td>
+                        </tr>
+                    }
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="13" class="center">No existen registros para el periodo seleccionado.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (Model?.Detalle_Vencimiento_Cuotas_Mora_Diaria != null)
+    {
+        <table class="totales">
+            <tr>
+                <th>Total registros:</th>
+                <td>@Model.Detalle_Vencimiento_Cuotas_Mora_Diaria.Count()</td>
+                <th>Total Pago al Día:</th>
+                <td>@Model.Detalle_Vencimiento_Cuotas_Mora_Diaria.Sum(a => a.Datos_Generales.Pago_Al_Dia).ToString("C")</td>
+                <th>Total Cuotas:</th>
+                <td>@Model.Detalle_Vencimiento_Cuotas_Mora_Diaria.Sum(a => a.Datos_Generales.Cuota).ToString("C")</td>
+                <th>Total Saldo:</th>
+                <td>@Model.Detalle_Vencimiento_Cuotas_Mora_Diaria.Sum(a => a.Datos_Generales.Saldo).ToString("C")</td>
+            </tr>
+        </table>
+    }
+</body>
+</html>
+

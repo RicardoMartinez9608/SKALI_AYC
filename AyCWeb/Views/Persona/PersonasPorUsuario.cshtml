@@ -1,0 +1,46 @@
+﻿@model IEnumerable<ModelNucleo.Model.Credito>
+
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    Código Crédito
+                </th>
+                <th>
+                   Monto
+                </th>
+                <th>
+                  Nombre Cliente
+                </th>
+                <th>
+                    DUI
+                </th>
+                
+                <th>
+                    <input type="checkbox" value="todo" name="todo" class="todo" /> Todo
+                </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Codigo_Credito)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Monto_pago)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Persona.NombreCompleto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Persona.Dui)
+            </td>
+            
+            <td>
+                <input type="checkbox" value="@item.Id_Persona" name="Id_Persona" class="Id_Persona" />
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

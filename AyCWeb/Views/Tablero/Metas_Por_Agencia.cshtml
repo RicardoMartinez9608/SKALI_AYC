@@ -1,0 +1,74 @@
+﻿@model IEnumerable<ModelNucleo.Model.Tablero.Meta>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Asesor
+            </th>
+            <th>
+                Colecta
+            </th>
+            <th>
+                Cartera
+            </th>
+            <th>
+               Cosecha
+            </th>
+            <th>
+               No Clientes
+            </th>
+            <th>
+              Colocación
+            </th>
+            <th>
+                Ingresos
+            </th>
+            <th>
+                Mora
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Meta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cartera.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Colecta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Capital)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cosecha)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.No_Clientes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Colocacion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ingresos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Mora)
+            </td>
+            <td>
+                <input type="hidden" class="id_meta" value="@item.Id_Meta"/>
+                <a href="#Mantenimiento" data-toggle="modal" class="editar_meta">Editar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

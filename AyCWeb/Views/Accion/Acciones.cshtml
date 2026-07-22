@@ -1,0 +1,57 @@
+﻿@model IEnumerable<ModelNucleo.Model.Accion>
+<div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Código
+                    </th>
+                    <th>
+                        Certificado
+                    </th>
+                    <th>
+                        Cantidad
+                    </th>
+                    <th>
+                        Precio unitario
+                    </th>
+                    <th>
+                        Precio total
+                    </th>
+                    <th>
+                        Cancelado
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Codigo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.No_Certificado)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cantidad_Accion)
+                        </td>
+                        <td>
+                            @item.Valor_Unitario.ToString("C")
+                        </td>
+                        <td>
+                            @item.Valor_Total.ToString("C")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cancelado)
+                        </td>
+                        <td>
+                            <input type="hidden" class="id_accion" value="@item.Id_Accion" />
+                            <a href="#" class="detalle_accion">Detalle</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+</div>

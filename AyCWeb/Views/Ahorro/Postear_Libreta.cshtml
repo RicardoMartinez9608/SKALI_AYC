@@ -1,0 +1,63 @@
+﻿@model  IEnumerable<ModelNucleo.Model.ModelView.Transaccion_Ahorro_Vista>
+@{
+    Layout = null;
+    int linea = (int)ViewBag.renglon;
+    int renglon = linea;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Libreta</title>
+
+    <link href="~/css/reporte_matricial.css" rel="stylesheet" />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .espacioInicial {
+            height: @(linea * 25)px; /* MISMA ALTURA QUE LOS RENGLONES */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Empuja hasta el renglón correcto -->
+    <div class="espacioInicial"></div>
+
+    @foreach (var reporte in Model)
+    {
+        string concepto = reporte.Retiro > 0 ? "RET" : "DEP";
+
+        <table class="matricial" width="625" align="right">
+            <tr>
+                <td style="width:130px; text-align:center;">
+                    @renglon @reporte.Fecha.ToString("dd/MM/yyyy") @concepto
+                </td>
+
+                <td style="width:85px; text-align:right;">
+                    @reporte.Retiro.ToString("c")
+                </td>
+
+                <td style="width:85px; text-align:right;">
+                    @reporte.Deposito.ToString("c")
+                </td>
+
+                <td style="width:85px; text-align:right;">
+                    @reporte.Saldo.ToString("c")
+                </td>
+
+                <td style="width:50px;"></td>
+            </tr>
+        </table>
+
+        renglon++;
+    }
+
+</body>
+</html>

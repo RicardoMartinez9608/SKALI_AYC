@@ -1,0 +1,123 @@
+﻿@using DevExtreme.AspNet.Mvc
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Documentos de @ViewBag.Nombre_Completo</div>
+    <div class="panel-body panel-body-personalizado">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    Descripción:
+                    <div class="descripcion_documento"></div>
+                </div>
+                <div class="form-group">
+                    @if (ViewBag.Id_Descripcion_Documento > 0)
+                    {
+                        @(Html.DevExtreme().FileUploader()
+                                                    .ID("File_Uploader")
+                                                    .Name("Documento")
+                                                    .Multiple(false)
+                                                    .Accept("*")
+                                                    .UploadMode(FileUploadMode.Instantly)
+                                                    .UploadButtonText("Subir archivo")
+                                                    .SelectButtonText("Subir archivo")
+                                                    .LabelText("Soltar archivo")
+                                                    .UploadUrl(Url.Action("Nuevo", "Documento",
+                                                        new
+                                                        {
+                                                            id_persona = ViewBag.Id_Persona,
+                                                            id_descripcion_documento = ViewBag.Id_Descripcion_Documento
+                                                        }))
+                                                    .OnUploaded("RecargarGrid"))
+                    }
+                </div>
+            </div>
+        </div>
+
+
+        <p></p>
+        @(Html.DevExtreme().DataGrid().ID("Documentos")
+                .ShowBorders(false)
+                .DataSource(a => a.Mvc()
+                    .Controller("Documento")
+                    .Key("Id_Documento")
+                    .LoadAction("Documentos")
+                    .LoadParams(new { id_persona = ViewBag.Id_Persona }))
+                    .Columns(
+                        columns =>
+                        {
+                            columns.Add().DataField("Fecha").DataType(GridColumnDataType.Date);
+                            columns.Add().DataField("NombreArchivo");
+                            columns.Add().DataField("Descripcion.Descripcion");
+                            columns.Add().DataField("Archivo_Base64").Visible(false);
+                            columns.Add().CellTemplate(
+                                @<text>
+                                    <input type="hidden" class="valor_id_documento" value="<%=data.Id_Documento%>" />
+                                    <input type="hidden" class="contenido_img" value="<%=data.Archivo_Base64%>" />
+                                    <input type="hidden" class="contenido_pdf" value="<%=data.Es_PDF%>" />
+                                    <a href="#" class="for_doc_persona">Mostrar documento</a>
+                                </text>
+                                                        );
+                                                    }
+                                                ).Paging(p => p.Enabled(false))
+                                                .FilterRow(f => f.Visible(false))
+                                                .HeaderFilter(f => f.Visible(false))
+                                                .GroupPanel(p => p.Visible(false))
+                                                .Grouping(g => g.AutoExpandAll(true))
+                                                .RemoteOperations(true).OnContentReady("DataGridPreparada"))
+    </div>
+</div>
+<div id="archivoPop" style="display:none">
+    <div class="contenido_imagen"></div>
+</div>
+
+@section Scripts{ 
+<script>
+    $(function () {
+        $.get("@Url.Action("Descripciones_Documento","Componentes")",
+            { id_descripcion_documento_seleccionado:@ViewBag.Id_Descripcion_Documento},
+            function (componente) {
+                $("div.descripcion_documento").html(componente);
+                CargarDescripcion();
+            });
+    });
+
+    function CargarDescripcion() { 
+        $("select.Id_Descripcion_Documento").on("change",function () {
+          
+                var Id_Descripcion_Documento = $(this).val();
+               location.href = "@Url.Action("Index","Documento")?id_persona=@ViewBag.Id_Persona&nombre_completo=@ViewBag.Nombre_Completo&id_descripcion_documento=" + Id_Descripcion_Documento;
+            });+
+    }
+
+    function RecargarGrid() {
+        $("#Documentos").dxDataGrid("instance").getDataSource().load();
+    }
+
+    function DataGridPreparada() {
+        $("a.for_doc_persona").each(function (index) {
+            $(this).click(function () {
+                var id_documento = $("input.valor_id_documento").eq(index).val();
+                var contenido_img = $("input.contenido_img").eq(index).val();
+                var contenido_pdf = $("input.contenido_pdf").eq(index).val();
+                /*si es pdf se verifica*/
+                if (Boolean(contenido_pdf)) {
+                    location.href = "@Url.Action("Detalle", "Documento")?id_documento=" + id_documento;
+                }
+
+                $("#archivoPop").dxPopup({
+                    title: "Documento",
+                    height: 700
+                });
+                $("#archivoPop").dxPopup("toggle", true);
+
+                $("div.contenido_imagen").html("<img style='margin:0 auto;display: block;' alt='Embedded Image' class='img_shown' height='600px' src='data:image/png;base64," + contenido_img + "'/>");
+            });
+         });
+    }
+</script>
+    }

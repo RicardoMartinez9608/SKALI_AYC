@@ -1,0 +1,9 @@
+﻿@model IEnumerable<ModelNucleo.Model.Deposito_Plazo>
+
+<select name="Id_Deposito" id="Id_Deposito" class="form-control">
+    <option value="0">Seleccione una cuenta de Deposito</option>
+    @foreach (var item in Model)
+    {
+        <option value="@item.Id_Deposito_Plazo">@item.No_Ahorro</option>
+    }
+</select>

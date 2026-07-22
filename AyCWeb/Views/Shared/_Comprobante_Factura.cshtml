@@ -1,0 +1,59 @@
+@model ModelNucleo.Model.ModelView.Impresion
+@{
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/reporte_matricial.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Factura Crédito</title>
+</head>
+<body>
+    <table class="matricial" style="width: 600px" border="0">
+        <tr class="AbonoCreditoEspacio">
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="2" align="left">Agencia: @Model.Factura.Agencia </td>
+            <td colspan="2" align="left"> Cajero: @Model.Factura.Cajero (@Model.Factura.id_cajero) </td>
+        </tr>
+        <td colspan="4"></td>
+        <tr>
+            <td colspan="2" align="left"> Cajero:  @Model.Factura.Cajero (@Model.Factura.id_cajero) </td>
+            <td align="left">Factura : ----- </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="left">Fecha: @Model.Factura.Fecha</td>
+        </tr>
+        <td colspan="4"></td>
+        <tr>
+            <td colspan="2" align="left">Cliente: @Model.Factura.No_Ahorro </td>
+        </tr>
+        <td colspan="4"></td>
+        <tr>
+            <td colspan="4" align="left">Concepto:  @Model.Factura.Concepto </td>
+        </tr>
+        <td colspan="4"></td>
+        <tr>
+            <td align="left" colspan="4">Nombre: @Model.Factura.Cliente </td>
+        </tr>
+        <td colspan="4"></td>
+        <tr>
+            <td colspan="2" align="left">Comprobante: ----- </td>
+        </tr>
+        <td colspan="4"></td>
+        <tr>
+            <td colspan="2" align="left">Detalle : ----- </td>
+        </tr>
+        <td colspan="4"></td>
+        <tr>
+            <td colspan="2"></td>
+            <td colspan="2" align="left">Total a Pagar :  @Model.Factura.Total.ToString("C") </td>
+        </tr>
+    </table>
+</body>
+</html>
+
+

@@ -1,0 +1,79 @@
+﻿/*@font-face {
+    font-family: 'Dot Matrix';
+    src: url(DOTMATRI.TTF);
+}*/
+
+/*div{
+    top:20%;
+    margin:20%;
+}*/
+
+
+table.matricial {
+    font-family: 'led_counter-7.ttf';
+    font-size: 16px;
+    line-height: 16px; 
+    border-collapse: collapse;
+}
+    table.matricial tr {
+        height: 25px; /* ALTURA EXACTA DEL RENGLÓN */
+    }
+
+    table.matricial td {
+        padding: 0;
+        margin: 0;
+    }
+table.matricial_credito {
+    font-family: 'led_counter-7.ttf';
+    font-size: 16px;
+    line-height: 100%;
+    align-content: center;
+    text-transform: uppercase;
+}
+/* POSTEADORA 5000IIP*/
+/*.headt td {
+    min-width: 275px;
+    height: 200px;*/
+/* background-color: #433;*/
+/*}*/
+
+/* POSTEADORA U950*/
+.headt td {
+    min-width: 200px;
+    height: 140px;
+    /* background-color: #433;*/
+}
+
+.AhorroEspacio td {
+    min-width: 200px;
+    height: 80px;
+    /* background-color: #433;*/
+}
+
+.AbonoCreditoEspacio td {
+    max-width: 400px;
+    height: 150px;
+    /* background-color: #433;*/
+}
+
+table.matricial_ahorro {
+    font-family: 'led_counter-7.ttf';
+    font-size: 16px;
+    line-height: 100%;
+    text-transform: uppercase;
+}
+
+table.matricial_pago {
+    font-family: 'led_counter-7.ttf';
+    font-size: 16px;
+    line-height: 100%;
+    align-content: center;
+    text-transform: uppercase;
+}
+
+@font-face {
+    font-family: 'led_counter-7.ttf';
+    font-size: 16px;
+    src: url(led_counter-7.ttf);
+}
+

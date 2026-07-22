@@ -1,0 +1,42 @@
+﻿@model ModelNucleo.Model.Interes_Periodo_Linea_Credito
+
+<h4>Agregar Interes a Periodos</h4>
+<hr />
+<div id="detalle_interes_periodo">
+    
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                @*<label asp-for="Id_Interes_Periodo_Linea_Credito" class="control-label"></label>
+                <input asp-for="Id_Interes_Periodo_Linea_Credito"  class="form-control" />
+                <span asp-validation-for="Id_Interes_Periodo_Linea_Credito" class="text-danger"></span>*@
+            </div>
+            <div class="form-group">
+                <input asp-for="Id_Linea_Credito" value="@ViewBag.Id_Linea_Credito" type="hidden" class="form-control" />
+               
+            </div>
+            <div class="form-group">
+                <label asp-for="Periodo" class="control-label"></label>
+                @Html.DropDownList("Id_Periodo", null, htmlAttributes: new { @class = "form-control" })
+                <span asp-validation-for="Id_Periodo" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label">Interés más comisión</label>
+                <input asp-for="Interes_Comision" class="form-control" />
+                <span asp-validation-for="Interes_Comision" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Interés</label>
+                <input asp-for="Interes" class="form-control" />
+                <span asp-validation-for="Interes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="button" value="Guardar" id="Guardar_Interes_Periodo" class="btn btn-default" />
+            </div>
+    
+</div>
+
+@*<div>
+    <a asp-action="Index">Back to List</a>
+</div>*@
+

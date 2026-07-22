@@ -1,0 +1,327 @@
+﻿@model ModelNucleo.Model.ModelView.Evaluacion_Tecnica_Vista
+@{
+    ViewData["Title"] = "Gestionar Detalle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Gestionar detalles de la evaluación técnica de @Model.Evaluacion.Persona.NombreCompleto</div>
+    <div class="panel-body panel-body-personalizado">
+        <a href="@Url.Action("Modificar_Evaluacion","Evaluacion_Tecnica",new { id_evaluacion=Model.Evaluacion.Id_Evaluacion})" class="btn btn-default">Modificar Evaluación</a>
+        <a href="@Url.Action("Calificacion","Evaluacion_Tecnica",new { id_evaluacion=Model.Evaluacion.Id_Evaluacion})" class="btn btn-default" target="_blank">Calificación</a>
+        <div class="well">
+            <h5></h5>
+            <table>
+                <tr>
+                    <td>
+                        <ol type="1">
+                            <li>PROMEDIO DE VENTA MENSUAL: @Model.Venta_Mensual.ToString("C")</li>
+                            <li>RECUPERACION DE CXC: @Model.Recuperacion_Cuentas_Cobrar.ToString("C")</li>
+                            <li>INGRESOS DEL NEGOCIO: @Model.Ingresos_Negocio.ToString("C")</li>
+                            <li>COSTO DE VENTA: @Model.Costo_Venta.ToString("C")</li>
+                            <li>GASTOS DEL NEGOCIO: @Model.Gastos_Negocio.ToString("C")</li>
+                            <li>DISPONIBILIDAD DEL NEGOCIO: @Model.Disponibilidad_Negocio.ToString("C")</li>
+                        </ol>
+                    </td>
+                    <td>
+                        <ol type="1">
+                            <li>DISPONIBLE: @Model.Disponible.ToString("C")</li>
+                            <li>CXC: @Model.Cuentas_Cobrar.ToString("C")</li>
+                            <li>INVENTARIO: @Model.Inventario.ToString("C")</li>
+                            <li>ACTIVO CIRCULANTE: @Model.Activo_Circulante.ToString("C")</li>
+                            <li>ACTIVO FIJO: @Model.Activo_Fijo.ToString("C")</li>
+                            <li>ACTIVO TOTAL: @Model.Activo_Total.ToString("C")</li>
+                        </ol>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <ol type="1">
+                            <li>OTROS INGRESOS: @Model.Otros_Ingresos.ToString("C")</li>
+                            <li>TOTAL INGRESOS FAMILIARES: @Model.Total_Ingreso_Familiar.ToString("C")</li>
+                            <li>GASTOS FAMILIARES: @Model.Gastos_Familiares.ToString("C")</li>
+                            <li>TOTAL DISPONIBLE: @Model.Total_Disponible.ToString("C")</li>
+                        </ol>
+                    </td>
+                    <td>
+                        <ol type="1">
+                            <li>PROVEEDORES: @Model.Proveedores.ToString("C")</li>
+                            <li>PRESTAMOS: @Model.Prestamos.ToString("C")</li>
+                            <li>PASIVO CIRCULANTE: @Model.Pasivo_Circulante.ToString("C")</li>
+                            <li>PATRIMONIO: @Model.Patrimonio.ToString("C")</li>
+                            <li>TOTAL PASIVO PATRIMONIO: @Model.Total_Pasivo_Patrimonio.ToString("C")</li>
+                        </ol>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <ul id="Detalles" class="nav nav-tabs" role="tablist">
+                <li class="active">
+                    <a href="#datos_negocio" id="datos_negocio-tab" role="tab" data-toggle="tab" aria-controls="datos_negocio" aria-expanded="true">Datos del Negocio</a>
+                </li>
+                <li>
+                    <a href="#gastos_negocio" id="gastos-tab" role="tab" data-toggle="tab" aria-controls="gastos_negocio" aria-expanded="true">Gastos negocio</a>
+                </li>
+                <li>
+                    <a href="#gastos_familiares" id="gastos_familiares-tab" role="tab" data-toggle="tab" aria-controls="gastos_familiares" aria-expanded="true">Gastos</a>
+                </li>
+                <li>
+                    <a href="#otros_ingresos" id="otros_ingresos-tab" role="tab" data-toggle="tab" aria-controls="otros_ingresos" aria-expanded="true">Otros Ingresos</a>
+                </li>
+                <li>
+                    <a href="#prestamos" id="prestamos-tab" role="tab" data-toggle="tab" aria-controls="prestamos" aria-expanded="true">Préstamos</a>
+                </li>
+                <li>
+                    <a href="#inventario" id="inventario-tab" role="tab" data-toggle="tab" aria-controls="inventario" aria-expanded="true">Inventario</a>
+                </li>
+                <li>
+                    <a href="#costos_ventas" id="costos_ventas-tab" role="tab" data-toggle="tab" aria-controls="costos_ventas" aria-expanded="true">Costos de ventas</a>
+                </li>
+                <li>
+                    <a href="#activos_negocio" id="activos_negocio-tab" role="tab" data-toggle="tab" aria-controls="activos_negocio" aria-expanded="true">Activos del negocio</a>
+                </li>
+            </ul>
+            <div id="detalle_contenido" class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="datos_negocio" aria-labelledby="datos_negocio-tab">
+                    <div class="well">
+                        <dl class="dl-horizontal">
+                            <dt>
+                                Días Buenos
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.Evaluacion.No_Dias_Buenos)
+                            </dd>
+                            <dt>
+                                Días Malos
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.Evaluacion.No_Dias_Malos)
+                            </dd>
+                            <dt>
+                                Días Descanso
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.Evaluacion.No_Dias_Descanso)
+                            </dd>
+                            <dt>
+                                Venta Diaria Bueno
+                            </dt>
+                            <dd>
+                                @Model.Evaluacion.Venta_Diaria_Bueno.ToString("C")
+                            </dd>
+                            <dt>
+                                Venta Diaria Mala
+                            </dt>
+                            <dd>
+                                @Model.Evaluacion.Venta_Diaria_Mala.ToString("C")
+                            </dd>
+                            <dt>
+                                Ventas semanal bueno
+                            </dt>
+                            <dd>
+                                @Model.Evaluacion.Venta_Semanal_Bueno.ToString("C")
+                            </dd>
+                            <dt>
+                                Ventas semanal malo
+                            </dt>
+                            <dd>
+                                @Model.Evaluacion.Venta_Semanal_Malo.ToString("C")
+                            </dd>
+                            <dt>
+                                Ventas mensual bueno
+                            </dt>
+                            <dd>
+                                @Model.Evaluacion.Venta_Mensual_Bueno.ToString("C")
+                            </dd>
+                            <dt>
+                                Ventas mensual malos
+                            </dt>
+                            <dd>
+                                @Model.Evaluacion.Venta_Mensual_Malo.ToString("C")
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="gastos_negocio" aria-labelledby="gastos_negocio-tab">
+                    <div class="well">
+                        <a href="@Url.Action("Nuevo_Gasto_Form","Evaluacion_Tecnica",new { id_evaluacion=Model.Evaluacion.Id_Evaluacion,id_categoria_gasto=1})" class="btn btn-default">Nuevo Gasto</a>
+                    </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Valor</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            @if (Model.Evaluacion.Gastos != null)
+                            {
+                                @foreach (var item in Model.Evaluacion.Gastos.Where(i => i.Tipo_Gasto.Id_Categoria_Gasto == 1))
+                                {
+                                    <td>@item.Tipo_Gasto.Descripcion</td>
+                                    <td>@item.Valor.ToString("C")</td>
+                                    <td><a href="@Url.Action("Modificar_Gasto_Form","Evaluacion_Tecnica", new { id_gasto=item.Id_Gasto,id_categoria_gasto=1})">Editar</a></td>
+                                }
+                            }
+                        </tr>
+                    </table>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="gastos_familiares" aria-labelledby="gastos_familiares-tab">
+                    <div class="well">
+                        <a href="@Url.Action("Nuevo_Gasto_Form","Evaluacion_Tecnica",new { id_evaluacion=Model.Evaluacion.Id_Evaluacion,id_categoria_gasto=2})" class="btn btn-default">Nuevo Gasto</a>
+                    </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Valor</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            @if (Model.Evaluacion.Gastos != null)
+                            {
+                                @foreach (var item in Model.Evaluacion.Gastos.Where(i => i.Tipo_Gasto.Id_Categoria_Gasto == 2))
+                                {
+                                    <td>@item.Tipo_Gasto.Descripcion</td>
+                                    <td>@item.Valor.ToString("C")</td>
+                                    <td><a href="@Url.Action("Modificar_Gasto_Form","Evaluacion_Tecnica", new { id_gasto=item.Id_Gasto,id_categoria_gasto=2})">Editar</a></td>
+                                }
+                            }
+                        </tr>
+                    </table>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="otros_ingresos" aria-labelledby="otros_ingresos-tab">
+                    <div class="well">
+                        <a href="@Url.Action("Nuevo_Otro_Ingreso_Form","Evaluacion_Tecnica",new { id_evaluacion=Model.Evaluacion.Id_Evaluacion})" class="btn btn-default">Nuevo Ingreso</a>
+                    </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Valor</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            @foreach (var item in Model.Evaluacion.Otros_Ingresos)
+                            {
+                                <td>@item.Tipo_Ingreso.Descripcion</td>
+                                <td>@item.Valor.ToString("C")</td>
+                                <td><a href="@Url.Action("Modificar_Otro_Ingreso_Form","Evaluacion_Tecnica", new { id_otro_ingreso=item.Id_Otro_Ingreso})">Editar</a></td>
+                            }
+                        </tr>
+                    </table>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="prestamos" aria-labelledby="prestamos-tab">
+                    <div class="well">
+                        <a href="@Url.Action("Nuevo_Prestamo_Form","Evaluacion_Tecnica",new { id_evaluacion=Model.Evaluacion.Id_Evaluacion})" class="btn btn-default">Nuevo Préstamo</a>
+                    </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Id</th>
+                            <th>Otorgado</th>
+                            <th>Cuota</th>
+                            <th>Frecuencia</th>
+                            <th>Saldo</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            @foreach (var item in Model.Evaluacion.Prestamos)
+                            {
+                                <td>@item.Id_Prestamo</td>
+                                <td>@item.Monto_Otorgado.ToString("C")</td>
+                                <td>@item.Cuota.ToString("C")</td>
+                                <td>@item.Frecuencia</td>
+                                <td>@item.Saldo.ToString("C")</td>
+                                <td>@item.Total.ToString("C")</td>
+                                <td><a href="@Url.Action("Modificar_Prestamo_Form","Evaluacion_Tecnica", new { id_prestamo=item.Id_Prestamo})">Editar</a></td>
+                            }
+                        </tr>
+                    </table>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="inventario" aria-labelledby="inventario-tab">
+                    <div class="well">
+                        <a href="@Url.Action("Nuevo_Inventario_Form","Evaluacion_Tecnica",new { id_evaluacion=Model.Evaluacion.Id_Evaluacion})" class="btn btn-default">Nuevo Inventario</a>
+                    </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Id</th>
+                            <th>Cantidad</th>
+                            <th>Unidad</th>
+                            <th>Precio</th>
+                            <th>Detalle</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            @foreach (var item in Model.Evaluacion.Inventarios_Negocio)
+                            {
+                                <td>@item.Id_Inventario_Negocio</td>
+                                <td>@item.Cantidad</td>
+                                <td>@item.Unidad_Compra</td>
+                                <td>@item.Precio_Compra.ToString("C")</td>
+                                <td>@item.Detalle</td>
+                                <td>@item.Total.ToString("C")</td>
+                                <td><a href="@Url.Action("Modificar_Inventario_Form","Evaluacion_Tecnica", new { id_inventario=item.Id_Inventario_Negocio})">Editar</a></td>
+                            }
+                        </tr>
+                    </table>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="costos_ventas" aria-labelledby="costos_ventas-tab">
+                    <div class="well">
+                        <a href="@Url.Action("Nuevo_Costo_Venta_Form","Evaluacion_Tecnica",new { id_evaluacion=Model.Evaluacion.Id_Evaluacion})" class="btn btn-default">Nuevo Costo de Venta</a>
+                    </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Id</th>
+                            <th>Unidad</th>
+                            <th>Precio compra</th>
+                            <th>Precio venta</th>
+                            <th>Margen</th>
+                            <th>Margen porcentaje</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            @foreach (var item in Model.Evaluacion.Costos_Ventas)
+                            {
+                                <td>@item.Id_Costo_Venta</td>
+                                <td>@item.Unidad_Medida</td>
+                                <td>@item.Precio_Compra.ToString("C")</td>
+                                <td>@item.Precio_Venta.ToString("C")</td>
+                                <td>@item.Margen_Bruto.ToString("C")</td>
+                                <td>@item.Margen_Bruto_Porcentaje.ToString("C")</td>
+                                <td><a href="@Url.Action("Modificar_Costo_Venta_Form","Evaluacion_Tecnica", new { id_costo_venta=item.Id_Costo_Venta})">Editar</a></td>
+                            }
+                        </tr>
+                    </table>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="activos_negocio" aria-labelledby="activos_negocio-tab">
+                    <div class="well">
+                        <a href="@Url.Action("Nuevo_Activo_Negocio_Form","Evaluacion_Tecnica",new { id_evaluacion=Model.Evaluacion.Id_Evaluacion})" class="btn btn-default">Nuevo Activo</a>
+                    </div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Precio compra</th>
+                            <th>Precio peritado</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            @foreach (var item in Model.Evaluacion.Activos_Negocio)
+                            {
+                                <td>@item.Id_Activo_Negocio</td>
+                                <td>@item.Nombre</td>
+                                <td>@item.Descripcion</td>
+                                <td>@item.Estado</td>
+                                <td>@item.Precio_Compra.ToString("C")</td>
+                                <td>@item.Precio_Peritado.ToString("C")</td>
+                                <td><a href="@Url.Action("Modificar_Activo_Negocio_Form","Evaluacion_Tecnica", new { id_activo_negocio=item.Id_Activo_Negocio})">Editar</a></td>
+                            }
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

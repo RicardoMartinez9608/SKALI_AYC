@@ -1,0 +1,173 @@
+﻿
+@{
+    ViewData["Title"] = "ManejoReversion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Manejo de Reversiones</div>
+    <div class="panel-body panel-body-personalizado">
+        <div class="row">
+            <div class="col-lg-4">
+               <div class="input-group">
+                    <input type="text" name="dui_buscar" id="dui_buscar" placeholder="introduzca un DUI válido" class="form-control" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="buscarpordui">Buscar</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <p></p>
+
+        <table>
+            <tr>
+                <th>ID: </th>
+
+                <td><span class="id" id="id_persona" /> </td>
+            </tr>
+            <tr>
+                <th>Nombre completo: </th>
+                <td><span class="nombre_completo" id="nombre"></span></td>
+            </tr>
+            <tr>
+                <th>DUI: </th>
+                <td><span class="dui" id="dui_persona"></span></td>
+
+            </tr>
+        </table>
+        <p></p>
+
+        <div class="row">
+            <div class="col-lg-2">
+                <input type="radio" name="tipo" class="tipo" value="1"/> Ahorro
+            </div>
+            <div class="col-lg-2">
+                <input type="radio" name="tipo" class="tipo" value="2"/> Ahorro
+            </div>
+        </div>
+        <p></p>
+        <div class="row">
+            <div class="col-lg-2" id="CargaCodigo">
+                <input type="button" class="form-control" value="Revertir" id="revertir"/>
+            </div>
+            <div class="col-lg-2">
+                
+            </div>
+        </div>
+
+        <div id="cargar_transacciones">
+
+        </div>
+
+    </div>
+</div>
+    <script>
+
+        $(function(){
+            BuscarPorDui();
+        });
+
+        function BuscarPorDui() {
+            $("#buscarpordui").click(function () {
+                var filtro = $("#dui_buscar").val();
+                $.get("@Url.Action("JDetalle_Persona","Persona")",
+                    { filtro: filtro },
+                    function (detalle) {
+                        $("span.nombre_completo").text(detalle.nombreCompleto);
+                        $("span.dui").text(detalle.dui);
+                        $("span.id").text(detalle.id_Persona);
+                        var id_persona = $("#id_persona").text();
+                        var nombre = $("#nombre").text();
+                        var dui = $("#dui_persona").text();
+                        
+                    }).fail(function (error) {
+                    alertify.error("No se encontró esa identificación");
+                });
+            });
+        }
+
+        function SeleccionarCombos()
+        {
+            $("input.tipo").click(function(index){
+                var num=Number($("input.tipo").eq(index).val());
+                if(num==1)
+                    AhorroCombo();
+                else
+                    CreditoCombo();
+            });
+        
+        }
+
+        function AhorroCombo()
+        {
+            
+        }
+
+        function CreditoCombo()
+        {
+            
+        }
+
+        
+
+        function Enviar_Transaccion_Revertida_Deposito(ids, es_credito,es_deposito) {
+            $.ajax({
+                type: "POST",
+                url: raiz + "/Caja/Revertir_Transaccion",
+                data: { ids: ids, es_credito: es_credito, es_deposito:es_deposito }
+            }).done(function (respuesta) {
+                /*actualizar la lista de acuerdo a lo que sea*/
+                Mensaje(respuesta);
+                var id_deposito = $("#Id_Deposito").val();
+                CargarGridTransaccionesDeposito(id_deposito);
+            });
+        }
+
+        function Enviar_Transaccion_Revertida_Credito(ids, es_credito) {
+            $.ajax({
+                type: "POST",
+                url: raiz + "/Caja/Revertir_Transaccion",
+                data: { ids: ids, es_credito: es_credito }
+            }).done(function (respuesta) {
+                /*actualizar la lista de acuerdo a lo que sea*/
+                Mensaje(respuesta);
+                    MostrarTransaccionesCreditoEfectuadas();
+            });
+        }
+
+        function Enviar_Transaccion_Documento(id_transaccion, es_credito) {
+            var a = document.createElement('a');
+            if (es_credito) {
+                a.href = raiz + "/Credito/Mostrar_Factura_Abono?id_transaccion=" + id_transaccion;
+            }
+            else {
+                a.href = raiz + "/Ahorro/Mostrar_Recibo?id_transaccion=" + id_transaccion;
+            }
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+        }
+
+        function Revertir_Transaccion_Credito() {
+            $("a.revertir").click(function () {
+                var id_transaccion_credito = $("input.id_transaccion_valor_credito").last().val();
+                if (id_transaccion_credito.length > 0) {
+                    Enviar_Transaccion_Revertida_Credito(id_transaccion_credito, true);
+                }
+            });
+        }
+
+        function Enviar_Transaccion_Revertida(ids, es_credito) {
+                $.ajax({
+                    type: "POST",
+                    url: raiz + "/Caja/Revertir_Transaccion",
+                    data: { ids: ids, es_credito: es_credito }
+                }).done(function (respuesta) {
+                    /*actualizar la lista de acuerdo a lo que sea*/
+                    Mensaje(respuesta);
+                        var id_ahorro = $("#id_ahorro_combo").val();
+                        CargarGridTransacciones(id_ahorro);
+                });
+        }
+    </script>

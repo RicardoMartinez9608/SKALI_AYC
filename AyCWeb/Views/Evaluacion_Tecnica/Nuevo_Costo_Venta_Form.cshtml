@@ -1,0 +1,51 @@
+﻿@model ModelNucleo.Model.Evaluacion_Tecnica.Costo_Venta
+@{
+    ViewData["Title"] = "Nuevo_Costo_Venta_Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<br />
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Nuevo Costo de Venta</div>
+    <div class="panel-body">
+        <form asp-action="Nuevo_Costo_Venta">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Id_Costo_Venta" type="hidden" class="form-control" />
+            <input asp-for="Id_Evaluacion" value="@ViewBag.Id_Evaluacion" type="hidden" class="form-control" />
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Unidad_Medida" class="control-label">Unidad de Medida</label>
+                        <input asp-for="Unidad_Medida" class="form-control" />
+                        <span asp-validation-for="Unidad_Medida" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Precio_Compra" class="control-label">Precio de Compra</label>
+                        <input asp-for="Precio_Compra" class="form-control" />
+                        <span asp-validation-for="Precio_Compra" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Precio_Venta" class="control-label">Precio de Venta</label>
+                        <input asp-for="Precio_Venta" class="form-control" />
+                        <span asp-validation-for="Precio_Venta" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <br />
+                        <input type="submit" value="Guardar" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

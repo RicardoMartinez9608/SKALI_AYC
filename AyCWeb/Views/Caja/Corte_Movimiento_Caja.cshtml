@@ -1,0 +1,124 @@
+﻿@{
+    ViewData["Title"] = "Corte_Movimiento_Caja";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <p></p>
+    <div class="panel panel-default">
+        <div class="panel-heading panel-heading-personalizado">Corte Movimientos de Caja</div>
+        <div class="panel-body">
+
+            <form id="form_credito">
+               
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <input type="checkbox" name="rango" class="rango" id="rango" />
+                            <label for="rango" class="control-label">Fecha por Rango</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="rango" class="control-label" id="etiqueta">Fecha Inicio</label>
+                            <input type="date" name="fecha_inicio" class="form-control" id="fecha_inicio" />
+                        </div>
+                    </div>
+                    <div class="col-md-3" id="fecha_final">
+                        <div class="form-group">
+                            <label for="rango" class="control-label">Fecha Final</label>
+                            <input type="date" name="fecha_final" class="form-control" id="fecha_final_valor" />
+                        </div>
+                    </div>
+                    <div class="col-md-3" id="agencias">
+                        <div class="form-group">
+                            <label for="Id_Agencia"> Agencia</label>
+                            <div id="id_agencia"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="Id_Caja">Cajas</label>
+                            <div id="id_caja"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <button type="button" class="btn btn-default" id="imprimir">Imprimir</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <script>
+    $(document).ready(function () {
+        ListaCajas();
+        CorteCaja();
+        Cargar_Agencias();
+    });
+    function ListaCajas() {
+        var rol_quote = "@ViewBag.Rol";
+        var rol = rol_quote.replace(/(&quot\;)/g, "\"", /['"]+/g);
+        if (rol == "Administrador") {
+            $("#Id_Agencia").change(function () {
+                var id_agencia = $("#Id_Agencia").val();
+                $.get("@Url.Action("Cajas_Combo", "Caja_Boveda")?id_agencia="+id_agencia, function (agencias) {
+                    $("#id_caja").html(agencias);
+                });
+            });
+           
+        } else {
+            $("#agencias").css("display", "none");
+            Cargar_Cajas_Agencia();
+        }
+    }
+    function Cargar_Agencias() { 
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia").html(agencias);
+            ListaCajas();
+        });
+    }
+    function Cargar_Cajas_Agencia() {
+        $.get("@Url.Action("Cajas_Combo_Agencia", "Caja_Boveda")",function (agencias) {
+            $("#id_caja ").html(agencias);
+        });
+    }
+
+    $(document).ready(function () {
+        InterfaceInicial();
+        CambiarInterface();
+    });
+
+    function InterfaceInicial() {
+        $("#fecha_final").css("display", "none");
+        $("#etiqueta").text("Fecha");
+        $("#rango").prop('checked', false);
+    }
+
+    function CambiarInterface() {
+        $("#rango").click(function (evento) {
+            if ($("#rango").is(":checked")) {
+                $("#fecha_final").css("display", "block");
+                $("#etiqueta").text("Fecha Inicio");
+            } else {
+                $("#fecha_final").css("display", "none");
+                $("#etiqueta").text("Fecha");
+                $("#rango").prop('checked', false);
+            }
+        });
+    }
+
+    function CorteCaja() {
+        $("#imprimir").click(function () {
+            var rango = $("#rango").val();
+            var fecha_inicio = $("#fecha_inicio").val();
+            var fecha_final = $("#fecha_final_valor").val();
+            var id_caja = $("#Id_Caja").val();
+            window.open("@Url.Action("Mostrar_Corte_Caja","Caja")?rango=" + rango + "&fecha_inicio=" + fecha_inicio + "&fecha_final=" + fecha_final + "&id_caja=" + id_caja);
+        });
+    }
+    </script>

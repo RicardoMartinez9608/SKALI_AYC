@@ -1,0 +1,125 @@
+﻿@model IEnumerable<ModelNucleo.Model.Configuracion_Calificacion>
+
+@{
+    ViewData["Title"] = "Configuración Calificaciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Configuración Calificaciones</div>
+    <div class="panel-body">
+        <p>
+            <a  href="#Mantenimiento_Adicional" data-toggle="modal" class="btn btn-default nueva_calificacion">Nuevo</a>
+        </p>
+        <div class="lista_calificaciones">
+
+        </div>
+    </div>
+</div>
+<div class="modal" id="Mantenimiento_Adicional">
+    <div class="modal-dialog" style="width:80%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title" id="titulo_sub_modal">Configurar Calificaciones</h4>
+            </div>
+            <div class="modal-body Cargar_Mantenimiento_Adicional">
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="Mantenimiento_Adicional_Configuracion">
+    <div class="modal-dialog" style="width:80%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </a>
+                <h4 class="modal-title" id="titulo_sub_modal">Editar Configurar Calificaciones</h4>
+            </div>
+            <div class="modal-body Cargar_Mantenimiento_Adicional_Configuracion">
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        MostrarContenido();
+        Nueva_Calificacion();
+    });
+
+    function Nueva_Calificacion() {
+        $("a.nueva_calificacion").click(function () {
+           
+            Detalle_Nueva_Calificacion();
+        });
+    }
+    function Detalle_Nueva_Calificacion() {
+        $.get("@Url.Action("Agregar_Calificacion","Configuracion_Calificaciones")",
+            { },
+            function (form) {
+                $("div.Cargar_Mantenimiento_Adicional").html(form);
+                Guardar_Calificacion();
+                
+            });
+    }
+
+    function Guardar_Calificacion() {
+        $("#guardar_nueva_configuracion").click(function() {
+            var calificacion = $("#Nueva_Calificacion").serializeAnything();
+            $.post("@Url.Action("Guardar", "Configuracion_Calificaciones")",
+                calificacion,
+                function(resultado) {
+                    alertify.success(resultado);
+                    MostrarContenido();
+                    $('#Mantenimiento_Adicional').modal('hide');
+                }).fail(function(error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+
+    function MostrarContenido()
+    {
+        $.get("@Url.Action("Lista_Calificacion", "Configuracion_Calificaciones")",
+            { },
+            function(html) {
+                $("div.lista_calificaciones").html(html);
+                Mostrar_Editar_Calificacion();
+            });
+    }
+
+
+    function Mostrar_Editar_Calificacion() {
+        $("input.editar_calificacion").each(function(index){
+            $("input.editar_calificacion").eq(index).click(function () {
+                var id_calificacion = $("input.id_configuracion").eq(index).val();
+                $.get("@Url.Action("Obtener_Calificacion", "Configuracion_Calificaciones")",
+                    { id_calificacion: id_calificacion },
+                    function (html) {
+                        $("div.Cargar_Mantenimiento_Adicional_Configuracion").html(html);
+                        Guardar_Edicion_Calificacion();
+                    });
+            });
+        });
+    }
+    function Guardar_Edicion_Calificacion() {
+        $("#guardar_editar_calificacion").click(function () {
+            var form_deduccion = $("#editar_calificacion").serializeAnything();
+            var direccion = "@Url.Action("Editar_Calificacion", "Configuracion_Calificaciones")";
+            $.post(direccion, form_deduccion, function (resultado) {
+                MostrarContenido();
+                $('#Mantenimiento_Adicional_Configuracion').modal('hide');
+                alertify.success(resultado);
+            }).fail(function (error) {
+                alertify.error(error.responseText);
+            });
+        });
+    }
+</script>

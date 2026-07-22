@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ModelNucleo.Model.Fotografia_Comite>
+
+
+<table class="table">
+    <thead>
+        <tr>
+           @* <th>
+                @Html.DisplayNameFor(model => model.Id_Fotografia_Comite)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Id_Comite_Ampliado)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Foto)
+            </th>
+         @*   <th>
+                @Html.DisplayNameFor(model => model.Descripcion)
+            </th>*@
+   
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.Id_Fotografia_Comite)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Comite_Ampliado)
+            </td>*@
+            <td>
+                  <img src="data:image/png;base64,@item.Foto"/>
+@*                @Html.DisplayFor(modelItem => item.Foto)*@
+            </td>
+         @*   <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>*@
+           
+        </tr>
+}
+    </tbody>
+</table>

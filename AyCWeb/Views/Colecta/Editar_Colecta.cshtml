@@ -1,0 +1,211 @@
+﻿@using DevExtreme.AspNet.Mvc
+@model ModelNucleo.Model.Colecta
+@{
+    ViewData["Title"] = "Nueva colecta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Nuevo registro de colecta</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Editar_Colecta">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input asp-for="Id_Colecta_Diaria" type="hidden" class="form-control" />
+                    <input asp-for="Id_Colecta" type="hidden" />
+                    <div class="form-group">
+                        <input asp-for="Id_Cliente" type="hidden" />
+                        <input asp-for="DUI" type="hidden" />
+                        Nombre o DUI: @(Html.DevExtreme().Lookup()
+                       .ID("Cliente")
+                       .ElementAttr("class", "field-customization")
+                       .DataSource(
+                       d => d.Mvc().Controller("Persona").LoadAction("Personas").Key("Id_Persona")
+                       ).DisplayExpr(new JS("lookup_displayExpr")).DisplayValue("Nombres").ValueExpr("Id_Persona")
+                       .SearchExpr(new[] { "Nombres", "Apellidos", "Dui", "Id_Persona" })
+                       .ItemTemplate(@<text>
+                        <div class="custom-item">
+                            <div><%= Nombres %> <%= Apellidos %> <%= Dui %></div>
+                        </div>
+                    </text>).OnSelectionChanged("ObtenerPersona")
+                        )
+
+                    </div>
+                    <div class="well">
+                        <input type="radio" name="Tipo_Transaccion" class="Tipo_Transaccion" value="Ahorro" checked="checked"> Ahorro
+                        <input type="radio" name="Tipo_Transaccion" class="Tipo_Transaccion" value="Credito"> Crédito
+                    </div>
+
+                    <div id="Form_Ahorro">
+                        <div class="form-group">
+                            Cuentas de Ahorro:
+                            <input asp-for="Id_Ahorro" type="hidden" class="form-control" />
+                            <div id="Cuentas_Ahorro"></div>
+                        </div>
+                    </div>
+
+                    <div id="Form_Credito" style="display:none">
+                        <div class="form-group">
+                            Cuentas de Crédito:
+                            <input asp-for="Id_Credito" type="hidden" class="form-control" />
+                            <div id="Cuentas_Credito"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Monto" class="control-label"></label>
+                        <input asp-for="Monto" class="form-control" />
+                        <span asp-validation-for="Monto" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="No_Comprobante" class="control-label">Comprobante</label>
+                        <input asp-for="No_Comprobante" class="form-control" />
+                        <span asp-validation-for="No_Comprobante" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Guardar" class="btn btn-default" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div>
+            <a href="@Url.Action("Colectas","Colecta",new { id_colecta_diaria=Model.Id_Colecta_Diaria})">Regresar a la lista</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        /*mostrar los seleccionados*/
+        Cliente_Seleccionado();
+        Cambio_Tipo_Transaccion();
+        Check_Credito_Ahorro();
+    });
+
+    function Cambio_Tipo_Transaccion() { 
+        $(".Tipo_Transaccion").each(function (index) {
+            var valor = $(".Tipo_Transaccion").eq(index).val();
+            if (valor == "Ahorro") {
+                var Id_Ahorro = Number($("#Id_Ahorro").val());
+                if (Id_Ahorro > 0)
+                    $(".Tipo_Transaccion").eq(index).attr("checked", true);
+            }
+            if (valor == "Credito") {
+                var Id_Credito = Number($("#Id_Credito").val());
+                if (Id_Credito > 0)
+                    $(".Tipo_Transaccion").eq(index).attr("checked", true);
+            }
+        });
+    }
+
+    function lookup_displayExpr(item) {
+        if (!item) {
+            return "";
+        }
+        return item.Nombres + " " + item.Apellidos + " " + item.Dui;
+    }
+
+    function Ahorro_Seleccionado() { 
+        var Id_Ahorro = Number($("#Id_Ahorro").val());
+        if (Id_Ahorro > 0) {
+            $("#id_ahorro_combo").val(Id_Ahorro);
+            Encender_Ahorro();
+        }
+    }
+
+    function Credito_Seleccionado() { 
+        var Id_Credito = Number($("#Id_Credito").val());
+        if (Id_Credito > 0) {
+            $("#id_credito_combo").val(Id_Credito);
+            Encender_Credito();
+        }
+    }
+
+    function Cliente_Seleccionado() {
+        var dui = $("#DUI").val();
+
+        $.get("@Url.Action("JDetalle_Persona","Persona")", { filtro: dui }, function (persona) {
+            var item_datos = {
+                Dui: persona.dui,
+                Nombres:persona.nombres,
+                Apellidos: persona.apellidos,
+                Id_Persona:persona.id_Persona
+            };
+            var lookup = $("#Cliente").dxLookup("instance");
+            lookup.option('items').push(item_datos);
+            lookup.option('value', item_datos);
+        });
+    }
+
+    function ObtenerPersona(item) {
+        var id_persona = item.selectedItem.Id_Persona
+        $("#Id_Cliente").val(id_persona);
+        /*cargar los el select de ahorro y creditos de esa persona*/
+        Obtener_Ahorro_Combo(id_persona);
+        Obtener_Credito_Combo(id_persona);
+    }
+
+    function Obtener_Ahorro_Combo(id_persona) {
+        $.get("@Url.Action("AhorrosCombo","Componentes")",
+            { id_persona: id_persona },
+            function (selectCombo) {
+                $("#Cuentas_Ahorro").html(selectCombo);
+                Cuenta_Ahorro_Seleccionado();
+                Ahorro_Seleccionado();
+            }
+        );
+    }
+
+    function Obtener_Credito_Combo(id_persona) {
+        $.get("@Url.Action("CreditosCombos","Componentes")",
+            { id_persona: id_persona },
+            function (selectCombo) {
+                $("#Cuentas_Credito").html(selectCombo);
+                Cuenta_Credito_Seleccionado();
+                Credito_Seleccionado();
+            }
+        );
+    }
+
+    function Cuenta_Ahorro_Seleccionado() {
+        $("#id_ahorro_combo").change(function () {
+            var id_ahorro = $(this).val();
+            $("#Id_Ahorro").val(id_ahorro);
+        });
+    }
+
+    function Cuenta_Credito_Seleccionado() {
+        $("#id_credito_combo").change(function () {
+            var id_credito = $(this).val();
+            $("#Id_Credito").val(id_credito);
+        });
+    }
+
+    function Check_Credito_Ahorro() {
+        $("input[name=Tipo_Transaccion]").click(function () {
+            var check = $(this).val();
+            Reiniciar_Tipo_Transaccion();
+            if (check == "Credito")
+                Encender_Credito();
+            if (check == "Ahorro")
+                Encender_Ahorro();
+        });
+    }
+
+    function Encender_Credito() { 
+        $("#Form_Credito").show();
+        $("#Form_Ahorro").hide();
+    }
+
+    function Encender_Ahorro() { 
+        $("#Form_Ahorro").show();
+        $("#Form_Credito").hide();
+    }
+
+    function Reiniciar_Tipo_Transaccion() { 
+        $("#Id_Credito").val(0);
+        $("#Id_Ahorro").val(0);
+    }
+</script>

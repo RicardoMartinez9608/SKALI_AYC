@@ -1,0 +1,85 @@
+﻿@model ModelNucleo.Model.Acta
+
+@{
+    ViewData["Title"] = "Detalle Acta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel panel-heading panel-heading-personalizado">Detalle de Acta</div>
+    <div class="panel-body">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.NoActa)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.NoActa)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Fecha_Celebrado)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Fecha_Celebrado)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Completado)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Completado)
+            </dd>
+            @if (Model.Completado)
+            {
+                <dt>
+                    @Html.DisplayNameFor(model => model.Fecha_Completado)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Fecha_Completado)
+                </dd>
+            }
+        </dl>
+        <hr />
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Cliente</th>
+                    <th>Línea crédito</th>
+                    <th>Aprobado</th>
+                    <th>Aprobado en</th>
+                    <th>Liquidado</th>
+                    <th>Liquidado en</th>
+                    <th>Interés</th>
+                    <th>Monto</th>
+                    <th>Plazo</th>
+                    <th>No Cuotas</th>
+                    <th>Forma pago</th>
+                    <th>Cuota</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Creditos)
+                {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Codigo_Credito)</td>
+                    <td>@item.Persona.NombreCompleto</td>
+                    <td>@item.Linea_Credito.Descripcion_linea</td>
+                    <td>@Html.DisplayFor(modelItem => item.Aprobado)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Aprobado_En)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Liquidado)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Liquidado_En)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Interes_Comision)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Monto_pago)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Plazo)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Numero_cuotas)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Periodo.Descripcion)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Cuota_Total)</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+        <a asp-action="Index">Regresar a la lista</a>
+    </div>
+</div>

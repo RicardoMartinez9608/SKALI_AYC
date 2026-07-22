@@ -1,0 +1,742 @@
+﻿@using DevExtreme.AspNet.Mvc
+@{
+    ViewData["Title"] = "Caja";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Caja</div>
+    <div class="panel-body panel-body-personalizado">
+
+        <div id="mensajes"></div>
+
+        <p></p>
+
+        <div class="input-group">
+            <input type="text" name="dui_buscar" id="dui_buscar" placeholder="introduzca un DUI válido" class="form-control" />
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="buscarpordui">Buscar</button>
+            </span>
+        </div>
+        <p></p>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <table>
+                    <tr>
+                        <th>Nombre completo: </th>
+                        <td><span class="nombre_completo"></span></td>
+                    </tr>
+                    <tr>
+                        <th>DUI: </th>
+                        <td><span class="dui"></span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <p></p>
+        <div style="min-height:400px">
+            <ul id="cuentas" class="nav nav-tabs" role="tablist">
+                <li class="active">
+                    <a href="#ahorro" id="ahorro-tab" role="tab" data-toggle="tab" aria-controls="ahorro" aria-expanded="true">Cuentas de Ahorro</a>
+                </li>
+                <li>
+                    <a href="#credito" id="credito-tab" role="tab" data-toggle="tab" aria-controls="credito" aria-expanded="true">Cuentas de Créditos</a>
+                </li>
+                <li>
+                    <a href="#acciones" id="acciones-tab" role="tab" data-toggle="tab" aria-controls="acciones" aria-expanded="true">
+                        <span id="contando_acciones"></span> Acciones pendientes
+                    </a>
+                </li>
+                <li>
+                    <a href="#deducciones" id="deducciones-tab" role="tab" data-toggle="tab" aria-controls="deducciones" aria-expanded="true">
+                        <span id="contando_deducciones"></span> Deducciones
+                    </a>
+                </li>
+                <li>
+                    <a href="#otras_operaciones" id="otras_operaciones-tab" role="tab" data-toggle="tab" aria-controls="otras_operaciones" aria-expanded="true">
+                        Otras operaciones
+                    </a>
+                </li>
+            </ul>
+            <div id="cuentasContenido" class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="ahorro" aria-labelledby="ahorro-tab">
+                    @*Seleccionar cuenta de ahorro:
+                        <div class="ahorros"></div>*@
+                    <p></p>
+                    <div class="well">
+
+                        <div class="btn-group btn-group-lg" role="group" aria-label="...">
+                            <div class="btn-group ahorros" role="group">
+                            </div>
+                            <div class="btn-group " role="group">
+                                <input type="number" id="valor" class="form-control limpiar" />
+                            </div>
+                            <div class="btn-group" role="group">
+                                <a href="#Modal_Para_Ahorros" data-toggle="modal" class="btn btn-default" id="deposito">Depósito</a>
+                            </div>
+                            <div class="btn-group" role="group">
+                                <a href="#Modal_Para_Retiros" data-toggle="modal" id="retiro" class="btn btn-default">Retiro</a>
+                            </div>
+                            <div class="btn-group" role="group">
+                                <span id="ncomprobante" style="display: none"></span>
+                            </div>
+                            <div class="btn-group" role="group">
+                                <span id="ncomprobanteretiro" style="display: none"></span>
+                            </div>
+                        </div>
+                        @Html.Partial("_Herramienta_Caja_Transaccion")
+                    </div>
+                    <p></p>
+                    <div class="transacciones" style="overflow-y: scroll; height:300px;"></div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="credito" aria-labelledby="credito-tab">
+
+                    <div class="well">
+                        <div class="btn-group btn-group-lg" role="group" aria-label="...">
+                            <div class="creditos btn-group" role="group">
+
+                            </div>
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-default abono" type="button">Registrar Abono</button>
+                            </div>
+                        </div>
+                        @Html.Partial("_Herramienta_Caja_Transaccion")
+                    </div>
+
+                    <p></p>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="Modal_Para_Comprobante" style="align-content: center">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Ingrese el No. de Comprobante</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Ingrese el número de comprobante para realizar un pago</label>
+                                            <br />
+                                            <label class="control-label">No Comprobante</label>
+                                            <input class="form-control" id="numero_comprobante" type="number" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                                    <button type="button" id="siguiente_comprobante" class="btn btn-primary">Continuar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p></p>
+                    <div class="transaccionesCredito" style="overflow-y: scroll; height:300px;"></div>
+                    <p>
+                        <table>
+                            <tr>
+                                <td style="background-color:palegreen;padding:4px"> Puntual </td>
+                                <td style="background-color:lemonchiffon;padding:4px"> Anticipado </td>
+                                <td style="background-color:red;padding:4px"> Vencido </td>
+                            </tr>
+                        </table>
+                    </p>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="acciones" aria-labelledby="acciones-tab">
+                    <div id="acciones_lista"></div>
+
+                    <div class="modal fade" id="modal_detalle_cobro">
+                        <div class="modal-dialog" style="width:800px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <a href="#" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span>
+                                        <span class="sr-only">Close</span>
+                                    </a>
+                                    <h4 class="modal-title">Registrar cobro</h4>
+                                </div>
+
+                                <div class="modal-body">
+                                    No Acción: <b class="codigo_seleccionado"></b>
+
+                                    <div class="form-group">
+                                        <input type="button" id="registrar_cobro" value="Registrar cobro" class="form-control" />
+                                    </div>
+
+                                </div> <!-- /.modal-body -->
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="deducciones" aria-labelledby="deducciones-tab">
+                    <div id="deducciones_lista"></div>
+
+                    <div class="modal fade" id="modal_detalle_deduccion">
+                        <div class="modal-dialog" style="width:800px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <a href="#" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span>
+                                        <span class="sr-only">Close</span>
+                                    </a>
+                                    <h4 class="modal-title">Registrar Deducción</h4>
+                                </div>
+
+                                <div class="modal-body">
+
+
+                                    <div class="form-group">
+                                        <input type="button" id="registrar_deduccion" value="Registrar deducción" class="form-control" />
+                                    </div>
+
+                                </div> <!-- /.modal-body -->
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div role="tabpanel" class="tab-pane" id="otras_operaciones" aria-labelledby="otras_operaciones-tab">
+                    <p></p>
+                    <div class="well">
+                        <div class="btn-group btn-group-lg" role="group" aria-label="...">
+                            <div class="btn-group" role="group">
+
+                            </div>
+                            <div class="btn-group" role="group">
+
+                            </div>
+                        </div>
+                        @Html.Partial("_Herramienta_Caja_Transaccion")
+
+                        <p></p>
+                    </div>
+                    <p></p>
+                    <div id="lista_otras_operaciones"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ahorros-->
+<div class="modal fade" id="Modal_Para_Ahorros" style="align-content: center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Ingrese el No. de Comprobante</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Ingrese el número de comprobante para realizar un Depósito</label>
+                        <br />
+                        <label class="control-label">No Comprobante</label>
+                        <input class="form-control cdeposito" id="numero_comprobante_ahorro" type="number" />
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" id="siguiente_comprobante_ahorro" class="btn btn-primary">Continuar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ahorros-->
+<div class="modal fade" id="Modal_Para_Retiros" style="align-content: center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Ingrese el No. de Comprobante</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Ingrese el número de comprobante para realizar un Retiro</label>
+                        <br />
+                        <label class="control-label">No Comprobante</label>
+                        <input class="form-control cretiro" id="numero_comprobante_retiro" type="number" />
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" id="siguiente_comprobante_retiro" class="btn btn-primary">Continuar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Libreta-->
+<div class="modal fade" id="Modal_Libreta" style="align-content: center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Ingrese los siguientes datos para continuar</h4>
+            </div>
+            <div class="row">
+
+            </div>
+            <div class="modal-body">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label>Ingrese el número de renglón</label>
+                        <br />
+                        <input class="form-control cretiro" id="numero_renglon" type="number" />
+                        <br />
+                    </div>
+                </div>
+               
+            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    <button type="button" id="siguiente_libreta" class="btn btn-primary">Continuar</button>
+                </div>
+            </div>
+        </div>
+</div>
+<script>
+
+    //buscando el una persona valida
+    $(function () {
+        $("#dui_buscar").mask("00000000-0");
+        BuscarPorDui();
+    });
+
+    function BuscarPorDui() {
+        $("#buscarpordui").click(function () {
+            var filtro = $("#dui_buscar").val();
+            $.get("@Url.Action("JDetalle_Persona","Persona")",
+                { filtro: filtro },
+                function (detalle) {
+                    $("span.nombre_completo").text(detalle.nombreCompleto);
+                    $("span.dui").text(detalle.dui);
+                    ObtenerPersona(detalle.id_Persona);
+                }).fail(function (error) {
+                    alertify.error("No se encontró esa03552832 identificación");
+                });
+        });
+    }
+
+
+
+    function Mensaje(respuesta) {
+        $("#mensajes").html("");
+        $("#mensajes").html(respuesta);
+    }
+
+    @*function MostrarTransaccionesCreditoEfectuadas() {
+        var id_credito = $("#id_credito_combo").val();
+        $.get("@Url.Action("Transacciones_Efectuadas", "Credito")",
+            { id_credito: id_credito },
+            function (transacciones) {
+                $("div.transaccionesCredito").html(transacciones);
+             //   Revertir_Transaccion();
+                Mostrar_Factura_Transaccion();
+                SeleccionarTodosCredito();
+        });
+    }*@
+
+    function lookup_displayExpr(item) {
+        if(!item) {
+            return "";
+        }
+        return item.Nombres + " " + item.Apellidos+" "+item.Dui;
+    }
+
+    function ObtenerPersona(id_persona) {
+        //var id_persona = item.selectedItem.Id_Persona;
+        $("#id_persona_valor").val(id_persona);
+        ObtenerAhorrosCombos(id_persona);
+        ObtenerCreditosCombos(id_persona);
+        Acciones_Pendientes(id_persona);
+        Deducciones_Historial(id_persona);
+
+        Lista_Otras_Operaciones(id_persona);
+    }
+
+    function ObtenerAhorrosCombos(id_persona) {
+        $.get("@Url.Action("AhorrosCombo","Componentes")",
+            { id_persona: id_persona },
+            function (selectCombo) {
+                $(".ahorros").html(selectCombo);
+
+                ObtenerGridAhorro();
+            }
+        );
+    }
+
+    function ObtenerCreditosCombos(id_persona) {
+        $.get("@Url.Action("CreditosCombos","Componentes")",
+            { id_persona: id_persona },
+            function (selectCombo) {
+                $(".creditos").html(selectCombo);
+                ObtenerConsultaParaPagoActual();
+
+            }
+        );
+    }
+
+    function IniciarAbono() {
+        $(".abono").click(function () {
+           // MOModal_Abono_Credito_Show();
+            MOModal_Comprobante_Show();
+        });
+    }
+//-----------------------------------------------------------------
+    function MOModal_Comprobante_Show() {
+        ConsultaPago();
+        $('#Modal_Para_Comprobante').modal('show');
+    }
+    function MOModal_Comprobante_Hide() {
+        ConsultaPago();
+        $('#Modal_Para_Comprobante').modal('hide');
+    }
+
+    function Siguiente_Comprobante() {
+
+        $("#siguiente_comprobante").eq(0).off('click').click(function (e) {
+            if ($('#numero_comprobante').val() == "") {
+                alertify.error("Ingrese número de Comprobante.");
+            } else {
+                PasarValor();
+            }
+            });
+    }
+    function PasarValor()
+    {
+        //var comprobante = $("#numero_comprobante").val();
+        MOModal_Abono_Credito_Show();
+        //$('#NComprobante').html(comprobante);
+    }
+
+
+//-----------------------------------------------------------------
+    function MOModal_Abono_Credito_Show() {
+        ConsultaPago();
+        $('#Modal_Para_Abono').modal('show');
+    }
+
+    function MOModal_Abono_Credito_Hide() {
+        $('#Modal_Para_Abono').modal('hide');
+    }
+
+    function ObtenerConsultaParaPagoActual() {
+        $("#id_credito_combo").change(function () {
+            IniciarAbono();
+            MostrarTransaccionesCreditoEfectuadas();
+
+        });
+    }
+
+
+    function ObtenerData(e) {
+        var id_credito = $("#Id_Credito").val();
+        var fecha = $("#FechaPago").val();
+        var valor_cuota = $("#Valor_Cuota").val();
+        $.get("@Url.Action("ConsultaParaPago", "Credito")",
+            { id_credito: id_credito, fecha: fecha, valor_cuota: valor_cuota },
+            function (consulta) {
+                $("div.consultaParaPago").html("");
+                $("div.consultaParaPago").html(consulta);
+            }).fail(function (error) {
+                    alertify.error(error.responseText);
+                    $("div.consultaParaPago").html("");
+                });
+    }
+
+
+    function CalculandoPago() {
+
+    }
+    
+    function MOModal_Abono_Ahorro_Hide() {
+        $('#Modal_Para_Ahorros').modal('hide');
+    }
+    function MOModal_Retiro_Ahorro_Hide() {
+        $('#Modal_Para_Retiros').modal('hide');
+    }
+
+    function Libreta() {
+        $("#siguiente_libreta").click(function () {
+            if ($('#numero_renglon').val() == "" || $('#nueva_renglon').val() >60) {
+                alertify.error("Ingrese los datos.");
+            } else {
+                var nrenglon = $("#numero_renglon").val();
+                var id_ahorro = $("#id_ahorro_combo option:selected").val();
+                var id_transaccion = $("#id_transaccion:checked").val();
+                
+                window.open("@Url.Action("Postear_Libreta","Ahorro")?id_ahorro="+ id_ahorro+"&id_transaccion="+id_transaccion+"&nrenglon="+nrenglon);
+              
+            } 
+        });
+    }
+
+    <!--function OperacionesAhorros() {
+        $("#deposito").click(function () {
+            $("#siguiente_comprobante_ahorro").eq(0).off('click').click(function (e) {
+                var comprobanteAhorro = $("#numero_comprobante_ahorro").val();
+                $('#ncomprobante').html(comprobanteAhorro);
+                if ($('#numero_comprobante_ahorro').val() == "" ) {
+                    alertify.error("Ingrese número de Comprobante.");
+
+                } else {
+                    MOModal_Abono_Ahorro_Hide();
+                    var id_ahorro = $("#id_ahorro_combo").val();
+                    var valor = $("#valor").val();
+                    var comprobante = $('#ncomprobante').text();
+                    var action = "@Url.Action("RegistrarDeposito", "Ahorro")";
+                    OperacionGeneral(action, id_ahorro, valor, comprobante);
+                    $('.limpiar').val('');
+                    $('.cdeposito').val('');
+                }
+            });
+        });
+
+        $("#retiro").click(function () {
+            $("#siguiente_comprobante_retiro").eq(0).off('click').click(function (e) {
+                var comprobanteRetiro = $("#numero_comprobante_retiro").val();
+                $('#ncomprobanteretiro').html(comprobanteRetiro);
+                if ($('#numero_comprobante_retiro').val() == "") {
+                    alertify.error("Ingrese número de Comprobante.");
+
+                } else {
+                    MOModal_Retiro_Ahorro_Hide();
+                    var id_ahorro = $("#id_ahorro_combo").val();
+                    var valor = $("#valor").val();
+                    var comprobante = $('#ncomprobanteretiro').text();
+                    var action = "@Url.Action("RegistrarRetiro", "Ahorro")";
+                    OperacionGeneral(action, id_ahorro, valor, comprobante);
+                    $('.limpiar').val('');
+                    $('.cretiro').val('');
+                }
+            });-->
+
+            @*var id_ahorro = $("#id_ahorro_combo").val();
+            var valor = $("#valor").val();
+            var action = "@Url.Action("RegistrarRetiro", "Ahorro")";
+            OperacionGeneral(action, id_ahorro, valor);*@
+        <!--});
+    }-->
+
+    function OperacionGeneral(action,id_ahorro,valor,comprobante) {
+        $.post(action,
+            { id_ahorro: id_ahorro, valor: valor ,comprobante:comprobante},
+            function (mensaje) {
+                Mensaje(mensaje);
+                CargarGridTransacciones(id_ahorro);
+            }
+        );
+    }
+    /*manejo de postear, revertir y condonar*/
+    function SeleccionarTodosAhorro() {
+        $("input[name='todas_transacciones_ahorro']").click(function () {
+            $("input[name='transaccion_ahorro']").not(this).prop('checked', this.checked);
+        });
+    }
+    function SeleccionarTodosCredito() {
+        $("input[name='todas_transacciones_credito']").click(function () {
+            $("input[name='transaccion_credito']").not(this).prop('checked', this.checked);
+        });
+    }
+  
+    function DatosLinea() {
+        var ids_transaccion = [];
+        var valores = "";
+        var valor1 = "";
+        var valor2 = "";
+        var valor3 = "";
+        var valor4 = "";
+        var valor5 = "";
+        $.each($("input[name='transaccion_ahorro']:checked"), function (index_ahorro) {
+            ids_transaccion.push($(this).val());
+            $(this).parents("tr").find("td").each(function() {
+                valores += $(this).html();
+                valor1 = $(this).parents("tr").find("td").eq(0).text();
+                valor2 = $(this).parents("tr").find("td").eq(1).text();
+                valor3 = $(this).parents("tr").find("td").eq(2).text();
+                valor4 = $(this).parents("tr").find("td").eq(3).text();
+                valor5 = $(this).parents("tr").find("td").eq(4).text();
+            });
+        });
+        console.log(valor1,valor2, valor3,valor4,valor5);
+        //     console.log(ids_transaccion);
+    }
+
+    function Agregar_Check_Ahorro() {
+        var ids_transaccion_ahorro = [];
+        $.each($("input[name='transaccion_ahorro']:checked"), function (index_ahorro) {
+            ids_transaccion_ahorro.push($(this).val());
+        });
+        return ids_transaccion_ahorro;
+    }
+
+    function Agregar_Check_Credito() {
+        var ids_transaccion_credito = [];
+        $.each($("input[name='transaccion_credito']:checked"), function (index_credito) {
+            ids_transaccion_credito.push($(this).val());
+        });
+        return ids_transaccion_credito;
+    }
+
+
+
+    function Enviar_Transaccion_Documento(id_transaccion, es_credito) {
+        var a = document.createElement('a');
+        if (es_credito) {
+            a.href = '@Url.Action("Mostrar_Factura_Abono", "Credito")?id_transaccion=' + id_transaccion;
+        }
+        else {
+            a.href = '@Url.Action("Mostrar_Recibo", "Ahorro")?id_transaccion=' + id_transaccion;
+        }
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+    }
+
+    //para mostrar factura de transacciones simples
+    function Enviar_Transaccion_Simple_Documento(id_transaccion_simple) {
+        var a = document.createElement('a');
+        a.href = '@Url.Action("Mostrar_Comprobante_Factura", "Caja")?id_transaccion_simple=' + id_transaccion_simple;
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+    }
+
+    function Mostrar_Factura_Transaccion() {
+        $("a.postear").click(function () {
+            /*ids_ahorro para sus transacciones */
+            var id_ahorro = $("input[name='transaccion_ahorro']:checked").eq(0).val();
+            /*ids_creditos para transacciones*/
+            var id_credito = $("input[name='transaccion_credito']:checked").eq(0).val();
+            /*ids_comunes para transacciones*/
+            var id_transaccion_simple = $("input[name='transaccion_comun']:checked").eq(0).val();
+
+            console.log(id_transaccion_simple);
+
+            if (id_ahorro != null) {
+                Enviar_Transaccion_Documento(id_ahorro, false);
+            }
+
+            if (id_credito != null) {
+                Enviar_Transaccion_Documento(id_credito, true);
+            }
+
+            if (id_transaccion_simple != null) {
+                Enviar_Transaccion_Simple_Documento(id_transaccion_simple);
+            }
+        });
+    }
+
+    /*para cobrar acciones pendientes*/
+    function Acciones_Pendientes(id_persona) {
+        $.get("@Url.Action("Acciones_Cancelar", "Accion")",
+            {
+                id_persona: id_persona
+            },
+            function (lista_acciones) {
+                $("#acciones_lista").html(lista_acciones);
+
+                var cuenta = $("tr.accion_fila").size();
+                if (cuenta > 0)
+                    $("#contando_acciones").html("<span class='badge'>" + cuenta + "</span>");
+
+                Cobro_Accion_Registrado();
+        });
+    }
+
+    function Cobro_Accion_Registrado() {
+        $("a.registrar_cobro_accion").each(function (index) {
+            $("a.registrar_cobro_accion").eq(index).click(function () {
+                var codigo = $("input.codigo").eq(index).val();
+                var id_accion = $("input.id_accion").eq(index).val();
+                ///llenar los datos del pop
+                $("b.codigo_seleccionado").html(codigo);
+                EjecutarCobro(id_accion);
+            });
+        });
+    }
+
+    function EjecutarCobro(id_accion) {
+        $("#registrar_cobro").click(function () {
+            $.post("@Url.Action("Registrar_Cobro", "Accion")",
+            {id_accion:id_accion},
+            function (resultado) {
+                alertify.success(resultado);
+                var id_persona = $("#id_persona_valor").val();
+                Lista_Otras_Operaciones(id_persona);
+            }).fail(function (badrequest) {
+                alertify.error("El cobro no se pudo efectuar");
+            });
+        });
+    }
+
+    //para cobrar deducciones al desembolsar
+    function Deducciones_Historial(id_persona) {
+        $.get("@Url.Action("Deducciones_Historial", "Credito")",
+            {
+                id_persona: id_persona
+            },
+            function (lista_deducciones) {
+                $("#deducciones_lista").html(lista_deducciones);
+
+                var cuenta = $("tr.deduccion_fila").size();
+                if (cuenta > 0)
+                    $("#contando_deducciones").html("<span class='badge'>" + cuenta + "</span>");
+                Cobro_Deduccion_Registrado();
+        });
+    }
+
+    function Cobro_Deduccion_Registrado() {
+        $("a.Cobrar_Deduccion").each(function (index) {
+            $("a.Cobrar_Deduccion").eq(index).click(function () {
+                var id_deduccion = $("input.id_deduccion_historial_valor").eq(index).val();
+                ///llenar los datos del pop
+                EjecutarCobroDeduccion(id_deduccion);
+            });
+        });
+    }
+
+    function EjecutarCobroDeduccion(id_deduccion) {
+        $("#registrar_deduccion").click(function () {
+            $.post("@Url.Action("Cobro_Deduccion", "Credito")",
+                { id_deduccion: id_deduccion},
+            function (resultado) {
+                alertify.success(resultado);
+                var id_persona = $("#id_persona_valor").val();
+                Deducciones_Historial(id_persona);//volver a cargar las deducciones si aun quedan
+                Lista_Otras_Operaciones(id_persona);
+            }).fail(function (badrequest) {
+                alertify.error(badrequest.responseText);
+            });
+        });
+    }
+
+    //trabajo de otras operaciones
+    function Lista_Otras_Operaciones(id_persona) {
+        $.get(
+            "@Url.Action("Transacciones_Comunes","Caja")",
+            {
+                id_persona: id_persona
+            },
+            function (operaciones) {
+                $("#lista_otras_operaciones").html(operaciones);
+                Mostrar_Factura_Transaccion();
+        });
+    }
+
+</script>

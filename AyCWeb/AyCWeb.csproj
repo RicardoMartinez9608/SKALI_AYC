@@ -1,0 +1,91 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <Configurations>Debug;Release;SOLOTEST</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>38d3ee1a-8a1e-46d4-af00-6b074b2a1595</UserSecretsId>
+    <AssemblyVersion>2.03.01.22</AssemblyVersion>
+    <FileVersion>2.03.01.22</FileVersion>
+    <Version>1.18.9.20</Version>
+    <Authors>Noel Silva, Ricardo Martínez, Santiago Ernesto</Authors>
+    <Company>Sociedad Cooperativa de Ahorro y Crédito</Company>
+    <Product>Skali Web</Product>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Migrations\20200616202141_DocumentosLegales.cs" />
+    <Compile Remove="Migrations\20200616202141_DocumentosLegales.Designer.cs" />
+    <Compile Remove="Migrations\20200616202751_Documentos_Legales.cs" />
+    <Compile Remove="Migrations\20200616202751_Documentos_Legales.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Frameworkreference Include="Microsoft.AspNetCore.App" Version="3.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Views\Configuracion_Contabilidad\Configuraciones.cshtml" />
+    <None Include="Views\Configuracion_Contabilidad\Detalles_Conf_Partida_Contable.cshtml" />
+    <None Include="Views\Configuracion_Contabilidad\Index.cshtml" />
+    <None Include="Views\Configuracion_Contabilidad\Nueva_Configuracion.cshtml" />
+    <None Include="Views\Configuracion_Contabilidad\Editar_Configuracion.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Views\Configuracion_Contabilidad\Configuraciones.cshtml" />
+    <None Include="Views\Configuracion_Contabilidad\Detalles_Conf_Partida_Contable.cshtml" />
+    <None Include="Views\Configuracion_Contabilidad\Index.cshtml" />
+    <None Include="Views\Configuracion_Contabilidad\Nueva_Configuracion.cshtml" />
+    <None Include="Views\Configuracion_Contabilidad\Editar_Configuracion.cshtml" />
+    <None Include="wwwroot\lib\jquery-ui\external\jquery\jquery.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <!--<PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.8" />-->
+    <PackageReference Include="DevExtreme.AspNet.Core" Version="17.1.5" />
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="1.2.5" />
+    <PackageReference Include="DotNetCore.NPOI" Version="1.2.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.0-preview.7.22376.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.NodeServices" Version="3.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.0-preview1.19506.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0-preview1.19506.1" />
+    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.1.1" />
+    <PackageReference Include="Open-XML-SDK" Version="2.9.1" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\ModelNucleo\ModelNucleo.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+    <Folder Include="Views\Configuracion_General\" />
+    <Folder Include="wwwroot\UploadExcel\" />
+  </ItemGroup>
+
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
+</Project>

@@ -1,0 +1,59 @@
+﻿@model ModelNucleo.Model.Ingreso_Cheque
+    <div id="form_ingreso_cheque">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="No_Cheque" class="control-label">Número de cheque</label>
+                    <input asp-for="No_Cheque" class="form-control" />
+                    <span asp-validation-for="No_Cheque" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Monto" class="control-label"></label>
+                    <input asp-for="Monto" class="form-control" />
+                    <span asp-validation-for="Monto" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Id_Banco" class="control-label">Banco</label>
+                    @Html.DropDownList("Id_Banco", null, htmlAttributes: new { @class = "form-control" })
+                    <span asp-validation-for="Id_Banco" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Id_Agencia" class="control-label">Agencia</label>
+                    @Html.DropDownList("Id_Agencia", null, htmlAttributes: new { @class = "form-control" })
+                    <span asp-validation-for="Id_Agencia" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Fecha" class="control-label"></label>
+                    <input asp-for="Fecha" class="form-control" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label  class="control-label">Razón de Movimiento</label>
+                    <input asp-for="Comentario" class="form-control" />
+                    <span asp-validation-for="Comentario" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="button" value="Guardar" id="Guardar_Ingreso_Cheque" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    </div>

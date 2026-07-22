@@ -1,0 +1,50 @@
+﻿@using DevExtreme.AspNet.Mvc
+@{
+    ViewData["Title"] = "Importar Fotografía";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <h4>Subir Fotografias ATM</h4>
+    </div>
+    <div class="panel-body panel-body-personalizado">
+       <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label  class="control-label" >Seleccione un Banco</label>
+                    <div class="descripcion_banco"></div>
+                      <input type="hidden" class="id_categoria" />
+                </div>
+            </div>
+            <div class="partial">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+       Cargar_Bancos();
+    });
+    function Cargar_Bancos() {
+        $.get("@Url.Action("Bancos_Combo", "Banco")", function (bovedas) {
+            $("div.descripcion_banco").html(bovedas);
+
+            CargarDescripcion();
+        });
+    }
+    function CargarDescripcion() {
+        $("#Id_Banco").change(function () {
+            var Id_Banco = $("#Id_Banco").val();
+           $.get("@Url.Action("Dev_Foto", "Documento")",
+                {
+                    id_banco: Id_Banco
+                },
+                function (lista) {
+                    $("div.partial").html(lista);
+                });
+        });
+    }
+</script>

@@ -1,0 +1,136 @@
+﻿
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#cobros_periodicos" aria-controls="cobros_periodicos" data-toggle="tab">
+                    Agregar Grupo Solidario
+                </a>
+            </li>
+            <li role="presentation">
+                <a href="#deducciones_desembolso" aria-controls="deducciones_desembolso" data-toggle="tab">
+                    Verificar Miembros
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="panel-body">
+        <div id="ramas_linea_credito_propio" class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="cobros_periodicos">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div>
+                            <div class="input-group">
+                                <input type="text"  id="nombre_grupo" placeholder="introduzca nombre del grupo" class="form-control" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" id="guardargrupo">Guardar</button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="grupales">
+   
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="deducciones_desembolso">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div>
+                            <div class="input-group">
+                                <input type="text"  id="buscar_grupo" placeholder="introduzca nombre del grupo" class="form-control" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" id="buscargrupo">Buscar</button>
+                                </span>
+                            </div>
+                        </div>
+                        <input type="hidden"  id="id_grupo" />
+                        <div class="grupales">
+   
+                        </div>
+
+                        <br />
+                        <div id="integrantes">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        Guardar_Grupo();
+        Obtener_Grupo();
+    });
+    function Guardar_Grupo()
+    {
+        $("#guardargrupo").click(function () {
+            var nombre_grupo = $("#nombre_grupo").val();
+                $.ajax({
+                    url: "@Url.Action("Guardar_Grupo", "Credito")",
+                    method: 'get',
+                    data:{
+                        nombre_grupo: nombre_grupo
+                    },
+                    success: function (tabla) {
+                        $(".grupales").html("<div class='alert alert-success' role='alert'>"+"Grupo creado correctamente" + "</div>");
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        $(".grupales").html("<div class='alert alert-danger' role='alert'>" + "El grupo ya existe, ingrese un nombre diferente"+"</div>");
+                    }
+                });
+        });
+    }
+    function Obtener_Grupo()
+    {
+        $("#buscargrupo").click(function () {
+            var nombre_grupo = $("#buscar_grupo").val();
+            $.ajax({
+                url: "@Url.Action("Consulta_Grupo","Credito")",
+                method: 'get',
+                data:{
+                    nombre_grupo: nombre_grupo,
+                },
+                success: function (tabla) {
+                    $("#para_grupales").show();
+                    $(".grupales").html("<div class='alert alert-success' role='alert'>"+"Grupo encontrado, ingrese los integrantes" + "</div>");
+                    $("#id_grupo").val(tabla);
+                    Obtener_Integrantes();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $(".grupales").html("<div class='alert alert-danger' role='alert'>" + "El grupo no existe"+"</div>");
+                }
+            });
+
+        });
+    }
+    function Obtener_Integrantes()
+    {
+        var nombre_grupo = $("#buscar_grupo").val();
+        $.ajax({
+            url: "@Url.Action("Integrantes_Grupo","Credito")",
+            method: 'get',
+            data: {
+                nombre_grupo: nombre_grupo,
+            },
+            success: function (tabla) {
+                $("#integrantes").html(tabla);
+                BorrarDetalle_Grupal();
+            }
+        });
+    }
+    function BorrarDetalle_Grupal() {
+        $(".borrar_detalle").each(function (index) {
+            $(".borrar_detalle").eq(index).click(function () {
+                $.post("@Url.Action("Eliminar_Detalle_Grupal","Credito")",
+                    { id_detalle_grupo: $("input.id_detalle").eq(index).val() },
+                    function (resultado) {
+                        Obtener_Integrantes();
+                        alertify.success(resultado);
+                    });
+            });
+        });
+    }
+</script>

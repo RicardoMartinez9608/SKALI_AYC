@@ -1,0 +1,926 @@
+﻿@using DevExtreme.AspNet.Mvc
+@model ModelNucleo.Model.ModelView.AhorroFiltro
+@{
+    ViewData["Title"] = "Depositos a Plazo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4>Depósitos a Plazo</h4>
+            </div>
+            <div class="col-lg-6 text-right">
+                <a href="#Mantenimiento" data-toggle="modal" class="btn btn-default nuevo_deposito">Nuevo Depósito a Plazo</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body panel-body-personalizado">
+        <p></p>
+        <div class="input-group">
+            <input type="text" name="dui_buscar" id="dui_buscar" placeholder="introduzca un DUI válido" class="form-control" />
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="buscarpordui">Buscar</button>
+            </span>
+        </div>
+        <p></p>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <table>
+                    <tr>
+                        <th>ID: </th>
+
+                        <td><span class="id" id="id_persona" />@ViewBag.Id_Persona </td>
+                    </tr>
+                    <tr>
+                        <th>Nombre completo: </th>
+                        <td><span class="nombre_completo" id="nombre">@ViewBag.nombre</span></td>
+                    </tr>
+                    <tr>
+                        <th>DUI: </th>
+                        <td><span class="dui" id="dui_persona">@ViewBag.dui</span></td>
+
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+        @(Html.DevExtreme().DataGrid().ID("ListaAhorros")
+                                        .ShowBorders(true)
+                                        .DataSource(d => d.Mvc()
+                                            .Controller("Depositos_Plazo")
+                                            .Key("Id_Ahorro")
+                                            .LoadAction("Depositos")
+                                            .LoadParams(new
+                                            {
+                                                id_persona = Model.id_persona,
+                                                porCliente = Model.porCliente,
+                                                inicio = Model.inicio,
+                                                final = Model.final
+                                            }))
+                                        .Columns(columns =>
+                                        {
+                                        columns.Add().DataField("id_Deposito_Plazo").DataType(GridColumnDataType.Number).VisibleIndex(1).Visible(false);
+                                        columns.Add().DataField("id_Persona").DataType(GridColumnDataType.Number).VisibleIndex(2).Visible(false);
+
+                                        //columns.Add().DataField("no_Ahorro").DataType(GridColumnDataType.Number).VisibleIndex(3)
+                                        //.Lookup(l => l.DataSource(d => d.Mvc().Controller("Linea_Ahorro").LoadAction("Lineas_Ahorro").Key("Id_Linea_Ahorro"))
+                                        //.ValueExpr("Id_Linea_Ahorro").DisplayExpr("Descripcion"));
+
+                                        columns.Add().DataField("No_Ahorro").DataType(GridColumnDataType.String).VisibleIndex(4);
+                                        columns.Add().DataField("Fecha_Apertura").DataType(GridColumnDataType.Date).VisibleIndex(5);
+                                        columns.Add().DataField("Fecha_Vencimiento").DataType(GridColumnDataType.Date).VisibleIndex(6);
+                                        columns.Add().DataField("Monto").DataType(GridColumnDataType.Number).VisibleIndex(7);
+
+                                        columns.Add().DataField("Interes").DataType(GridColumnDataType.Number).VisibleIndex(8);
+                                        columns.Add().DataField("Plazo").DataType(GridColumnDataType.Number).VisibleIndex(9);
+                                        columns.Add().DataField("No_Certificado").DataType(GridColumnDataType.String).VisibleIndex(10);
+                                             columns.Add().Fixed(true).VisibleIndex(11).CellTemplate(
+                                                    @<text>
+                                                        <input type="hidden" class="id_ahorro_valor" value="<%=data.Id_Deposito_Plazo%>" />
+                                                        <a href="#Mantenimiento" data-backdrop="false" data-toggle="modal" class="btn btn-default ver_detalle">Detalle</a>
+                                                     </text>
+                                                );
+                                            columns.Add().Fixed(true).VisibleIndex(12).CellTemplate(
+                                                    @<text>
+                                                        <a href="#Mantenimiento" data-backdrop="false" data-toggle="modal" class="btn btn-default ver_detalle_beneficiarios">Beneficiarios</a>
+                                                     </text>
+                                                );
+                                                columns.Add().Fixed(true).VisibleIndex(13).CellTemplate(
+                                                    @<text>
+
+                                                    <input type="hidden"
+                                                           class="id_deposito_accion"
+                                                           value="<%=data.Id_Deposito_Plazo%>" />
+
+                                                    <a href="#ModalAccionesDeposito"
+                                                       data-toggle="modal"
+                                                       class="btn btn-primary acciones_deposito">
+                                                        Acciones
+                                                    </a>
+
+                                                    </text>);
+                                
+                                                    }).OnCellPrepared("Modificar_Columna")
+                                        .Paging(p => p.Enabled(true)).OnContentReady("DataGridPreparada")
+        )
+        <link href="~/css/ventanas.css" rel="stylesheet" />
+        <div class="modal fade" id="Mantenimiento">
+            <div class="modal-dialog" style="width:80%">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <a href="#" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </a>
+                        <h4 class="modal-title">Detalle</h4>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="detalle_ahorro"></div>
+
+                    </div> <!-- /.modal-body -->
+
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="Mantenimiento_Adicional">
+            <div class="modal-dialog" style="width:80%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a href="#" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </a>
+                        <h4 class="modal-title" id="titulo_sub_modal">Beneficiarios y Autorizados</h4>
+                    </div>
+                    <div class="modal-body ">
+                        <div class="detalle_beneficiario"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="ModalTicketCapitalizacion">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal">
+                            &times;
+                        </button>
+
+                        <h4 class="modal-title">
+                            Ticket de Capitalización
+                        </h4>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <input type="hidden"
+                               id="idDepositoTicket" />
+
+                        <div class="form-group">
+                            <label>Fecha de Consulta</label>
+
+                            <input type="date"
+                                   id="fechaTicket"
+                                   class="form-control"
+                                   value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+
+                        <div class="alert alert-info">
+                            Se imprimirá la última capitalización realizada
+                            hasta la fecha seleccionada.
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button"
+                                class="btn btn-default"
+                                data-dismiss="modal">
+                            Cancelar
+                        </button>
+
+                        <button type="button"
+                                id="btnGenerarTicket"
+                                class="btn btn-primary">
+                            Generar PDF
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+</div>
+    <div class="modal fade" id="ModalAccionesDeposito">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal">
+                        &times;
+                    </button>
+
+                    <h4 class="modal-title">
+                        Acciones del Depósito
+                    </h4>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           id="idDepositoAccion" />
+
+                    <button id="btnIrTicket"
+                            class="btn btn-primary btn-block">
+                        🧾 Imprimir Ticket de Capitalización
+                    </button>
+
+                    <br />
+
+                    <button id="btnIrRenovar"
+                            class="btn btn-success btn-block">
+                        🔄 Renovar Depósito
+                    </button>
+
+                    <br />
+
+                    <button id="btnIrCancelar"
+                            class="btn btn-danger btn-block">
+                        ❌ Cancelar Depósito
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+        <div class="modal fade" id="ModalCancelarDeposito">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal">
+                        &times;
+                    </button>
+
+                    <h4 class="modal-title">
+                        Cancelar Depósito
+                    </h4>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           id="idDepositoCancelar" />
+
+                    <div class="form-group">
+
+                        <label>Fecha de Cancelación</label>
+
+                        <input type="date"
+                               id="fechaCancelacion"
+                               class="form-control"
+                               value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+
+                    </div>
+
+                    <div class="alert alert-warning">
+
+                        Esta acción dejará el depósito con saldo cero y modificará
+                        la fecha de vencimiento a la fecha indicada.
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn btn-default"
+                            data-dismiss="modal">
+                        Cerrar
+                    </button>
+
+                    <button id="btnCancelarDeposito"
+                            class="btn btn-danger">
+                        Cancelar Depósito
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ModalRenovarDeposito">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal">
+                        &times;
+                    </button>
+
+                    <h4 class="modal-title">
+                        Renovar Depósito a Plazo
+                    </h4>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           id="idDepositoRenovar" />
+
+                    <div class="form-group">
+                        <label>Fecha de Renovación</label>
+
+                        <input type="date"
+                               id="fechaRenovacion"
+                               class="form-control"
+                               value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nuevo Plazo (días)</label>
+
+                        <input type="number"
+                           id="nuevoPlazo"
+                           class="form-control"
+                           min="1"
+                           placeholder="Ingrese el nuevo plazo en días" />
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn btn-default"
+                            data-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button id="btnRenovarDeposito"
+                            class="btn btn-success">
+                        Renovar
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    </div>
+</div>
+<script>
+    $(function () {
+        $("#dui_buscar").mask("00000000-0");
+        BuscarPorDui();
+       
+    });
+    function DataGridPreparada() {
+        Ver_Detalle();
+        Nuevo_Detalle();
+        Detalle_Beneficiarios();
+      //  TicketCapitalizacion();
+      AccionesDeposito();
+    }
+    function BuscarPorDui() {
+                $("#buscarpordui").click(function () {
+                    var filtro = $("#dui_buscar").val();
+                    $.get("@Url.Action("JDetalle_Persona","Persona")",
+                        { filtro: filtro },
+                        function (detalle) {
+                            $("span.nombre_completo").text(detalle.nombreCompleto);
+                            $("span.dui").text(detalle.dui);
+                            $("span.id").text(detalle.id_Persona);
+                            var id_persona = $("#id_persona").text();
+                            var nombre = $("#nombre").text();
+                            var dui = $("#dui_persona").text();
+                            if (id_persona != null) {
+                                window.location.href = "@Url.Action("Index", "Depositos_Plazo")?id_persona=" + id_persona + "&nombre=" + nombre + "&dui=" + dui;
+                            }
+                        }).fail(function (error) {
+                        alertify.error("No se encontró esa identificación");
+                    });
+                });
+    }
+        function Ver_Detalle() {
+                $("a.ver_detalle").each(function (index) {
+                    $("a.ver_detalle").eq(index).click(function () {
+                        var id_deposito = $("input.id_ahorro_valor").eq(index).val();
+                        var id_persona = $("#id_persona").text();
+                        $.get("@Url.Action("Manejo_Depositos", "Depositos_Plazo")", {
+                            esNuevo: false, idDeposito: id_deposito
+                        , id_persona:id_persona},
+                            function (perfil) {
+                                $("div.detalle_ahorro").html(perfil);
+
+                                ObtenerAhorrosCombos();
+                                ObtenerFormaPago();
+                                Editar_Deposito();
+                                
+                        });
+                    });
+                });
+            }
+      function Nuevo_Detalle() {
+          $("a.nuevo_deposito").click(function () {
+                    //Refrescar_Modales();
+
+                    $.get("@Url.Action("Manejo_Depositos", "Depositos_Plazo")", { esNuevo: true }, function (perfil) {
+                       $("div.detalle_ahorro").html(perfil);
+                        ObtenerAhorrosCombos();
+                        ObtenerFormaPago();
+                        
+                     
+                        Guardar_Deposito_Plazo();
+                        
+                        ////Select_Linea_Ahorro();
+                        var id = $("#id_persona").text();
+                        $("#Id_Persona").val(id);
+
+                    });
+                });
+    }
+
+    function ObtenerAhorrosCombos() {
+
+    var id_persona = $("#id_persona").text();
+    var idAhorro = $("#Id_Ahorro_hidden").val();
+
+    $.get("@Url.Action("AhorrosComboDeposito", "Componentes")",
+        { id_persona: id_persona },
+        function (selectCombo) {
+
+            $("#id_ahorro").html(selectCombo);
+
+            if (idAhorro) {
+                $("#Id_Ahorro").val(idAhorro);
+            }
+        }
+    );
+}
+function ObtenerFormaPago() {
+
+    $.get("@Url.Action("Forma_Pago", "Componentes")",
+        function (selectCombo) {
+
+            $("#id_forma_pago").html(selectCombo);
+
+            var idFormaPago = $("#Id_Forma_Pago_hidden").val();
+
+            console.log("Forma pago:", idFormaPago);
+
+            $("#Id_Forma_Pago").val(idFormaPago);
+        }
+    );
+}
+      function Guardar_Deposito_Plazo() {
+                $("#Guardar_Deposito_Plazo").click(function() {
+                    var cuenta_ahorro = $("#form_deposito").serializeAnything();
+                    $.post("@Url.Action("Crear_Cuenta_Ahorro", "Depositos_Plazo")",
+                            cuenta_ahorro,
+                            function (correcto) {
+                                alertify.success(correcto);
+                                Detectar_Grid_Credito();
+                            }).fail(function (error) {
+                            alertify.error(error.responseText);
+                            console.log(error);
+                        });
+                });
+    }
+    function Detectar_Grid_Credito() {
+        $("#Mantenimiento").modal("hide");
+        if ($("#ListaAhorros").length > 0) {
+            $("#ListaAhorros").dxDataGrid("instance").refresh();//probando si funciona
+        } else {
+            //Cargar_Cuentas_Credito();
+        }
+    }
+      function Editar_Deposito() {
+                $("#Editar_Ahorro_Cuenta").click(function() {
+                    var cuenta_ahorro = $("#form_deposito").serializeAnything();
+                    $.post("@Url.Action("Editar_Ahorro_Manual", "Depositos_Plazo")",
+                            cuenta_ahorro,
+                            function (correcto) {
+                                alertify.success("Editado  Exitosamente");
+                                Detectar_Grid_Credito();
+                            }).fail(function (error) {
+                            alertify.error(error.responseText);
+                            console.log(error);
+                        });
+                });
+            }
+    function Modificar_Columna(e) {
+        if (e.rowType === "data" && e.column.command === "edit") {
+            $editLink = e.cellElement.find(".dx-link:contains(Edit)");
+            $editLink.text("Detalle");
+        }
+    }
+
+       function Detalle_Beneficiarios() {
+           $("a.ver_detalle_beneficiarios").click(function () {
+
+               $.get("@Url.Action("Beneficiario_Autorizado", "Depositos_Plazo")", {
+               }, function (perfil) {
+                   $("div.detalle_ahorro").html(perfil);
+                   Ver_Detalle_Beneficiario();
+                   Ver_Detalle_Autorizado();
+                    });
+                });
+    }
+    function TicketCapitalizacion() {
+
+        $("a.imprimir_ticket").each(function (index) {
+
+            $("a.imprimir_ticket").eq(index).click(function () {
+
+                var idDeposito =
+                    $("input.id_deposito_ticket")
+                        .eq(index)
+                        .val();
+
+                $("#idDepositoTicket").val(idDeposito);
+
+                $("#fechaTicket").val(
+                    new Date()
+                        .toISOString()
+                        .split('T')[0]
+                );
+            });
+
+        });
+    }
+    $(document).on("click", "#btnGenerarTicket", function () {
+
+    var idDeposito = $("#idDepositoTicket").val();
+    var fecha = $("#fechaTicket").val();
+
+    if (!fecha) {
+        alertify.error("Seleccione una fecha");
+        return;
+    }
+
+    window.open(
+        '@Url.Action("TicketCapitalizacion", "Capitalizacion")'
+        + '?idDepositoPlazo=' + idDeposito
+        + '&fecha=' + fecha,
+        '_blank'
+    );
+
+    $("#ModalTicketCapitalizacion").modal("hide");
+
+});
+function AccionesDeposito() {
+
+    $("a.acciones_deposito").each(function (index) {
+
+        $("a.acciones_deposito").eq(index).click(function () {
+
+            var id =
+                $("input.id_deposito_accion")
+                .eq(index)
+                .val();
+
+            $("#idDepositoAccion").val(id);
+
+        });
+
+    });
+
+}
+    $("#btnIrTicket").click(function () {
+
+        var id = $("#idDepositoAccion").val();
+
+        $("#idDepositoTicket").val(id);
+
+        $("#fechaTicket").val(
+            new Date().toISOString().split("T")[0]
+        );
+
+        $("#ModalAccionesDeposito").modal("hide");
+
+        $("#ModalTicketCapitalizacion").modal("show");
+
+    });
+    $("#btnIrRenovar").click(function () {
+
+        $("#ModalAccionesDeposito").modal("hide");
+
+        $("#ModalRenovarDeposito").modal("show");
+
+    });
+    $("#btnIrCancelar").click(function () {
+
+        $("#ModalAccionesDeposito").modal("hide");
+
+        $("#ModalCancelarDeposito").modal("show");
+
+    });
+    $("#btnIrRenovar").click(function () {
+
+        $("#ModalAccionesDeposito").modal("hide");
+
+        $("#ModalRenovarDeposito").modal("show");
+
+    });
+    $("#btnIrRenovar").click(function () {
+
+        var id = $("#idDepositoAccion").val();
+
+        $("#idDepositoRenovar").val(id);
+
+        $("#fechaRenovacion").val(
+            new Date().toISOString().split("T")[0]
+        );
+
+        // Limpiar el plazo
+        $("#nuevoPlazo").val("");
+
+        $("#ModalAccionesDeposito").modal("hide");
+        $("#ModalRenovarDeposito").modal("show");
+
+    });
+    $("#btnIrCancelar").click(function () {
+
+        var id = $("#idDepositoAccion").val();
+
+        $("#idDepositoCancelar").val(id);
+
+        $("#fechaCancelacion").val(
+            new Date().toISOString().split("T")[0]
+        );
+
+        $("#ModalAccionesDeposito").modal("hide");
+
+        $("#ModalCancelarDeposito").modal("show");
+
+    });
+    $(document).on("click", "#btnRenovarDeposito", function () {
+
+        var id = $("#idDepositoRenovar").val();
+        var plazo = $("#nuevoPlazo").val();
+        var fecha = $("#fechaRenovacion").val();
+
+        if (plazo == "" || parseInt(plazo) <= 0) {
+            alertify.error("Ingrese un plazo válido.");
+            return;
+        }
+
+        if (!fecha) {
+            alertify.error("Seleccione una fecha.");
+            return;
+        }
+
+        $.post("@Url.Action("RenovarDeposito", "Capitalizacion")",
+        {
+            idDepositoPlazo: id,
+            nuevoPlazo: plazo,
+            fechaRenovacion: fecha
+        },
+        function (respuesta) {
+
+            alertify.success(respuesta);
+
+            $("#ModalRenovarDeposito").modal("hide");
+
+            $("#ListaAhorros")
+                .dxDataGrid("instance")
+                .refresh();
+
+        }).fail(function (error) {
+
+            alertify.error(error.responseText);
+
+        });
+
+    });
+    $(document).on("click", "#btnCancelarDeposito", function () {
+
+        var id = $("#idDepositoCancelar").val();
+        var fecha = $("#fechaCancelacion").val();
+
+        if (!fecha) {
+            alertify.error("Seleccione la fecha de cancelación.");
+            return;
+        }
+
+        $.post("@Url.Action("CancelarDeposito", "Capitalizacion")",
+        {
+            idDepositoPlazo: id,
+            fechaCancelacion: fecha
+        },
+        function (respuesta) {
+
+            alertify.success(respuesta);
+
+            $("#ModalCancelarDeposito").modal("hide");
+
+            $("#ListaAhorros")
+                .dxDataGrid("instance")
+                .refresh();
+
+        }).fail(function (error) {
+
+            alertify.error(error.responseText);
+
+        });
+
+    });
+    /*-----------------------------------para beneficiarios y autorizados----------------------------------------------*/
+
+      function Ver_Detalle_Beneficiario() {
+          var id_deposito = $("input.id_ahorro_valor").val();
+          $.get("@Url.Action("Detalle_Beneficiario", "Depositos_Plazo")", {
+           id_deposito: id_deposito},
+             function (perfil) {
+                 $("div.datos_beneficiarios").html(perfil);
+                 Nuevo_Beneficiario();
+                 Eliminar_Beneficiario();
+                 Detalle_Editar_Beneficiario();
+              });
+    }
+    function Nuevo_Beneficiario() {
+          $("a.nuevo_beneficiario").click(function () {
+                    //Refrescar_Modales();
+
+              $.get("@Url.Action("Nuevo_Beneficiario", "Depositos_Plazo")", {},
+                  function (perfil) {
+                      $("div.nuevo_beneficiario").html(perfil);
+                      ObtenerParestesco();
+                      Guardar_Beneficiario();
+
+                        //Guardar_Deposito_Plazo();
+                      var id = $("input.id_ahorro_valor").val();
+                      $("#Id_Deposito_Plazo").val(id);
+                    });
+                });
+    }
+      function ObtenerParestesco() {
+
+        $.get("@Url.Action("Parentesco", "Componentes")",
+            { },
+            function (selectCombo) {
+                $("#id_parentesco").html(selectCombo);
+            }
+        );
+    }
+
+      function Guardar_Beneficiario() {
+          $("#Guardar_Beneficiario").click(function() {
+              var beneficiario = $("#form_beneficiario").serializeAnything();
+                    $.post("@Url.Action("Crear_Beneficiario", "Depositos_Plazo")",
+                        beneficiario,
+                            function (correcto) {
+                                alertify.success(correcto);
+                                $("#Nuevo_Beneficiario_Modal").hide();
+                                Ver_Detalle_Beneficiario();
+                            }).fail(function (error) {
+                            alertify.error(error.responseText);
+                            console.log(error);
+                        });
+                });
+    }
+
+    function Eliminar_Beneficiario() {
+        $("button.Eliminar_Beneficiario").each(function (index) {
+            $("button.Eliminar_Beneficiario").eq(index).click(function () {
+                var id_beneficiario = $("input.id_beneficiario_deposito").eq(index).val();
+
+                $.post("@Url.Action("Eliminar_Beneficiario", "Depositos_Plazo")", { id_beneficiario: id_beneficiario }
+                    , function (perfil) {
+                        alertify.success(perfil);
+                        Ver_Detalle_Beneficiario();
+                    }).fail(function (error) {
+                        alertify.error(error.responseText);
+                        console.log(error);
+                    });
+                    });
+                });
+    }
+      function Detalle_Editar_Beneficiario() {
+          $("a.Editar_Beneficiario").each(function (index) {
+              $("a.Editar_Beneficiario").eq(index).click(function () {
+                  var id_deposito = $("input.id_beneficiario_deposito").eq(index).val();
+                  $.get("@Url.Action("Detalle_Editar_Beneficiario", "Depositos_Plazo")", { id_deposito: id_deposito }
+                    , function (perfil) {
+                        $("div.editar_nuevo_beneficiario").html(perfil);
+                        Editar_Beneficiario();
+                    }).fail(function (error) {
+                        alertify.error(error.responseText);
+
+                    });
+                    });
+                });
+    }
+
+      function Editar_Beneficiario() {
+          $("#Editar_Beneficiario_Deposito").click(function() {
+              var beneficiario = $("#Detalle_Editar_Beneficiario").serializeAnything();
+                    $.post("@Url.Action("Editar_Beneficiario", "Depositos_Plazo")",
+                        beneficiario,
+                        function (correcto) {
+                           /* $("#Editar_Beneficiario_Modal").hide();*/
+                           // Ver_Detalle_Beneficiario();
+                            alertify.success(correcto);
+                            }).fail(function (error) {
+                            alertify.error(error.responseText);
+                            console.log(error);
+                        });
+                });
+    }
+    //------------------------------------------manejo autorizados-----------------------------------------------------------------
+     function Ver_Detalle_Autorizado() {
+          var id_deposito = $("input.id_ahorro_valor").val();
+          $.get("@Url.Action("Detalle_Autorizado", "Depositos_Plazo")", {
+           id_deposito: id_deposito},
+             function (perfil) {
+                 $("div.datos_autorizados").html(perfil);
+                 Nuevo_Autorizado();
+                 Eliminar_Autorizado();
+                 Detalle_Editar_Autorizado();
+
+              });
+    }
+        function Nuevo_Autorizado() {
+          $("a.nuevo_autorizado").click(function () {
+                    //Refrescar_Modales();
+
+              $.get("@Url.Action("Nuevo_Autorizado", "Depositos_Plazo")", {},
+                  function (perfil) {
+                      $("div.nuevo_autorizado").html(perfil);
+
+                      Guardar_Autorizado();
+
+                      var id = $("input.id_ahorro_valor").val();
+                      $("#Id_Deposito_Plazo").val(id);
+                    });
+                });
+    }
+         function Guardar_Autorizado() {
+             $("#Guardar_Autorizado").click(function() {
+                 var autorizado = $("#form_autorizado").serializeAnything();
+                    $.post("@Url.Action("Crear_Autorizado", "Depositos_Plazo")",
+                        autorizado,
+                            function (correcto) {
+                                alertify.success(correcto);
+                                $("#Nuevo_Autorizado_Modal").hide();
+                                Ver_Detalle_Autorizado();
+                            }).fail(function (error) {
+                            alertify.error(error.responseText);
+                            console.log(error);
+                        });
+                });
+    }
+     function Eliminar_Autorizado() {
+        $("button.Eliminar_Autorizado").each(function (index) {
+            $("button.Eliminar_Autorizado").eq(index).click(function () {
+                var id_autorizado = $("input.id_autorizado_deposito").eq(index).val();
+                $.post("@Url.Action("Eliminar_Autorizado", "Depositos_Plazo")", { id_autorizado: id_autorizado }
+                    , function (perfil) {
+                        alertify.success(perfil);
+                        Ver_Detalle_Autorizado();
+                    }).fail(function (error) {
+                        alertify.error(error.responseText);
+                        console.log(error);
+                    });
+                    });
+                });
+    }
+      function Detalle_Editar_Autorizado() {
+          $("a.Editar_Autorizado").each(function (index) {
+              $("a.Editar_Autorizado").eq(index).click(function () {
+                  var id_autorizado = $("input.id_autorizado_deposito").eq(index).val();
+                  $.get("@Url.Action("Detalle_Editar_Autorizado", "Depositos_Plazo")", { id_autorizado: id_autorizado }
+                    , function (perfil) {
+                        $("div.editar_nuevo_autorizado").html(perfil);
+                        Editar_Autorizado();
+                    }).fail(function (error) {
+                        alertify.error(error.responseText);
+
+                    });
+                    });
+                });
+    }
+    function Editar_Autorizado() {
+          $("#Editar_Autorizado_Deposito").click(function() {
+              var autorizado = $("#Detalle_Editar_Autorizado").serializeAnything();
+
+                    $.post("@Url.Action("Editar_Autorizado", "Depositos_Plazo")",
+                        autorizado,
+                            function (correcto) {
+                                alertify.success(correcto);
+                                $("#Editar_Autorizado_Modal").hide();
+                           //     Ver_Detalle_Autorizado();
+                            }).fail(function (error) {
+                            alertify.error(error.responseText);
+                            console.log(error);
+                        });
+                });
+    }
+
+</script>

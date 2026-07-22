@@ -1,0 +1,39 @@
+﻿@model ModelNucleo.Model.ModelView.Transacciones_Caja_Vista
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/css/Reporte.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Transacciones de @Model.Tipo_reporte</title>
+</head>
+<body>
+<h4>Reporte de Cierre de @Model.Tipo_reporte de @Model.Fecha_reporte</h4>
+
+<table style="width:100%">
+    <tr>
+        <td colspan="2">Ingresos</td>
+        <td>@Model.Ingreso_Total</td>
+    </tr>
+    <tr>
+        <td>Interéses</td>
+        <td>@Model.Ingreso_Interes</td>
+    </tr>
+    <tr>
+        <td>Interéses</td>
+        <td>@Model.Ingreso_Interes</td>
+    </tr>
+    <tr>
+        <td colspan="2">- Egresos</td>
+        <td>$0.00</td>
+    </tr>
+        
+    <tr>
+        <td colspan="2">= Disponible</td>
+        <td>@Model.Disponible</td>
+    </tr>
+</table>
+</body>
+</html>

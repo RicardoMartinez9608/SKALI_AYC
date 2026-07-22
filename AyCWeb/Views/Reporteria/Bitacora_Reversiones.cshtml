@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "Bitacora de Reversiones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Bitácora </div>
+    <div class="panel-body">
+        <div class="well">
+            <div class="row">
+                <div class="col-md-4" id="agencias">
+                    <div class="form-group">
+                        Agencia:
+                        <div id="id_agencia"></div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        Fecha Inicio:
+                        <input type="date" name="fecha" class="form-control" id="fecha_inicio" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        Fecha Final:
+                        <input type="date" name="fecha" class="form-control" id="fecha_final" />
+                    </div>
+                </div>
+                
+
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label></label>
+                    <button type="button" class="btn btn-default" id="Cargar">Generar Reporte</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        Cargar_Agencias();
+        Reporte_PDF();
+
+    });
+       function Cargar_Agencias() {
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia").html(agencias);
+            ListaCarteras();
+        });
+    }
+      function Reporte_PDF() {
+          $("#Cargar").click(function () {
+              var id_agencia = $("#Id_Agencia").val();
+              var inicio = $("#fecha_inicio").val();
+              var final = $("#fecha_final").val();
+           
+              window.open("@Url.Action("Reporte_Bitacora", "Reporteria")?id_agencia=" + id_agencia + "&inicio=" + inicio + "&final=" + final);
+        });
+    }
+</script>

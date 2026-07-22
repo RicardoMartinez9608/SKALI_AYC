@@ -1,0 +1,47 @@
+﻿@model ModelNucleo.Model.Banco
+
+@{
+    ViewData["Title"] = "Editar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Editar banco</div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Editar">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Id_Banco" class="control-label">Id</label>
+                        <input asp-for="Id_Banco" class="form-control" />
+                        <span asp-validation-for="Id_Banco" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Nombre" class="control-label"></label>
+                        <input asp-for="Nombre" class="form-control" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="No_Cuenta" class="control-label">Cuenta</label>
+                        <input asp-for="No_Cuenta" class="form-control" />
+                        <span asp-validation-for="No_Cuenta" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Cuenta_Contable" class="control-label">Cuenta Contable</label>
+                        <input asp-for="Cuenta_Contable" class="form-control" />
+                        <span asp-validation-for="Cuenta_Contable" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Guardar" class="btn btn-default" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-default">Regresar a la lista</a>
+        </div>
+    </div>
+</div>

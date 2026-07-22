@@ -1,0 +1,148 @@
+﻿
+@{
+    ViewData["Title"] = "Segmentacion_Cliente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">
+        Segmentación Cliente
+    </div>
+    <div class="panel-body panel-body-personalizado">
+        <br />
+        <div class="well">
+            <div class="form-inline">
+                <div class="form-group">
+                    <label class="sr-only" for="inicio">Fecha Inicio</label>
+                    <input type="date" class="form-control" id="inicio">
+                </div>
+                <div class="form-group">
+                    <label class="sr-only" for="fin">Fecha Final</label>
+                    <input type="date" class="form-control" id="fin">
+                </div>
+
+                <button type="button" id="filtrar" class="btn btn-default">Filtrar</button>
+            </div>
+        </div>
+        <hr />
+        <div id="segmentaciones"></div>
+    </div>
+</div>
+<script>
+
+    $(function () {
+        Disparar_Busqueda();
+    });
+
+    function Disparar_Busqueda() {
+        $("#filtrar").click(function () {
+            Cargar_Pivote();
+        });
+    }
+
+    function Cargar_Pivote() {
+        var inicio = $("#inicio").val();
+        var fin = $("#fin").val();
+        var url = "@Url.Action("Segmentacion_Cliente_Principal", "Reporteria")?inicio=" + inicio + "&final=" + fin;
+
+        $("#segmentaciones").dxPivotGrid({
+            allowSortingBySummary: true,
+            allowSorting: true,
+            allowFiltering: true,
+            allowExpandAll: true,
+            height: 440,
+            showBorders: true,
+            fieldChooser: {
+                enabled: true
+            },
+            export: {
+                enabled: true,
+                fileName: "carteras"
+            },
+            dataSource: {
+                remoteOperations: true,
+                store: DevExpress.data.AspNet.createStore({
+                    key: "id_Credito",
+                    loadUrl: url
+                }),
+                fields: [
+
+                    {
+                        caption: "Agencia",
+                        dataField: "agencia",
+                        width: 40,
+                        expanded: true,
+                        sortBySummaryField: "abono",
+                        sortBySummaryPath: [],
+                        sortOrder: "desc",
+                        area: "row"
+                    },
+
+                    {
+                        caption: "Cartera",
+                        dataField: "cartera",
+                        width: 40,
+                        expanded: true,
+                        sortBySummaryField: "abono",
+                        sortBySummaryPath: [],
+                        sortOrder: "desc",
+                        area: "row"
+                    },
+
+                    {
+                        caption: "Segmentación",
+                        dataField: "segmentacion",
+                        width: 20,
+                        sortBySummaryField: "abono",
+                        sortBySummaryPath: [],
+                        sortOrder: "desc",
+                        area: "column"
+                    },
+
+                    {
+                        caption: "Cliente",
+                        dataField: "cliente",
+                        width: 250,
+                        sortBySummaryField: "abono",
+                        sortBySummaryPath: [],
+                        sortOrder: "desc",
+                        area: "row"
+                    },
+
+                    {
+                        caption: "Crédito",
+                        dataField: "codigo_Credito",
+                        area: "row",
+                        sortBySummaryField: "abono",
+                        sortBySummaryPath: [],
+                        sortOrder: "desc",
+                        width: 40
+                        },
+                        {
+                            caption: "Fecha",
+                            dataField: "fecha_Abono",
+                            summaryType: "count",
+                            format: "date",
+                            area: "row",
+                            sortBySummaryField: "abono",
+                            sortBySummaryPath: [],
+                            sortOrder: "desc",
+                            width: 40
+                        },
+
+                        {
+                        caption: "Abono",
+                        dataField: "abono",
+                        summaryType: "sum",
+                        format: "currency",
+                        area: "data"
+                    },
+                        {
+                        dataField: "Id",
+                        visible: false
+                    }]
+            }
+        });
+    }
+
+</script>

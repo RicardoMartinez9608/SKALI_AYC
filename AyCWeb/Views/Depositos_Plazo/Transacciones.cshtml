@@ -1,0 +1,73 @@
+﻿@model IEnumerable<ModelNucleo.Model.ModelView.Transaccion_Ahorro_Vista>
+
+<table class="table prueba">
+    <thead>
+        <tr>
+            <th>
+                No.
+            </th>
+            <th>
+                Fecha
+            </th>
+            <th>
+                Comprobante
+            </th>
+            <th>
+                Caja
+            </th>
+            <th>
+                Depósito
+            </th>
+            <th>
+                Retiro
+            </th>
+            <th>
+                Saldo
+            </th>
+            <th>
+                <input type="checkbox" name="todas_transacciones_ahorro" class="btn btn-default todas_transacciones_ahorro" value="todo" />
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int centinela = 0;
+        }
+        @foreach (var item in Model)
+        {
+            centinela += 1;
+
+            <tr>
+                <td>
+                    @centinela
+                </td>
+                <td>
+                    @Html.ValueFor(modelItem => item.Fecha, "{0:dd/MM/yyyy}")
+                </td>
+                <td>
+
+                    @Html.DisplayFor(modelItem => item.Transacciones.No_Comprobante)
+                </td>
+                <td>
+                    @if (item.caja != null)
+                        @item.caja.Id_Caja
+                </td>
+                <td>
+                    @item.Deposito.ToString("C2")
+                </td>
+                <td>
+                    @item.Retiro.ToString("C2")
+                </td>
+
+                <td>
+                    @item.Saldo.ToString("C2")
+                </td>
+                <td>
+                    <input type="hidden" class="id_transaccion_valor" value="@item.Id">
+                    <input type="checkbox" name="transaccion_ahorro" class="btn btn-default transaccion_ahorro" id="id_transaccion" value="@item.Id" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<ayc-alerta respuesta="ViewBag.Respuesta"></ayc-alerta>

@@ -1,0 +1,7 @@
+﻿@model IEnumerable<ModelNucleo.Model.Agencia>
+
+@foreach (var item in Model)
+{
+    <input type="radio" name="Id_Agencia" class="id_agencia" value="@item.Id_Agencia" />
+    <label for="Id_Agencia">@item.Nombre</label><br>
+}
