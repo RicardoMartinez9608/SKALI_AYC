@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <!--<PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.8" />-->
+    <PackageReference Include="ClosedXML" Version="0.105.1" />
     <PackageReference Include="DevExtreme.AspNet.Core" Version="17.1.5" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="1.2.5" />
     <PackageReference Include="DotNetCore.NPOI" Version="1.2.3" />

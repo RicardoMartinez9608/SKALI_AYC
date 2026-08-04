@@ -1,0 +1,116 @@
+﻿@{
+    ViewData["Title"] = "Consolidado de Ahorros";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<p></p>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-personalizado">Reporte de Mora Crédito Ágil Efectivo</div>
+    <div class="panel-body">
+
+        <form id="form_credito">
+
+            <div class="row">
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="inicio" class="control-label" id="etiqueta">Fecha </label>
+                        <input type="date" name="inicio" class="form-control" id="inicio" />
+                    </div>
+                </div>
+                <div class="col-md-3" id="agencias">
+                    <div class="form-group">
+                        <label for="Id_Agencia"> Agencia</label>
+                        <div id="id_agencia"></div>
+                    </div>
+                </div>
+                <div class="col-md-3" id="lineaAhorro">
+                    <div class="form-group">
+                        <label for="Id_Linea"> Linea Ahorro</label>
+                        <div id="id_linea_ahorro"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <button type="button" class="btn btn-default" id="imprimir">
+                                Generar PDF
+                            </button>
+
+                            <button type="button" class="btn btn-success" id="excel">
+                                Exportar Excel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        Cargar_Agencias();
+        Cargar_Linea();
+    });
+   
+    function Cargar_Agencias() {
+        $.get("@Url.Action("Agencias_Combo", "Componentes")", function (agencias) {
+            $("#id_agencia").html(agencias);
+           
+        });
+    }
+     function Cargar_Linea() {
+        $.get("@Url.Action("Lineas_Ahorro", "Componentes")", function (lineas) {
+            $("#id_linea_ahorro").html(lineas);
+            
+        });
+    }
+            $("#imprimir").click(function () {
+
+        var fecha = $("#inicio").val();
+        var agencia = $("#Id_Agencia").val();
+        var linea = $("#Id_Linea_Ahorro").val();
+
+        if (fecha == "") {
+            alert("Seleccione una fecha");
+            return;
+        }
+
+        var url = "@Url.Action("ReporteConsolidadoAhorro", "Reporteria")";
+
+        window.open(
+            url +
+            "?idLineaAhorro=" + linea +
+            "&idAgencia=" + agencia +
+            "&fecha=" + fecha,
+            "_blank"
+        );
+
+    });
+
+    $("#excel").click(function () {
+
+        var fecha = $("#inicio").val();
+        var agencia = $("#Id_Agencia").val();
+        var linea = $("#Id_Linea_Ahorro").val();
+
+        if (fecha == "") {
+            alert("Seleccione una fecha");
+            return;
+        }
+
+        var url = "@Url.Action("ReporteConsolidadoAhorroExcel", "Reporteria")";
+
+        window.open(
+            url +
+            "?idLineaAhorro=" + linea +
+            "&idAgencia=" + agencia +
+            "&fecha=" + fecha,
+            "_blank"
+        );
+
+    });
+</script>

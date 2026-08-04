@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ModelNucleo.CalculosYProceos;
+using ModelNucleo.Dto.Reportes_Ahorro;
 using ModelNucleo.Model;
 using NucleoAyC.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NucleoAyC.Controllers
 {
@@ -464,6 +465,73 @@ namespace NucleoAyC.Controllers
             catch (Exception e)
             {
                 return BadRequest("Algo anda mal, intentalo de nuevo");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> ReporteConsolidado(
+         int idLineaAhorro,
+         int idAgencia,
+         DateTime fecha)
+        {
+            try
+            {
+                var linea = await _context.Linea_Ahorro
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id_Linea_Ahorro == idLineaAhorro);
+
+                if (linea == null)
+                    return NotFound();
+
+                var detalle = await (
+                    from ahorro in _context.Ahorro.AsNoTracking()
+
+                    join persona in _context.Personas.AsNoTracking()
+                        on ahorro.Id_Persona equals persona.Id_Persona
+
+                    join cartera in _context.Cartera.AsNoTracking()
+                        on persona.Id_Cartera equals cartera.Id_Cartera
+
+                    join usuarioAgencia in _context.Usuario_Agencia.AsNoTracking()
+                        on cartera.Id_Usuario equals usuarioAgencia.Id_Usuario
+
+                    where ahorro.Id_Linea_Ahorro == idLineaAhorro
+                       && usuarioAgencia.Id_Agencia == idAgencia
+
+                    orderby persona.Apellidos, persona.Nombres
+
+                    select new DetalleConsolidadoAhorroDTO
+                    {
+                        IdAhorro = ahorro.Id_Ahorro,
+                        NoCuenta = ahorro.No_Ahorro,
+                        Socio = persona.Nombres + " " + persona.Apellidos,
+                        Dui = persona.Dui,
+
+                        Saldo = _context.Transaccion_Ahorro
+                            .Where(t =>
+                                t.Id_Ahorro == ahorro.Id_Ahorro &&
+                                t.Fecha <= fecha)
+                            .OrderByDescending(t => t.Fecha)
+                            .ThenByDescending(t => t.Id_Transaccion_Ahorro)
+                            .Select(t => t.Saldo)
+                            .FirstOrDefault()
+                    })
+                    .ToListAsync();
+
+                var reporte = new ReporteConsolidadoAhorroDTO
+                {
+                    IdLineaAhorro = linea.Id_Linea_Ahorro,
+                    NombreLineaAhorro = linea.Descripcion,
+                    FechaCorte = fecha,
+                    TotalSaldo = detalle.Sum(x => x.Saldo),
+                    TotalCuentas = detalle.Count,
+                    Detalle = detalle
+                };
+
+                return Ok(reporte);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

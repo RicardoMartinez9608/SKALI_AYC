@@ -815,119 +815,6 @@ namespace NucleoAyC.Controllers
             }
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> ConsultarCapitalizacionDepositoPlazo(DateTime fecha)
-        //{
-        //    try
-        //    {
-        //        var fechaConsulta = fecha.Date;
-
-        //        // Obtener todas las transacciones
-        //        var transacciones = await _context.Transaccion_Deposito_Plazo
-        //            .ToListAsync();
-
-        //        // Última transacción de cada depósito
-        //        var ultimasTransacciones = transacciones
-        //            .GroupBy(t => t.Id_Deposito_Plazo)
-        //            .Select(g => g
-        //                .OrderByDescending(x => x.Fecha)
-        //                .ThenByDescending(x => x.Id_Transaccion_Deposito_Plazo)
-        //                .First())
-        //            .ToList();
-
-        //        var ultimasTransaccionesDict = ultimasTransacciones
-        //            .ToDictionary(
-        //                x => x.Id_Deposito_Plazo,
-        //                x => x);
-
-        //        var depositos = await (
-        //            from dp in _context.Deposito_Plazo
-        //                .Include(x => x.Forma_Pago)
-        //            join p in _context.Personas
-        //                on dp.Id_Persona equals p.Id_Persona
-        //            select new
-        //            {
-        //                Deposito = dp,
-        //                Persona = p
-        //            }
-        //        ).ToListAsync();
-
-        //        var resultado = depositos
-        //            .Where(x =>
-        //            {
-        //                if (!ultimasTransaccionesDict.TryGetValue(
-        //                    x.Deposito.Id_Deposito_Plazo,
-        //                    out var ultimaTransaccion))
-        //                {
-        //                    return false;
-        //                }
-
-        //                // Debe tener saldo
-        //                if (ultimaTransaccion.Saldo <= 0)
-        //                    return false;
-
-        //                // No vencido
-        //                if (x.Deposito.Fecha_Vencimiento.Date < fechaConsulta)
-        //                    return false;
-
-        //                // Días desde la última transacción
-        //                var diasTranscurridos =
-        //                    (fechaConsulta - ultimaTransaccion.Fecha.Date).Days;
-
-        //                // Toca capitalizar
-        //                return diasTranscurridos == 30;
-        //            })
-        //            .Select(x =>
-        //            {
-        //                var ultimaTransaccion =
-        //                    ultimasTransaccionesDict[x.Deposito.Id_Deposito_Plazo];
-
-        //                var interesMensual = Math.Round(
-        //                    (
-        //                        ultimaTransaccion.Saldo *
-        //                        (x.Deposito.Interes / 100m) /
-        //                        360m
-        //                    ) * 30m,
-        //                    2);
-
-        //                return new Capitalizacion
-        //                {
-        //                    Id_Deposito_Plazo =
-        //                        x.Deposito.Id_Deposito_Plazo,
-
-        //                    Id_Ahorro =
-        //                        x.Deposito.Id_Ahorro,
-
-        //                    Cuenta =
-        //                        x.Deposito.No_Ahorro,
-
-        //                    CuentaHabiente =
-        //                        $"{x.Persona.Nombres} {x.Persona.Apellidos}",
-
-        //                    Saldo =
-        //                        ultimaTransaccion.Saldo,
-
-        //                    UltimaCapitalizacion =
-        //                        ultimaTransaccion.Fecha.Date,
-
-        //                    Interes_Aplicar =
-        //                        interesMensual,
-        //                    Tasa_Interes = x.Deposito.Interes,
-
-        //                    FormaPago =
-        //                        x.Deposito.Forma_Pago.Descripcion
-        //                };
-        //            })
-        //            .OrderBy(x => x.Cuenta)
-        //            .ToList();
-
-        //        return Ok(resultado);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
         [HttpGet]
         public async Task<IActionResult> ConsultarCapitalizacionDepositoPlazo(DateTime fecha)
         {
@@ -965,28 +852,6 @@ namespace NucleoAyC.Controllers
                     }
                 ).ToListAsync();
 
-                // ===========================================================
-                // Saldo total de depósitos activos por persona
-                // (No vencidos y con saldo mayor a cero)
-                // ===========================================================
-                var saldoTotalPorPersona = depositos
-                    .Where(x =>
-                    {
-                        if (!ultimasTransaccionesDict.TryGetValue(
-                            x.Deposito.Id_Deposito_Plazo,
-                            out var ultima))
-                            return false;
-
-                        return ultima.Saldo > 0 &&
-                               x.Deposito.Fecha_Vencimiento.Date >= fechaConsulta;
-                    })
-                    .GroupBy(x => x.Deposito.Id_Persona)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Sum(x =>
-                            ultimasTransaccionesDict[x.Deposito.Id_Deposito_Plazo].Saldo)
-                    );
-
                 var resultado = depositos
                     .Where(x =>
                     {
@@ -1017,29 +882,13 @@ namespace NucleoAyC.Controllers
                         var ultimaTransaccion =
                             ultimasTransaccionesDict[x.Deposito.Id_Deposito_Plazo];
 
-                        // Interés bruto
-                        var interesBruto = Math.Round(
+                        var interesMensual = Math.Round(
                             (
                                 ultimaTransaccion.Saldo *
                                 (x.Deposito.Interes / 100m) /
                                 360m
                             ) * 30m,
                             2);
-
-                        decimal retencion = 0m;
-
-                        // Total de depósitos activos de la persona
-                        var saldoTotalPersona = saldoTotalPorPersona.ContainsKey(x.Deposito.Id_Persona)
-                            ? saldoTotalPorPersona[x.Deposito.Id_Persona]
-                            : 0m;
-
-                        // Si posee 25,000 o más en depósitos activos aplica ISR del 10%
-                        if (saldoTotalPersona >= 25000m)
-                        {
-                            retencion = Math.Round(interesBruto * 0.10m, 2);
-                        }
-
-                        var interesNeto = interesBruto - retencion;
 
                         return new Capitalizacion
                         {
@@ -1061,13 +910,8 @@ namespace NucleoAyC.Controllers
                             UltimaCapitalizacion =
                                 ultimaTransaccion.Fecha.Date,
 
-                            // Interés que realmente se acreditará
-                            Interes_Aplicar = interesNeto,
-
-                            // Si agregas estas propiedades al DTO
-                            //RetencionISR = retencion,
-                            //InteresBruto = interesBruto,
-
+                            Interes_Aplicar =
+                                interesMensual,
                             Tasa_Interes = x.Deposito.Interes,
 
                             FormaPago =
@@ -1084,6 +928,162 @@ namespace NucleoAyC.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        //[HttpGet]
+        //public async Task<IActionResult> ConsultarCapitalizacionDepositoPlazo(DateTime fecha)
+        //{
+        //    try
+        //    {
+        //        var fechaConsulta = fecha.Date;
+
+        //        // Obtener todas las transacciones
+        //        var transacciones = await _context.Transaccion_Deposito_Plazo
+        //            .ToListAsync();
+
+        //        // Última transacción de cada depósito
+        //        var ultimasTransacciones = transacciones
+        //            .GroupBy(t => t.Id_Deposito_Plazo)
+        //            .Select(g => g
+        //                .OrderByDescending(x => x.Fecha)
+        //                .ThenByDescending(x => x.Id_Transaccion_Deposito_Plazo)
+        //                .First())
+        //            .ToList();
+
+        //        var ultimasTransaccionesDict = ultimasTransacciones
+        //            .ToDictionary(
+        //                x => x.Id_Deposito_Plazo,
+        //                x => x);
+
+        //        var depositos = await (
+        //            from dp in _context.Deposito_Plazo
+        //                .Include(x => x.Forma_Pago)
+        //            join p in _context.Personas
+        //                on dp.Id_Persona equals p.Id_Persona
+        //            select new
+        //            {
+        //                Deposito = dp,
+        //                Persona = p
+        //            }
+        //        ).ToListAsync();
+
+        //        // ===========================================================
+        //        // Saldo total de depósitos activos por persona
+        //        // (No vencidos y con saldo mayor a cero)
+        //        // ===========================================================
+        //        var saldoTotalPorPersona = depositos
+        //            .Where(x =>
+        //            {
+        //                if (!ultimasTransaccionesDict.TryGetValue(
+        //                    x.Deposito.Id_Deposito_Plazo,
+        //                    out var ultima))
+        //                    return false;
+
+        //                return ultima.Saldo > 0 &&
+        //                       x.Deposito.Fecha_Vencimiento.Date >= fechaConsulta;
+        //            })
+        //            .GroupBy(x => x.Deposito.Id_Persona)
+        //            .ToDictionary(
+        //                g => g.Key,
+        //                g => g.Sum(x =>
+        //                    ultimasTransaccionesDict[x.Deposito.Id_Deposito_Plazo].Saldo)
+        //            );
+
+        //        var resultado = depositos
+        //            .Where(x =>
+        //            {
+        //                if (!ultimasTransaccionesDict.TryGetValue(
+        //                    x.Deposito.Id_Deposito_Plazo,
+        //                    out var ultimaTransaccion))
+        //                {
+        //                    return false;
+        //                }
+
+        //                // Debe tener saldo
+        //                if (ultimaTransaccion.Saldo <= 0)
+        //                    return false;
+
+        //                // No vencido
+        //                if (x.Deposito.Fecha_Vencimiento.Date < fechaConsulta)
+        //                    return false;
+
+        //                // Días desde la última transacción
+        //                var diasTranscurridos =
+        //                    (fechaConsulta - ultimaTransaccion.Fecha.Date).Days;
+
+        //                // Toca capitalizar
+        //                return diasTranscurridos == 30;
+        //            })
+        //            .Select(x =>
+        //            {
+        //                var ultimaTransaccion =
+        //                    ultimasTransaccionesDict[x.Deposito.Id_Deposito_Plazo];
+
+        //                // Interés bruto
+        //                var interesBruto = Math.Round(
+        //                    (
+        //                        ultimaTransaccion.Saldo *
+        //                        (x.Deposito.Interes / 100m) /
+        //                        360m
+        //                    ) * 30m,
+        //                    2);
+
+        //                decimal retencion = 0m;
+
+        //                // Total de depósitos activos de la persona
+        //                var saldoTotalPersona = saldoTotalPorPersona.ContainsKey(x.Deposito.Id_Persona)
+        //                    ? saldoTotalPorPersona[x.Deposito.Id_Persona]
+        //                    : 0m;
+
+        //                // Si posee 25,000 o más en depósitos activos aplica ISR del 10%
+        //                if (saldoTotalPersona >= 25000m)
+        //                {
+        //                    retencion = Math.Round(interesBruto * 0.10m, 2);
+        //                }
+
+        //                var interesNeto = interesBruto - retencion;
+
+        //                return new Capitalizacion
+        //                {
+        //                    Id_Deposito_Plazo =
+        //                        x.Deposito.Id_Deposito_Plazo,
+
+        //                    Id_Ahorro =
+        //                        x.Deposito.Id_Ahorro,
+
+        //                    Cuenta =
+        //                        x.Deposito.No_Ahorro,
+
+        //                    CuentaHabiente =
+        //                        $"{x.Persona.Nombres} {x.Persona.Apellidos}",
+
+        //                    Saldo =
+        //                        ultimaTransaccion.Saldo,
+
+        //                    UltimaCapitalizacion =
+        //                        ultimaTransaccion.Fecha.Date,
+
+        //                    // Interés que realmente se acreditará
+        //                    Interes_Aplicar = interesNeto,
+
+        //                    // Si agregas estas propiedades al DTO
+        //                    //RetencionISR = retencion,
+        //                    //InteresBruto = interesBruto,
+
+        //                    Tasa_Interes = x.Deposito.Interes,
+
+        //                    FormaPago =
+        //                        x.Deposito.Forma_Pago.Descripcion
+        //                };
+        //            })
+        //            .OrderBy(x => x.Cuenta)
+        //            .ToList();
+
+        //        return Ok(resultado);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
         [HttpGet]
         public async Task<IActionResult> ConsultarDepositosPorVencer()
         {

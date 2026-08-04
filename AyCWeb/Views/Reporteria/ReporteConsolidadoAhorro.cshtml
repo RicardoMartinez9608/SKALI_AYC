@@ -1,0 +1,295 @@
+﻿@model ModelNucleo.Dto.Reportes_Ahorro.ReporteConsolidadoAhorroDTO
+
+@{
+    Layout = null;
+    var correlativo = 1;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <meta charset="utf-8" />
+
+    <style>
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            color: #222;
+        }
+
+        .tituloEmpresa {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #0B5394;
+        }
+
+        .tituloReporte {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .encabezado {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+            .encabezado td {
+                padding: 4px;
+            }
+
+        .tituloCampo {
+            font-weight: bold;
+            width: 170px;
+        }
+
+        .resumen {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+            .resumen th {
+                background: #1F4E78;
+                color: white;
+                padding: 8px;
+                text-align: left;
+            }
+
+            .resumen td {
+                border: solid 1px #CCC;
+                padding: 8px;
+            }
+
+        .detalle {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .detalle th {
+                background: #1F4E78;
+                color: white;
+                padding: 8px;
+                border: solid 1px #BFBFBF;
+            }
+
+            .detalle td {
+                border: solid 1px #D9D9D9;
+                padding: 6px;
+            }
+
+            .detalle tbody tr:nth-child(even) {
+                background: #F7F9FB;
+            }
+
+        .numero {
+            text-align: center;
+        }
+
+        .derecha {
+            text-align: right;
+        }
+
+        .centro {
+            text-align: center;
+        }
+
+        .total {
+            background: #D9EAD3;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 10px;
+            color: gray;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #1F4E78;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="tituloEmpresa">
+        SOCIEDAD COOPERATIVA CREDITOS AGIL Y CONFIABLE DE RL
+    </div>
+
+    <div class="tituloReporte">
+        REPORTE CONSOLIDADO DE AHORROS
+    </div>
+
+    <hr />
+
+    <table class="encabezado">
+
+        <tr>
+
+            <td class="tituloCampo">Línea de ahorro</td>
+            <td>@Model.NombreLineaAhorro</td>
+
+            <td class="tituloCampo">Fecha de corte</td>
+            <td>@Model.FechaCorte.ToString("dd/MM/yyyy")</td>
+
+        </tr>
+
+        <tr>
+
+            <td class="tituloCampo">Fecha de impresión</td>
+            <td>@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</td>
+
+            <td class="tituloCampo">Total de cuentas</td>
+            <td>@Model.TotalCuentas</td>
+
+        </tr>
+
+    </table>
+
+
+    <table class="resumen">
+
+        <thead>
+
+            <tr>
+
+                <th colspan="2">
+                    RESUMEN 
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td><strong>Total de cuentas</strong></td>
+
+                <td class="derecha">
+
+                    @Model.TotalCuentas.ToString("N0")
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td><strong>Saldo consolidado</strong></td>
+
+                <td class="derecha">
+
+                    @Model.TotalSaldo.ToString("C2")
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+    <table class="detalle">
+
+        <thead>
+
+            <tr>
+
+                <th style="width:40px;">#</th>
+
+                <th style="width:130px;">Cuenta</th>
+
+                <th>Socio</th>
+
+                <th style="width:130px;">DUI</th>
+
+                <th style="width:140px;">Saldo</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model.Detalle)
+            {
+                <tr>
+
+                    <td class="numero">
+
+                        @(correlativo++)
+
+                    </td>
+
+                    <td>
+
+                        @item.NoCuenta
+
+                    </td>
+
+                    <td>
+
+                        @item.Socio
+
+                    </td>
+
+                    <td class="centro">
+
+                        @item.Dui
+
+                    </td>
+
+                    <td class="derecha">
+
+                        @item.Saldo.ToString("C2")
+
+                    </td>
+
+                </tr>
+            }
+
+            <tr class="total">
+
+                <td colspan="4" class="derecha">
+
+                    TOTAL CONSOLIDADO
+
+                </td>
+
+                <td class="derecha">
+
+                    @Model.TotalSaldo.ToString("C2")
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <div class="footer">
+
+        Documento generado automáticamente por Skali
+
+    </div>
+
+</body>
+
+</html>

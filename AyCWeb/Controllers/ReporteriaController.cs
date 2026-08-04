@@ -1,8 +1,10 @@
 ﻿using AyCWeb.Helper;
 using AyCWeb.Models;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ModelNucleo.CalculosYProceos;
+using ModelNucleo.Dto.Reportes_Ahorro;
 using ModelNucleo.Model;
 using ModelNucleo.Model.ModelView;
 using Newtonsoft.Json;
@@ -548,6 +550,158 @@ namespace AyCWeb.Controllers
         public async Task<IActionResult> BitacoraDTE()
         {
             return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> ReporteConsolidadoAhorros()
+        {
+            ViewBag.Rol = await Rol_Usuario();
+            return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> ReporteConsolidadoAhorro(
+        int idLineaAhorro,
+        int idAgencia,
+        DateTime fecha)
+        {
+            string url =
+                $"Ahorros/ReporteConsolidado?idLineaAhorro={idLineaAhorro}" +
+                $"&idAgencia={idAgencia}" +
+                $"&fecha={fecha:yyyy-MM-dd}";
+
+            ResponseApi responseApi =
+                await OperarApi(HttpMethod.Get, url, null);
+
+            if (responseApi.Satisfactorio)
+            {
+                var reporte = JsonConvert.DeserializeObject<ReporteConsolidadoAhorroDTO>(
+                responseApi.ContenidofromJson);
+
+                return new ViewAsPdf("ReporteConsolidadoAhorro", reporte, ViewData)
+                {
+                    PageSize = Rotativa.AspNetCore.Options.Size.Letter,
+                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                    PageMargins = { Left = 10, Right = 10, Top = 10, Bottom = 10 }
+                };
+            }
+
+            Mensaje_Respuesta mensaje = new Mensaje_Respuesta(
+                responseApi.Satisfactorio,
+                0,
+                responseApi.Error,
+                responseApi.ContenidofromJson);
+
+            return BadRequest(mensaje);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ReporteConsolidadoAhorroExcel(
+        int idLineaAhorro,
+        int idAgencia,
+        DateTime fecha)
+        {
+            string url =
+                $"Ahorros/ReporteConsolidado?idLineaAhorro={idLineaAhorro}" +
+                $"&idAgencia={idAgencia}" +
+                $"&fecha={fecha:yyyy-MM-dd}";
+
+            ResponseApi responseApi =
+                await OperarApi(HttpMethod.Get, url, null);
+
+            if (!responseApi.Satisfactorio)
+                return BadRequest(responseApi.Error);
+
+            var reporte = JsonConvert.DeserializeObject<ReporteConsolidadoAhorroDTO>(
+                responseApi.ContenidofromJson);
+
+            using (var workbook = new XLWorkbook())
+            {
+                var ws = workbook.Worksheets.Add("Consolidado");
+
+                int fila = 1;
+
+                // Empresa
+                ws.Cell(fila, 1).Value = "SOCIEDAD COOPERATIVA CREDITOS AGIL Y CONFIABLE DE RL";
+                ws.Range(fila, 1, fila, 5).Merge();
+                ws.Range(fila, 1, fila, 5).Style.Font.Bold = true;
+                ws.Range(fila, 1, fila, 5).Style.Font.FontSize = 16;
+                ws.Range(fila, 1, fila, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                fila++;
+
+                // Título
+                ws.Cell(fila, 1).Value = "REPORTE CONSOLIDADO DE AHORROS";
+                ws.Range(fila, 1, fila, 5).Merge();
+                ws.Range(fila, 1, fila, 5).Style.Font.Bold = true;
+                ws.Range(fila, 1, fila, 5).Style.Font.FontSize = 14;
+                ws.Range(fila, 1, fila, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                fila += 2;
+
+                ws.Cell(fila, 1).Value = "Línea de ahorro";
+                ws.Cell(fila, 2).Value = reporte.NombreLineaAhorro;
+
+                ws.Cell(fila, 4).Value = "Fecha de corte";
+                ws.Cell(fila, 5).Value = reporte.FechaCorte;
+                ws.Cell(fila, 5).Style.DateFormat.Format = "dd/MM/yyyy";
+
+                fila++;
+
+                ws.Cell(fila, 1).Value = "Fecha impresión";
+                ws.Cell(fila, 2).Value = DateTime.Now;
+                ws.Cell(fila, 2).Style.DateFormat.Format = "dd/MM/yyyy HH:mm";
+
+                ws.Cell(fila, 4).Value = "Total cuentas";
+                ws.Cell(fila, 5).Value = reporte.TotalCuentas;
+
+                fila += 2;
+
+                // Encabezados
+                ws.Cell(fila, 1).Value = "#";
+                ws.Cell(fila, 2).Value = "Cuenta";
+                ws.Cell(fila, 3).Value = "Socio";
+                ws.Cell(fila, 4).Value = "DUI";
+                ws.Cell(fila, 5).Value = "Saldo";
+
+                var encabezado = ws.Range(fila, 1, fila, 5);
+
+                encabezado.Style.Fill.BackgroundColor = XLColor.DarkBlue;
+                encabezado.Style.Font.FontColor = XLColor.White;
+                encabezado.Style.Font.Bold = true;
+
+                fila++;
+
+                int correlativo = 1;
+
+                foreach (var item in reporte.Detalle)
+                {
+                    ws.Cell(fila, 1).Value = correlativo++;
+                    ws.Cell(fila, 2).Value = item.NoCuenta;
+                    ws.Cell(fila, 3).Value = item.Socio;
+                    ws.Cell(fila, 4).Value = item.Dui;
+                    ws.Cell(fila, 5).Value = item.Saldo;
+
+                    ws.Cell(fila, 5).Style.NumberFormat.Format = "$ #,##0.00";
+
+                    fila++;
+                }
+
+                ws.Cell(fila, 4).Value = "TOTAL CONSOLIDADO";
+                ws.Cell(fila, 5).Value = reporte.TotalSaldo;
+
+                ws.Range(fila, 4, fila, 5).Style.Font.Bold = true;
+                ws.Range(fila, 4, fila, 5).Style.Fill.BackgroundColor = XLColor.LightGreen;
+                ws.Cell(fila, 5).Style.NumberFormat.Format = "$ #,##0.00";
+
+                ws.Columns().AdjustToContents();
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+
+                    return File(
+                        stream.ToArray(),
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        $"ReporteConsolidado_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+                }
+            }
         }
     }
 }
