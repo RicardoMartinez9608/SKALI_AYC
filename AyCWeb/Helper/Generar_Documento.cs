@@ -1,4 +1,5 @@
 ﻿
+
 using DocumentFormat.OpenXml.Packaging;
 using ModelNucleo.Model;
 using System;
@@ -20,109 +21,170 @@ namespace AyCWeb.Helper
 {
     public class Generar_Documento
     {
-        public MemoryStream Generar_Mutuo(
-            List<Persona> personas,
-            Municipio_Departamento municipio = null,
-            Departamento_Pais departamento = null,
-            bool es_grupal = false,
-            string nombreGrupal = "")
+        public System.IO.MemoryStream Generar_Mutuo(
+        List<Persona> personas,
+        Municipio_Departamento municipio = null,
+        Departamento_Pais departamento = null,
+        bool es_grupal = false,
+        string nombreGrupal = "")
         {
             int no_integrantes = personas.Count();
             Persona persona = personas.FirstOrDefault();
-            string codigo_credito = persona.Creditos.FirstOrDefault().Codigo_Credito;
-            List<Tipo_Mutuo> mutuos = persona
-                .Creditos
-                .FirstOrDefault()
-                .Linea_Credito
-                .Tipo_Mutuos
-                .Where(a => !a.Dos_Codeudores && !a.Dos_Codeudores_Dos_Fechas && !a.Dos_Fechas)
-                .ToList();
+            var primerCredito = persona.Creditos.FirstOrDefault();
+            string codigo_credito = primerCredito.Codigo_Credito;
 
-            if (persona.Creditos.Any(a => a.mutuo_dos_codeudores_dos_fechas)) {
-                mutuos = persona
-                   .Creditos
-                   .FirstOrDefault()
-                   .Linea_Credito
-                   .Tipo_Mutuos
+            // 1. REVISAMOS SI EL SOCIO TIENE O NO FIADORES REGISTRADOS EN LA BASE DE DATOS
+            bool tieneCodeudoresEnBase = persona.Persona_Relaciones != null && persona.Persona_Relaciones.Any(a => a.Predicado != null);
+
+            List<Tipo_Mutuo> mutuos = new List<Tipo_Mutuo>();
+
+            // =========================================================================
+            // 2. REGLA ESPECIAL Y PRIORITARIA PARA AGILMULTIDESTINO (Id_Linea == 19)
+            // =========================================================================
+            if (!es_grupal && primerCredito.Id_Linea == 19)
+            {
+                var todosLosMutuos = primerCredito.Linea_Credito.Tipo_Mutuos.ToList();
+
+                foreach (var m in todosLosMutuos)
+                {
+                    if (tieneCodeudoresEnBase)
+                    {
+                        // Si el cliente TIENE codeudor -> Fuerza a cargar 'mutuoaycCC.docx'
+                        m.Nombre_Extencion_Documento = "mutuoaycCC.docx";
+                    }
+                    else
+                    {
+                        // Si el cliente NO TIENE codeudor -> Fuerza a cargar 'mutuoayc.docx'
+                        m.Nombre_Extencion_Documento = "mutuoayc.docx";
+                    }
+                }
+
+                mutuos = todosLosMutuos;
+            }
+            // =========================================================================
+            // 3. REGLAS PARA LAS DEMÁS LÍNEAS DE CRÉDITO
+            // =========================================================================
+            else if (es_grupal)
+            {
+                mutuos = primerCredito.Linea_Credito.Tipo_Mutuos
+                    .Where(t => t.Integrantes_Grupal == no_integrantes).ToList();
+            }
+            else if (primerCredito.mutuo_dos_codeudores_dos_fechas)
+            {
+                mutuos = primerCredito.Linea_Credito.Tipo_Mutuos
                    .Where(t => t.Dos_Codeudores_Dos_Fechas == true).ToList();
             }
-            if (persona.Creditos.Any(a => a.mutuo_dos_fechas && a.Id_Linea != 13
-            && a.Id_Linea != 12 && a.Id_Linea != 9 && a.Id_Linea != 2 && a.Id_Linea != 17&& a.Id_Linea != 19 && a.Id_Linea != 20 && a.Id_Linea != 21))
+            else if (primerCredito.mutuo_dos_fechas && primerCredito.Id_Linea != 13
+                     && primerCredito.Id_Linea != 12 && primerCredito.Id_Linea != 9 && primerCredito.Id_Linea != 2
+                     && primerCredito.Id_Linea != 17 && primerCredito.Id_Linea != 19 && primerCredito.Id_Linea != 20 && primerCredito.Id_Linea != 21)
             {
-                mutuos = persona
-                   .Creditos
-                   .FirstOrDefault()
-                   .Linea_Credito
-                   .Tipo_Mutuos
+                mutuos = primerCredito.Linea_Credito.Tipo_Mutuos
                    .Where(t => t.Dos_Fechas == true).ToList();
             }
-            if (persona.Creditos.Any(a => a.mutuo_dos_codeudores))
+            else if (primerCredito.mutuo_dos_codeudores)
             {
-                mutuos = persona
-                   .Creditos
-                   .FirstOrDefault()
-                   .Linea_Credito
-                   .Tipo_Mutuos
+                mutuos = primerCredito.Linea_Credito.Tipo_Mutuos
                    .Where(t => t.Dos_Codeudores == true).ToList();
             }
-            if (es_grupal)
-                mutuos = persona
-                    .Creditos
-                    .FirstOrDefault()
-                    .Linea_Credito
-                    .Tipo_Mutuos
-                    .Where(t => t.Integrantes_Grupal == no_integrantes).ToList();
-
-            using (MemoryStream zipStream = new MemoryStream())
+            else
             {
-                using (ZipArchive zip = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
+                // Créditos individuales genéricos
+                var todosLosMutuos = primerCredito.Linea_Credito.Tipo_Mutuos
+                    .Where(a => !a.Dos_Codeudores && !a.Dos_Codeudores_Dos_Fechas && !a.Dos_Fechas)
+                    .ToList();
+
+                if (!tieneCodeudoresEnBase)
                 {
-                    foreach (Tipo_Mutuo tipo in mutuos)
+                    foreach (var m in todosLosMutuos)
                     {
-                        string documento_fuente = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Documento_Template\mutuo", tipo.Nombre_Extencion_Documento);
-                        string documento_destino = Completa_Nombre_Aleatorio(codigo_credito, tipo);
+                        string nombreMinusculas = m.Nombre_Extencion_Documento.ToLower().Trim();
 
-                        // Copiar documento a un flujo de memoria
-                        MemoryStream documentStream = new MemoryStream();
-                        using (FileStream sourceStream = new FileStream(documento_fuente, FileMode.Open, FileAccess.Read))
+                        if (nombreMinusculas.Contains("mutuoaycplus"))
                         {
-                            sourceStream.CopyTo(documentStream);
+                            m.Nombre_Extencion_Documento = m.Nombre_Extencion_Documento;
                         }
-                        documentStream.Seek(0, SeekOrigin.Begin); // Reiniciar el puntero del flujo de memoria
-
-                        using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(documentStream, true))
+                        else if (nombreMinusculas.Contains("mutuoaycfah"))
                         {
-                            string docText;
-                            using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
-                            {
-                                docText = sr.ReadToEnd();
-                            }
-
-                            if (es_grupal)
-                                docText = Cargar_Datos_Grupal(personas, docText, municipio, departamento, nombreGrupal);
-                            else
-                                docText = Cargar_Datos(persona, docText, municipio, departamento);
-
-                            using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
-                            {
-                                sw.Write(docText);
-                            }
-                        }
-
-                        // Agregar el archivo modificado al archivo ZIP
-                        documentStream.Seek(0, SeekOrigin.Begin); // Reiniciar el puntero del flujo de memoria
-                        var zipEntry = zip.CreateEntry(documento_destino);
-                        using (Stream entryStream = zipEntry.Open())
-                        {
-                            documentStream.CopyTo(entryStream);
+                            m.Nombre_Extencion_Documento = "MutuoaycAH.docx";
                         }
                     }
                 }
 
-                // Devolver el archivo ZIP como un MemoryStream
-                return new MemoryStream(zipStream.ToArray());
+                mutuos = todosLosMutuos;
+            }
+
+            // =========================================================================
+            // 4. CONSTRUCCIÓN DEL ARCHIVO ZIP CON LOS DOCUMENTOS GENERADOS
+            // =========================================================================
+            using (MemoryStream zipStream = new MemoryStream())
+            {
+                using (ZipArchive zip = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
+                {
+                    if (mutuos == null || !mutuos.Any())
+                    {
+                        var entryFalsa = zip.CreateEntry("ALERTA_No_Se_Encontraron_Mutuos.txt");
+                        using (StreamWriter swFalso = new StreamWriter(entryFalsa.Open()))
+                        {
+                            swFalso.Write("La lista 'mutuos' llegó vacía al generador debido a los filtros IF.");
+                        }
+                    }
+                    else
+                    {
+                        foreach (Tipo_Mutuo tipo in mutuos)
+                        {
+                            string documento_fuente = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Documento_Template\mutuo", tipo.Nombre_Extencion_Documento);
+                            string documento_destino = Completa_Nombre_Aleatorio(codigo_credito, tipo);
+
+                            using (MemoryStream documentStream = new MemoryStream())
+                            {
+                                using (FileStream sourceStream = new FileStream(documento_fuente, FileMode.Open, FileAccess.Read))
+                                {
+                                    sourceStream.CopyTo(documentStream);
+                                }
+                                documentStream.Seek(0, SeekOrigin.Begin);
+
+                                using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(documentStream, true))
+                                {
+                                    string docText;
+                                    using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
+                                    {
+                                        docText = sr.ReadToEnd();
+                                    }
+
+                                    docText = LimpiarEtiquetasXml(docText);
+
+                                    if (es_grupal)
+                                        docText = Cargar_Datos_Grupal(personas, docText, municipio, departamento, nombreGrupal);
+                                    else
+                                        docText = Cargar_Datos(persona, docText, municipio, departamento);
+
+                                    using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
+                                    {
+                                        sw.Write(docText);
+                                        sw.Flush();
+                                    }
+                                }
+
+                                documentStream.Seek(0, SeekOrigin.Begin);
+                                var zipEntry = zip.CreateEntry(documento_destino);
+
+                                using (Stream entryStream = zipEntry.Open())
+                                {
+                                    documentStream.CopyTo(entryStream);
+                                    entryStream.Flush();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                byte[] bytesFinales = zipStream.ToArray();
+                return new MemoryStream(bytesFinales);
             }
         }
+
+
+
 
         private string Completa_Nombre_Aleatorio(string directory, Tipo_Mutuo tipo)
         {
@@ -135,35 +197,37 @@ namespace AyCWeb.Helper
 
         private string Cargar_Datos(Persona persona, string xml, Municipio_Departamento municipio = null, Departamento_Pais departamento = null)
         {
-
             Conversion_numero_letra conversion = new Conversion_numero_letra();
             Conversion_dui_nit_letra documentos = new Conversion_dui_nit_letra();
             Credito credito = persona.Creditos.FirstOrDefault();
-            /*La persona como tal*/
-            xml = Reemplazar(xml, "«nombredelsocio»", " " + persona.NombreCompleto + " ");
-            xml = Reemplazar(xml, "«Cedad»", " " + string.Format(conversion.Enletras(persona.Edad.ToString())) + " ");/*Se debe cambiar a Letras*/
-            xml = Reemplazar(xml, "«codigo_credito»", " " + credito.Codigo_Credito + " ");/*Se debe cambiar a Letras*/
-            //xml = Reemplazar(xml, "Ocupacion_Cliente", persona.Ocupacion); 0459501
-            if (municipio.Nombre_Municipio != null)
-            {
-                xml = Reemplazar(xml, "«dir_casa»", " " + municipio.Nombre_Municipio + " ");/*Falta la residencia*/
 
+            /* La persona como tal */
+            xml = Reemplazar(xml, "«nombredelsocio»", " " + persona.NombreCompleto + " ");
+            xml = Reemplazar(xml, "«Cedad»", " " + string.Format(conversion.Enletras(persona.Edad.ToString())) + " ");
+            xml = Reemplazar(xml, "«codigo_credito»", " " + credito.Codigo_Credito + " ");
+            xml = Reemplazar(xml, "«profesion_cli»", " " + persona.Profesion + " ");
+
+            if (municipio != null && municipio.Nombre_Municipio != null)
+            {
+                xml = Reemplazar(xml, "«dir_casa»", " " + municipio.Nombre_Municipio + " ");
                 xml = Reemplazar(xml, "«ciudad»", " " + credito.Nombre_Ciudad_Mutuo + " ");
             }
+
             xml = Reemplazar(xml, "«DuiEnLetras»", " " + string.Format(documentos.Enletras(persona.Dui)) + " ");
-         //   xml = Reemplazar(xml, "«NitEnLetras»", " " + string.Format(documentos.Enletras(persona.Nit)) + " ");
-            if (departamento.Nombre_Departamento != null)
+
+            if (departamento != null && departamento.Nombre_Departamento != null)
             {
                 xml = Reemplazar(xml, "«mciudad»", " " + string.Format(departamento.Nombre_Departamento) + " ");
             }
             xml = Reemplazar(xml, "«tplazo»", " " + "MENSUAL" + " ");
 
-            /*el crédito de la persona*/
-
+            /* Fechas del crédito */
             DateTime fecha = credito.Vencido_En;
             DateTime fecha_dia = credito.Liquidado_En;
             DateTime fecha_primera_cuota = credito.Fecha_Primer_Pago;
             DateTime fecha_hoy = DateTime.Now.Date;
+
+            // Primera Cuota
             string nueva_primera_cuota = fecha_primera_cuota.ToLongDateString();
             string[] valores_primera = nueva_primera_cuota.Split(" ");
             string dia_p = string.Format(conversion.Enletras(valores_primera[1]));
@@ -172,129 +236,145 @@ namespace AyCWeb.Helper
             string fecha_nueva_p = dia_fecha_primer + " " + dia_p.ToLower() + " de " + valores_primera[3] + " de " + año_p.ToLower();
             xml = Reemplazar(xml, "«Cpripag»", " " + string.Format(fecha_nueva_p.ToUpper()) + " ");
 
+            // Apertura
             string nueva_F = fecha_dia.ToLongDateString();
             string[] valores = nueva_F.Split(" ");
             string dia = string.Format(conversion.Enletras(valores[1]));
             string año = string.Format(conversion.Enletras(valores[5]));
             string dia_fecha_ = valores[0].Replace(",", string.Empty);
             string fecha_nueva = dia_fecha_ + " " + dia.ToLower() + " de " + valores[3] + " de " + año.ToLower();
+            xml = Reemplazar(xml, "«aperturaC»", " " + fecha_nueva.ToUpper() + " ");
 
+            // Vencimiento
             string fecha_vencimiento = fecha.ToLongDateString();
             string[] valores_vencimiento = fecha_vencimiento.Split(" ");
             string dia_vencimiento = string.Format(conversion.Enletras(valores_vencimiento[1]));
             string año_vencimiento = string.Format(conversion.Enletras(valores_vencimiento[5]));
             string dia_fecha = valores_vencimiento[0].Replace(",", string.Empty);
             string fecha_nueva_vencimiento = dia_fecha + " " + dia_vencimiento.ToLower() + " de " + valores_vencimiento[3] + " de " + año_vencimiento.ToLower();
+            xml = Reemplazar(xml, "«Cfechavenc»", " " + fecha_nueva_vencimiento.ToUpper() + " ");
 
+            // Fecha Hoy
             string fecha_ahora = fecha_hoy.ToLongDateString();
             string[] valores_ahora = fecha_ahora.Split(" ");
             string dia_ahora = string.Format(conversion.Enletras(valores_ahora[1]));
             string año_ahora = string.Format(conversion.Enletras(valores_ahora[5]));
             string dia_fecha_ahora = valores_ahora[0].Replace(",", string.Empty);
             string fecha_nueva_ahora = dia_fecha_ahora + " " + dia_ahora.ToLower() + " de " + valores_ahora[3] + " de " + año_ahora.ToLower();
+            xml = Reemplazar(xml, "«Cfechahoy»", " " + fecha_nueva_ahora.ToUpper() + " ");
 
+            /* Montos y Plazos */
             if (credito.Id_Linea != 9)
             {
-                xml = Reemplazar(xml, "«CMontoPrestamo»", "*** " + string.Format(conversion.Enletras(decimal.Round(credito.Monto_pago, 2).ToString())) + " 00/100" + " ***");/*Debe cambiarse a letras*/
+                xml = Reemplazar(xml, "«CMontoPrestamo»", "*** " + string.Format(conversion.Enletras(decimal.Round(credito.Monto_pago, 2).ToString())) + " 00/100" + " ***");
             }
             else if (credito.Id_Linea == 9)
             {
                 decimal monto_diferente = credito.Monto_pago * 3;
-                xml = Reemplazar(xml, "«CMontoRot»", "*** " + string.Format(conversion.Enletras(decimal.Round(monto_diferente, 2).ToString())) + " 00/100" + " ***");/*Debe cambiarse a letras*/
+                xml = Reemplazar(xml, "«CMontoRot»", "*** " + string.Format(conversion.Enletras(decimal.Round(monto_diferente, 2).ToString())) + " 00/100" + " ***");
             }
-            xml = Reemplazar(xml, "«Cmeses»", " " + string.Format(conversion.Enletras(credito.Plazo.ToString())) + " "); /*También debe ir en letras*/
-            xml = Reemplazar(xml, "«aperturaC»", " " + fecha_nueva.ToUpper() + " "); /*Cambiar la fecha a letras*/
-            xml = Reemplazar(xml, "«Cfechavenc»", " " + fecha_nueva_vencimiento.ToUpper() + " "); /*tambien debe estar en letras*/
+
+            xml = Reemplazar(xml, "«Cmeses»", " " + string.Format(conversion.Enletras(credito.Plazo.ToString())) + " ");
+
+            // CORRECCIÓN CUOTAS: Se unificó en un condicional estructurado para evitar que se sobreescriba abajo
             if (credito.Id_Linea == 5 || credito.Id_Linea == 19 || credito.Id_Linea == 20 || credito.Id_Linea == 21)
             {
                 xml = Reemplazar(xml, "«Ccuotas»", " " + string.Format(conversion.Enletras(credito.Numero_cuotas.ToString())) + " ");
                 xml = Reemplazar(xml, "«fpago»", " " + credito.Periodo.Descripcion.ToUpper() + "ES" + " ");
             }
-            xml = Reemplazar(xml, "«Ccuotas»", " " + string.Format(conversion.Enletras(credito.Plazo.ToString())) + " ");
-            // para validar variables en tipos de mutuos
+            else
+            {
+                xml = Reemplazar(xml, "«Ccuotas»", " " + string.Format(conversion.Enletras(credito.Plazo.ToString())) + " ");
+            }
+
+            // Validar tipos de mutuo
             bool mutuo_dosfechas_doscodeudores = persona.Creditos.Any(a => a.mutuo_dos_codeudores_dos_fechas);
             bool mutuo_dosfechas = persona.Creditos.Any(a => a.mutuo_dos_fechas);
-            xml = Reemplazar(xml, "«profesion_cli»", " " + persona.Profesion);
-
             bool mutuo_doscodeudores = persona.Creditos.Any(a => a.mutuo_dos_codeudores);
+
             if (mutuo_dosfechas_doscodeudores || mutuo_dosfechas || mutuo_doscodeudores)
             {
-                xml = Reemplazar(xml, "«cuotsc»", " " + string.Format(conversion.Enletras(Math.Round(credito.Cuota_Menos_Plan, 2).ToString())) + " "); /*Se debe cambiar a letras*/
-                xml = Reemplazar(xml, "«cuotsc2»", " " + string.Format(conversion.Enletras(Math.Round(credito.Primer_Pago, 2).ToString())) + " "); /*Se debe cambiar a letras*/
-                xml = Reemplazar(xml, "«Ccuota2»", " " + string.Format(conversion.Enletras(Math.Round(credito.Primer_Pago, 2).ToString())) + " "); /*Se debe cambiar a letras*/
-                xml = Reemplazar(xml, "«Ccuota»", " " + string.Format(conversion.Enletras(Math.Round(credito.Segundo_Pago, 2).ToString())) + " "); /*Se debe cambiar a letras*/
+                xml = Reemplazar(xml, "«cuotsc»", " " + string.Format(conversion.Enletras(Math.Round(credito.Cuota_Menos_Plan, 2).ToString())) + " ");
+                xml = Reemplazar(xml, "«cuotsc2»", " " + string.Format(conversion.Enletras(Math.Round(credito.Primer_Pago, 2).ToString())) + " ");
+                xml = Reemplazar(xml, "«Ccuota2»", " " + string.Format(conversion.Enletras(Math.Round(credito.Primer_Pago, 2).ToString())) + " ");
+                xml = Reemplazar(xml, "«Ccuota»", " " + string.Format(conversion.Enletras(Math.Round(credito.Segundo_Pago, 2).ToString())) + " ");
             }
             else
             {
-                xml = Reemplazar(xml, "«cuotsc»", " " + string.Format(conversion.Enletras(Math.Round(credito.Cuota_Menos_Plan, 2).ToString())) + " "); /*Se debe cambiar a letras*/
-                xml = Reemplazar(xml, "«Ccuota»", " " + string.Format(conversion.Enletras(Math.Round(credito.Cuota_Total, 2).ToString())) + " "); /*falta que se ponga en letra*/
+                xml = Reemplazar(xml, "«cuotsc»", " " + string.Format(conversion.Enletras(Math.Round(credito.Cuota_Menos_Plan, 2).ToString())) + " ");
+                xml = Reemplazar(xml, "«Ccuota»", " " + string.Format(conversion.Enletras(Math.Round(credito.Cuota_Total, 2).ToString())) + " ");
             }
-            xml = Reemplazar(xml, "«qcob»", " " + string.Format(conversion.Enletras(Math.Round(credito.Plan_AyC, 2).ToString())) + " ");/*Se debe poner en letras*/
+
+            xml = Reemplazar(xml, "«qcob»", " " + string.Format(conversion.Enletras(Math.Round(credito.Plan_AyC, 2).ToString())) + " ");
             xml = Reemplazar(xml, "«seguro»", " " + string.Format(conversion.Enletras(Math.Round(credito.Plan_AyC, 2).ToString())) + " ");
-            xml = Reemplazar(xml, "«Fecha_P»", "No se posee");/*debe cambiarse a letras*/
-            xml = Reemplazar(xml, "«Cfechahoy»", " " + fecha_nueva_ahora.ToUpper() + " ");
-            if (persona.Persona_Relaciones != null)
+            xml = Reemplazar(xml, "«Fecha_P»", "No se posee");
+
+            /* RELACIONES / CODEUDORES (ESTRUCTURADO CON IF / ELSE IF PARA QUE NO SE PISEN LOS FIADORES) */
+            if (persona.Persona_Relaciones != null && persona.Persona_Relaciones.Any())
             {
-                if (persona.Persona_Relaciones.Count() == 2) {
-                    Persona codeudor1 = persona.Persona_Relaciones.FirstOrDefault().Predicado;
-                    xml = Reemplazar(xml, "«NombredelFiador»", " " + codeudor1.NombreCompleto + " ");
-                    xml = Reemplazar(xml, "«edadf»", " " + string.Format(conversion.Enletras(codeudor1.Edad.ToString())) + " ");
-                    xml = Reemplazar(xml, "«dirfiador»", " " + municipio.Nombre_Municipio + " ");
-                    xml = Reemplazar(xml, "«fDuiEnLetras»", " " + documentos.Enletras(codeudor1.Dui) + " ");
-                    xml = Reemplazar(xml, "«fNitEnLetras»", " " + documentos.Enletras(codeudor1.Nit) + " ");
-                    if (municipio.Nombre_Municipio != null)
-                    {
-                        xml = Reemplazar(xml, "«ciudad»", " " + string.Format(municipio.Nombre_Municipio) + " ");
-                    }
-                    xml = Reemplazar(xml, "«Cfechahoy»", " " + fecha_nueva_ahora.ToUpper() + " ");
+                int totalRelaciones = persona.Persona_Relaciones.Count(a => a.Predicado != null);
 
-                    Persona codeudor2 = persona.Persona_Relaciones.LastOrDefault().Predicado;
-                    xml = Reemplazar(xml, "«NombredelFiador2»", " " + codeudor2.NombreCompleto + " ");
-                    xml = Reemplazar(xml, "«edadf2»", " " + string.Format(conversion.Enletras(codeudor2.Edad.ToString())) + " ");
-                    xml = Reemplazar(xml, "«dirfiador2»", " " + municipio.Nombre_Municipio + " ");
-                    xml = Reemplazar(xml, "«fDuiEnLetras2»", " " + documentos.Enletras(codeudor2.Dui) + " ");
-                    xml = Reemplazar(xml, "«fNitEnLetras2»", " " + documentos.Enletras(codeudor2.Nit) + " ");
-                    if (municipio.Nombre_Municipio != null)
-                    {
-                        xml = Reemplazar(xml, "«mciudad2»", " " + string.Format(municipio.Nombre_Municipio) + " ");
-                    }
-
-                }
-                bool tiene_codeudor = persona.Persona_Relaciones.Any(a => a.Predicado != null);
-                if (tiene_codeudor)
+                if (totalRelaciones >= 2)
                 {
-                    /*Todos los datos del codeudor*/
-                    Persona codeudor = persona.Persona_Relaciones.FirstOrDefault().Predicado;
-
-                    xml = Reemplazar(xml, "«NombredelFiador»", " " + codeudor.NombreCompleto + " ");
-                    xml = Reemplazar(xml, "«edadf»", " " + string.Format(conversion.Enletras(codeudor.Edad.ToString())) + " ");
-                    xml = Reemplazar(xml, "«dirfiador»", " " + municipio.Nombre_Municipio + " ");
-                    xml = Reemplazar(xml, "«fDuiEnLetras»", " " + documentos.Enletras(codeudor.Dui) + " ");
-                    xml = Reemplazar(xml, "«fNitEnLetras»", " " + documentos.Enletras(codeudor.Nit) + " ");
-                    if (municipio.Nombre_Municipio != null)
+                    // Caso: Dos Fiadores
+                    Persona codeudor1 = persona.Persona_Relaciones.ElementAt(0).Predicado;
+                    if (codeudor1 != null)
                     {
-                        xml = Reemplazar(xml, "«ciudad»", " " + string.Format(credito.Nombre_Ciudad_Mutuo) + " ");
+                        xml = Reemplazar(xml, "«NombredelFiador»", " " + codeudor1.NombreCompleto + " ");
+                        xml = Reemplazar(xml, "«edadf»", " " + string.Format(conversion.Enletras(codeudor1.Edad.ToString())) + " ");
+                        xml = Reemplazar(xml, "«dirfiador»", " " + (municipio?.Nombre_Municipio ?? "") + " ");
+                        xml = Reemplazar(xml, "«fDuiEnLetras»", " " + documentos.Enletras(codeudor1.Dui) + " ");
+                        xml = Reemplazar(xml, "«fNitEnLetras»", " " + documentos.Enletras(codeudor1.Nit) + " ");
+                        if (municipio?.Nombre_Municipio != null)
+                        {
+                            xml = Reemplazar(xml, "«ciudad»", " " + string.Format(municipio.Nombre_Municipio) + " ");
+                        }
                     }
-                    xml = Reemplazar(xml, "«Cfechahoy»", " " + fecha_nueva_ahora.ToUpper() + " ");
-                }
 
+                    Persona codeudor2 = persona.Persona_Relaciones.ElementAt(1).Predicado;
+                    if (codeudor2 != null)
+                    {
+                        xml = Reemplazar(xml, "«NombredelFiador2»", " " + codeudor2.NombreCompleto + " ");
+                        xml = Reemplazar(xml, "«edadf2»", " " + string.Format(conversion.Enletras(codeudor2.Edad.ToString())) + " ");
+                        xml = Reemplazar(xml, "«dirfiador2»", " " + (municipio?.Nombre_Municipio ?? "") + " ");
+                        xml = Reemplazar(xml, "«fDuiEnLetras2»", " " + documentos.Enletras(codeudor2.Dui) + " ");
+                        xml = Reemplazar(xml, "«fNitEnLetras2»", " " + documentos.Enletras(codeudor2.Nit) + " ");
+                        if (municipio?.Nombre_Municipio != null)
+                        {
+                            xml = Reemplazar(xml, "«mciudad2»", " " + string.Format(municipio.Nombre_Municipio) + " ");
+                        }
+                    }
+                }
+                else // Caso: Un solo fiador
+                {
+                    Persona codeudor = persona.Persona_Relaciones.FirstOrDefault()?.Predicado;
+                    if (codeudor != null)
+                    {
+                        xml = Reemplazar(xml, "«NombredelFiador»", " " + codeudor.NombreCompleto + " ");
+                        xml = Reemplazar(xml, "«edadf»", " " + string.Format(conversion.Enletras(codeudor.Edad.ToString())) + " ");
+                        xml = Reemplazar(xml, "«dirfiador»", " " + (municipio?.Nombre_Municipio ?? "") + " ");
+                        xml = Reemplazar(xml, "«fDuiEnLetras»", " " + documentos.Enletras(codeudor.Dui) + " ");
+                        xml = Reemplazar(xml, "«fNitEnLetras»", " " + documentos.Enletras(codeudor.Nit) + " ");
+                        if (municipio?.Nombre_Municipio != null)
+                        {
+                            xml = Reemplazar(xml, "«ciudad»", " " + string.Format(credito.Nombre_Ciudad_Mutuo) + " ");
+                        }
+                    }
+                }
             }
             else
             {
-                xml = Reemplazar(xml, "Nombre_Completo_Codeudor", "No se posee" + " ");
-                xml = Reemplazar(xml, "Edad_Codeudor_Letras", "No se posee" + " ");
-                xml = Reemplazar(xml, "Departamento_Domicilio_Codeudor", "No se posee" + " ");
-                xml = Reemplazar(xml, "Dui_Codeudor", "No se posee" + " ");
-                xml = Reemplazar(xml, "Nit_Codeudor", "No se posee" + " ");
-
-                xml = Reemplazar(xml, "«Cfechahoy»", fecha_nueva_ahora.ToUpper() + " ");
-                xml = Reemplazar(xml, "Ciudad_Celebrado_Mutuo", "" + " ");
+                // Valores por defecto si no hay relaciones
+                xml = Reemplazar(xml, "Nombre_Completo_Codeudor", "No se posee ");
+                xml = Reemplazar(xml, "Edad_Codeudor_Letras", "No se posee ");
+                xml = Reemplazar(xml, "Departamento_Domicilio_Codeudor", "No se posee ");
+                xml = Reemplazar(xml, "Dui_Codeudor", "No se posee ");
+                xml = Reemplazar(xml, "Nit_Codeudor", "No se posee ");
+                xml = Reemplazar(xml, "Ciudad_Celebrado_Mutuo", " ");
             }
-
 
             return xml;
         }
-
         private List<ParametroPersonaDocumento> ListarParametrosPersonales()
         {
             /*registro de datos enumerados*/
@@ -901,7 +981,7 @@ namespace AyCWeb.Helper
             xml = Reemplazar(xml, "«cuota»", decimal.Round(data.valCuota, 2).ToString());
             xml = Reemplazar(xml, "«scodigo»", data.codigoCredito.ToString());
             xml = Reemplazar(xml, "«expedido»", data.expedicionDui.ToString());
-           
+
             xml = Reemplazar(xml, "«ciudad»", data.ciudad.ToString());
             // xml = Reemplazar(xml, "«fDuiEnLetras»", data.dui.ToString());
             xml = Reemplazar(xml, "««Ccuota»", string.Format(conversion.Enletras(decimal.Round(data.valCuota, 2).ToString())));
@@ -1018,15 +1098,15 @@ namespace AyCWeb.Helper
             var fecha = DateTime.Today;
             string nueva_F = fecha.ToLongDateString();
             string[] valores = nueva_F.Split(" ");
-           
-          
+
+
             xml = Reemplazar(xml, "«nombredelsocio»", data.nombreCliente);
-          
+
             xml = Reemplazar(xml, "«ciudad»", data.ciudad.ToString());
 
 
 
-          
+
             var dia = Convert.ToString(fecha.Day);
             string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(fecha.Month);
             var año = Convert.ToString(fecha.Year);
@@ -1046,10 +1126,10 @@ namespace AyCWeb.Helper
             string año = string.Format(conversion.Enletras(valores[5]));
 
             /*La persona como tal*/
-         
+
             xml = Reemplazar(xml, "«NombredelFiador»", data.nombreFiador);
             xml = Reemplazar(xml, "«edadf»", data.edad.ToString());
-           // xml = Reemplazar(xml, "«dirfiador»", data.direccion.ToString());
+            // xml = Reemplazar(xml, "«dirfiador»", data.direccion.ToString());
             xml = Reemplazar(xml, "«mciudad»", data.ciudad.ToString());
             xml = Reemplazar(xml, "«ciudad»", data.ciudad.ToString());
             // xml = Reemplazar(xml, "«fDuiEnLetras»", data.dui.ToString());
@@ -1064,7 +1144,7 @@ namespace AyCWeb.Helper
             string dia_fecha_ahora = valores_ahora[0].Replace(",", string.Empty);
             string fecha_nueva_ahora = dia_fecha_ahora + " " + dia_ahora.ToLower() + " de " + valores_ahora[3] + " de " + año_ahora.ToLower();/*Debe cambiarse a letras*/
             xml = Reemplazar(xml, "«Cfechahoy»", fecha_nueva_ahora); /*tambien debe estar en letras*/
-        
+
             return xml;
         }
 
@@ -1129,7 +1209,7 @@ namespace AyCWeb.Helper
             Credito credito = persona.Creditos.Last();
             xml = Reemplazar(xml, "«cuotas»", string.Format(conversion.Enletras(decimal.Round(credito.Numero_cuotas, 2).ToString())));
             xml = Reemplazar(xml, "«Ccuota»", string.Format(conversion.Enletras(decimal.Round(credito.Monto_pago, 2).ToString())));
-            xml = Reemplazar(xml, "«cuota»",decimal.Round(credito.Monto_pago, 2).ToString());
+            xml = Reemplazar(xml, "«cuota»", decimal.Round(credito.Monto_pago, 2).ToString());
             string fecha_ahora = credito.Vencido_En.ToLongDateString();
             string[] valores_ahora = fecha_ahora.Split(" ");
             string dia_ahora = string.Format(conversion.Enletras(valores_ahora[1]));
@@ -1222,7 +1302,7 @@ namespace AyCWeb.Helper
                 using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
                     docText = sr.ReadToEnd();
 
-                docText = Cargar_Datos_CDatos(persona, docText,municipio,departamento);
+                docText = Cargar_Datos_CDatos(persona, docText, municipio, departamento);
 
                 using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
                     sw.Write(docText);
@@ -1246,14 +1326,14 @@ namespace AyCWeb.Helper
 
         private string Cargar_Datos_CDatos(Persona persona, string xml, Municipio_Departamento municipio = null, Departamento_Pais departamento = null)
         {
-           
+
             var fecha = DateTime.Today;
             var dia = Convert.ToString(fecha.Day);
             string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(fecha.Month);
             var año = Convert.ToString(fecha.Year);
             /*La persona como tal*/
-            xml = Reemplazar(xml, "«dia»", dia + " " +"de " + monthName +" de "+ " "+año);
-       
+            xml = Reemplazar(xml, "«dia»", dia + " " + "de " + monthName + " de " + " " + año);
+
             xml = Reemplazar(xml, "«nombredelsocio»", persona.NombreCompleto);
             if (departamento.Nombre_Departamento != null)
             {
@@ -1316,7 +1396,7 @@ namespace AyCWeb.Helper
             /*La persona como tal*/
             xml = Reemplazar(xml, "Nombre_Socio", persona.NombreCompleto);
 
-            Credito credito = persona.Creditos.FirstOrDefault(); 
+            Credito credito = persona.Creditos.FirstOrDefault();
             xml = Reemplazar(xml, "Codigo_Socio", credito.Codigo_Credito);
             xml = Reemplazar(xml, "monto_aprobado", decimal.Round(credito.Monto_pago, 2).ToString());
             xml = Reemplazar(xml, "plazo_meses", credito.Plazo.ToString());
@@ -1324,7 +1404,7 @@ namespace AyCWeb.Helper
             xml = Reemplazar(xml, "dia_pago", credito.Vencido_En.Date.ToString("dddd", new CultureInfo("es-ES")));
             xml = Reemplazar(xml, "vencimiento_cre", credito.Vencido_En.Date.ToString("dd/MM/yyyy"));
 
-            xml = Reemplazar(xml, "valor_cuota",decimal.Round(credito.Valor_Cuota, 2).ToString());
+            xml = Reemplazar(xml, "valor_cuota", decimal.Round(credito.Valor_Cuota, 2).ToString());
             if (persona.Persona_Relaciones != null && persona.Persona_Relaciones.FirstOrDefault() != null)
             {
                 Persona codeudor = persona.Persona_Relaciones.FirstOrDefault().Predicado;
@@ -1399,7 +1479,7 @@ namespace AyCWeb.Helper
             xml = Reemplazar(xml, "fecha_vencimiento", persona.Amortizacion.Max(d => d.FechaPago).ToString("D"));
 
 
-            Credito credito = persona.Persona.Creditos.Single(a=>a.Id_Credito == idCredito);
+            Credito credito = persona.Persona.Creditos.Single(a => a.Id_Credito == idCredito);
             var plan_ayc = credito.Interes_Comision - credito.Interes;
             xml = Reemplazar(xml, "Codigo_Cr", credito.Codigo_Credito);
             xml = Reemplazar(xml, "monto_desembolso", string.Format(conversion.Enletras(decimal.Round(credito.Monto_pago, 2).ToString())));
@@ -1420,11 +1500,11 @@ namespace AyCWeb.Helper
                 xml = Reemplazar(xml, "Nombre_Codeudor", "no posee");
                 xml = Reemplazar(xml, "Dui_Fiador", "no posee");// Dui fiador dice fiador por problemas con el word
             }
-     
+
             return xml;
         }
         //---------------------------------------------------------Plan AyC--------------------------------------------------------------------------
-        public MemoryStream Generar_PlanAyC(Persona persona,  Municipio_Departamento municipio = null, Departamento_Pais departamento = null)
+        public MemoryStream Generar_PlanAyC(Persona persona, Municipio_Departamento municipio = null, Departamento_Pais departamento = null)
         {
             string documento_fuente = "";
             if (persona.Creditos.Max(x => x.Id_Linea) == 19 || persona.Creditos.Max(x => x.Id_Linea) == 21)
@@ -1433,7 +1513,8 @@ namespace AyCWeb.Helper
                 documento_fuente = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Documento_Template", "PlanAyCNuevo.docx");
 
             }
-            else {
+            else
+            {
                 documento_fuente = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Documento_Template", "PLANAYC.docx");
 
             }
@@ -1447,7 +1528,7 @@ namespace AyCWeb.Helper
                 using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
                     docText = sr.ReadToEnd();
 
-                docText = Cargar_Datos_PlanAyC(persona, docText, municipio,departamento);
+                docText = Cargar_Datos_PlanAyC(persona, docText, municipio, departamento);
 
                 using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
                     sw.Write(docText);
@@ -1488,10 +1569,10 @@ namespace AyCWeb.Helper
             Credito credito = persona.Creditos.FirstOrDefault();
             decimal plan_ayc = credito.Primer_Pago;
             xml = Reemplazar(xml, "«scodigo»", credito.Codigo_Credito);
-            xml = Reemplazar(xml, "«qcob»", string.Format(conversion.Enletras(decimal.Round(plan_ayc,2).ToString())));
+            xml = Reemplazar(xml, "«qcob»", string.Format(conversion.Enletras(decimal.Round(plan_ayc, 2).ToString())));
             xml = Reemplazar(xml, "«Ccuotas»", string.Format(conversion.Enletras(credito.Numero_cuotas.ToString())));
             xml = Reemplazar(xml, "«Cmeses»", string.Format(conversion.Enletras(credito.Plazo.ToString())));
-          
+
 
             return xml;
         }
@@ -1661,11 +1742,11 @@ namespace AyCWeb.Helper
             xml = Reemplazar(xml, "Nombres_Cliente", persona.Nombres);
             xml = Reemplazar(xml, "Apellidos_Cliente", persona.Apellidos);
             xml = Reemplazar(xml, "Edad_Cl", persona.Edad.ToString());
-            if (persona.EstadoFamiliar == (Estado_Familiar) 1)
+            if (persona.EstadoFamiliar == (Estado_Familiar)1)
             {
                 xml = Reemplazar(xml, "Estado_Cli", "Soltero");
             }
-            else if (persona.EstadoFamiliar == (Estado_Familiar) 2)
+            else if (persona.EstadoFamiliar == (Estado_Familiar)2)
             {
                 xml = Reemplazar(xml, "Estado_Cli", "Casado");
             }
@@ -1681,11 +1762,12 @@ namespace AyCWeb.Helper
             {
                 xml = Reemplazar(xml, "Estado_Cli", "");
             }
-            if (persona.Sexo == (Sexo) 1)
+            if (persona.Sexo == (Sexo)1)
             {
                 xml = Reemplazar(xml, "Sexo_F", "");
                 xml = Reemplazar(xml, "Sexo_M", "X");
-            }else if (persona.Sexo == (Sexo)2)
+            }
+            else if (persona.Sexo == (Sexo)2)
             {
                 xml = Reemplazar(xml, "Sexo_F", "X");
                 xml = Reemplazar(xml, "Sexo_M", "");
@@ -1880,7 +1962,7 @@ namespace AyCWeb.Helper
 
 
 
-        private string Reemplazar(string xml,string fuente,string valor)
+        private string Reemplazar(string xml, string fuente, string valor)
         {
             valor = valor ?? "No definido";
             Regex regexText = new Regex(fuente);
@@ -1888,5 +1970,13 @@ namespace AyCWeb.Helper
             return xml;
         }
 
+
+        private string LimpiarEtiquetasXml(string xml)
+        {
+            // Esta expresión regular busca códigos de formato de Word que se metieron
+            // en medio de los símbolos « y » y los elimina para unir la etiqueta de nuevo.
+            return System.Text.RegularExpressions.Regex.Replace(xml, @"(?<=«[^»]*)(<[^>]+>)(?=[^«]*»)", "");
+        }
     }
+
 }
