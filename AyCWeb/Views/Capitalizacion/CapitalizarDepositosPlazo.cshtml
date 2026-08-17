@@ -177,8 +177,8 @@
                  var id = parseInt($(this).data("id")) || 0;
                  var valor = parseFloat($(this).find(".valor-capitalizar").val()) || 0;
                 var IdDepositoPlazo = parseFloat($(this).find(".iddep").val()) || 0;
-
-                 if (id > 0) {
+                console.log(IdDepositoPlazo,valor,id);
+                 if (IdDepositoPlazo > 0) {
                      lista_pagos.push({
                          IdAhorro: id,
                          Valor: valor,
@@ -186,9 +186,9 @@
                          IdDepositoPlazo : IdDepositoPlazo,
                          EsDepositoPlazo : true
                      });
-                 }
+                  }
              });
-
+             
              if (lista_pagos.length === 0) {
                  alertify.warning("No hay capitalizaciones válidas para ejecutar");
                  return;

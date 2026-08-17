@@ -466,20 +466,24 @@ namespace NucleoAyC.Controllers
                     foreach (var item in datos)
                     { 
                         string no_comprobante = await Generar_No_Comprobante();
-                        await GuardarSimple(
-                                           item.IdAhorro,
-                                           item.Valor,
-                                           1,
-                                           false,
-                                           true,
-                                           no_comprobante,
-                                           false,
-                                           false,
-                                           item.Fecha,    // <-- Fecha enviada desde el DTO
-                                           true,          // <-- Indica que queremos cambiar la fecha
-                                           true,
-                                           item.IdDepositoPlazo           
-                                       );
+                        if(item.IdAhorro > 0)
+                        {
+                            await GuardarSimple(
+                                          item.IdAhorro,
+                                          item.Valor,
+                                          1,
+                                          false,
+                                          true,
+                                          no_comprobante,
+                                          false,
+                                          false,
+                                          item.Fecha,    // <-- Fecha enviada desde el DTO
+                                          true,          // <-- Indica que queremos cambiar la fecha
+                                          true,
+                                          item.IdDepositoPlazo
+                                      );
+                        }
+                       
                         if (item.EsDepositoPlazo)
                         {
                             await RegistrarCapitalizacionDepositoPlazo(
@@ -1346,7 +1350,9 @@ namespace NucleoAyC.Controllers
             }).ToListAsync();
         }
         [HttpPost]
-        public async Task<IActionResult> RecalcularAhorroPorFecha(int idAhorro, DateTime fechaInicio)
+        public async Task<IActionResult> RecalcularAhorroPorFecha(
+            int idAhorro,
+            DateTime fechaInicio)
         {
             try
             {
@@ -1356,18 +1362,25 @@ namespace NucleoAyC.Controllers
                 if (ahorro == null)
                     return NotFound("Ahorro no encontrado.");
 
-                // 🔹 Obtener la última transacción ANTES de la fecha indicada
+                // Obtener la última transacción ANTES de la fecha indicada
                 var transAntes = await _context.Transaccion_Ahorro
-                    .Where(t => t.Id_Ahorro == idAhorro && !t.Borrado_Logico && t.Fecha < fechaInicio)
+                    .Where(t =>
+                        t.Id_Ahorro == idAhorro &&
+                        !t.Borrado_Logico &&
+                        t.Fecha < fechaInicio)
                     .OrderByDescending(t => t.Fecha)
                     .ThenByDescending(t => t.Id_Transaccion_Ahorro)
                     .FirstOrDefaultAsync();
 
                 decimal saldoPrevio = transAntes?.Saldo ?? 0;
 
-                // 🔹 Obtener transacciones desde la fecha indicada (orden cronológico)
+                // Obtener TODAS las transacciones desde la fecha indicada.
+                // NO se eliminan ni se consideran duplicadas.
                 var transaccionesDesde = await _context.Transaccion_Ahorro
-                    .Where(t => t.Id_Ahorro == idAhorro && !t.Borrado_Logico && t.Fecha >= fechaInicio)
+                    .Where(t =>
+                        t.Id_Ahorro == idAhorro &&
+                        !t.Borrado_Logico &&
+                        t.Fecha >= fechaInicio)
                     .OrderBy(t => t.Fecha)
                     .ThenBy(t => t.Id_Tipo_Operacion_Ahorro == 3 ? 1 : 0)
                     .ThenBy(t => t.Id_Transaccion_Ahorro)
@@ -1375,87 +1388,54 @@ namespace NucleoAyC.Controllers
 
                 if (!transaccionesDesde.Any())
                 {
-                    return Ok($"No hay transacciones para recalcular desde {fechaInicio:yyyy-MM-dd}. " +
-                              $"Saldo actual: {ahorro.Saldo_Actual:N2}.");
+                    return Ok(
+                        $"No hay transacciones para recalcular desde " +
+                        $"{fechaInicio:yyyy-MM-dd}. " +
+                        $"Saldo actual: {ahorro.Saldo_Actual:N2}."
+                    );
                 }
-
-                // 🔹 Detectar duplicadas SOLO desde la fecha indicada
-                var duplicadas = new List<Transaccion_Ahorro>();
-
-                var grupos = transaccionesDesde
-                    .GroupBy(t => new { t.Valor, t.Id_Tipo_Operacion_Ahorro });
-
-                foreach (var grupo in grupos)
-                {
-                    var ordenadas = grupo.OrderBy(t => t.Fecha).ToList();
-
-                    for (int i = 1; i < ordenadas.Count; i++)
-                    {
-                        var actual = ordenadas[i];
-                        var anterior = ordenadas[i - 1];
-
-                        // ⏱ diferencia en segundos
-                        var diferencia = (actual.Fecha - anterior.Fecha).TotalSeconds;
-
-                        // 🔥 regla: si fue dentro de 10 segundos → duplicado probable
-                        if (diferencia >= 0 && diferencia <= 10)
-                        {
-                            duplicadas.Add(actual);
-                        }
-                    }
-                }
-
-                int eliminadas = 0;
-
-                if (duplicadas.Any())
-                {
-                    eliminadas = duplicadas.Count;
-                    _context.Transaccion_Ahorro.RemoveRange(duplicadas);
-                    await _context.SaveChangesAsync(); // guardar eliminación
-                }
-
-                // 🔹 Recargar transacciones válidas (ya sin duplicadas)
-                var transValidas = await _context.Transaccion_Ahorro
-                    .Where(t => t.Id_Ahorro == idAhorro && !t.Borrado_Logico && t.Fecha >= fechaInicio)
-                    .OrderBy(t => t.Fecha)
-                    .ThenBy(t => t.Id_Tipo_Operacion_Ahorro == 3 ? 1 : 0)
-                    .ThenBy(t => t.Id_Transaccion_Ahorro)
-                    .ToListAsync();
 
                 decimal saldoActual = saldoPrevio;
 
-                // 🔹 Recalcular los saldos a partir de la fecha indicada
-                foreach (var t in transValidas)
+                // Recalcular el saldo de TODAS las transacciones
+                foreach (var t in transaccionesDesde)
                 {
-                    if (t.Id_Tipo_Operacion_Ahorro == 1) // 🟢 depósito
+                    if (t.Id_Tipo_Operacion_Ahorro == 1) 
+                    {
                         saldoActual += t.Valor;
-                    else if (t.Id_Tipo_Operacion_Ahorro == 3) // 🔴 retiro
+                    }
+                    else if (t.Id_Tipo_Operacion_Ahorro == 3) 
+                    {
                         saldoActual -= t.Valor;
+                    }
 
+                    // Evitar saldo negativo
                     if (saldoActual < 0)
                         saldoActual = 0;
 
+                    // Actualizar únicamente el saldo de la transacción
                     t.Saldo = saldoActual;
-                    _context.Transaccion_Ahorro.Update(t);
                 }
 
-                // 🔹 Actualizar saldo actual del ahorro
+                // Actualizar saldo actual del ahorro
                 ahorro.Saldo_Actual = saldoActual;
-                _context.Ahorro.Update(ahorro);
 
                 await _context.SaveChangesAsync();
 
                 return Ok(
-                    $"✅ Recalculo completado para ahorro #{idAhorro} desde {fechaInicio:yyyy-MM-dd}.\n" +
+                    $"✅ Recalculo completado para ahorro #{idAhorro} " +
+                    $"desde {fechaInicio:yyyy-MM-dd}.\n" +
                     $"Saldo anterior: {saldoPrevio:N2}\n" +
                     $"Nuevo saldo: {saldoActual:N2}\n" +
-                    $"Transacciones recalculadas: {transValidas.Count}\n" +
-                    (eliminadas > 0 ? $"Duplicadas eliminadas: {eliminadas}" : "No se encontraron transacciones duplicadas.")
+                    $"Transacciones recalculadas: {transaccionesDesde.Count}\n" +
+                    $"No se eliminaron transacciones."
                 );
             }
             catch (Exception ex)
             {
-                return BadRequest($"❌ Error en el recalculo: {ex.Message}");
+                return BadRequest(
+                    $"❌ Error en el recalculo: {ex.Message}"
+                );
             }
         }
         [HttpPost]
