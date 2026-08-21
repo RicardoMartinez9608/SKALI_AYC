@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ModelNucleo.Model.ModelView.Capitalizacion>
+﻿@* @model IEnumerable<ModelNucleo.Model.ModelView.Capitalizacion>
 @{
     Layout = "";
 }
@@ -46,3 +46,276 @@
 </table>
 
 <input type="hidden" value="@ViewBag.Ids" id="array_lista">
+ *@
+@model IEnumerable<ModelNucleo.Model.ModelView.Capitalizacion>
+
+@{
+    Layout = "";
+
+    var lista = Model?.ToList()
+        ?? new List<ModelNucleo.Model.ModelView.Capitalizacion>();
+
+    var cantidadConISR =
+        lista.Count(x => x.DebeRetenerISR);
+
+    var totalISR =
+        lista
+            .Where(x => x.DebeRetenerISR)
+            .Sum(x => x.RetencionISR);
+}
+
+<!-- ========================================================= -->
+<!-- RESUMEN ISR                                               -->
+<!-- ========================================================= -->
+@if (cantidadConISR > 0)
+{
+    <div class="alert alert-warning border-0 shadow-sm mb-3"
+         role="alert">
+
+        <div class="d-flex align-items-start">
+
+            <div class="me-3"
+                 style="font-size: 28px;">
+                ⚠️
+            </div>
+
+            <div>
+
+                <div class="fw-bold"
+                     style="font-size: 16px;">
+
+                    Atención: retención de ISR
+
+                </div>
+
+                <div class="mt-1">
+
+                    Se aplicará retención de ISR a
+                    <strong>@cantidadConISR</strong>
+                    cliente(s).
+
+                    <span class="ms-1">
+                        Total a retener:
+                        <strong>
+                            @totalISR.ToString("C2")
+                        </strong>
+                    </span>
+
+                </div>
+
+                <small class="text-muted">
+                    Revise los registros marcados antes de ejecutar
+                    la capitalización.
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="alert alert-success border-0 shadow-sm mb-3"
+         role="alert">
+
+        <div class="d-flex align-items-center">
+
+            <div class="me-3"
+                 style="font-size: 24px;">
+                ✓
+            </div>
+
+            <div>
+
+                <div class="fw-bold">
+                    Sin retenciones de ISR
+                </div>
+
+                <small class="text-muted">
+                    Ningún cliente supera el límite establecido
+                    para esta capitalización.
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+}
+
+
+<!-- ========================================================= -->
+<!-- TABLA                                                      -->
+<!-- ========================================================= -->
+
+<div class="table-responsive">
+
+    <table class="table table-hover align-middle">
+
+        <thead class="table-light">
+
+            <tr>
+
+                <th>
+                    Cuentahabiente
+                </th>
+
+                <th>
+                    Cuenta
+                </th>
+
+                <th class="text-end">
+                    Saldo
+                </th>
+
+                <th class="text-end">
+                    Interés Aplicado
+                </th>
+
+                <th>
+                    Forma de Pago
+                </th>
+
+                <th class="text-center">
+                    ISR
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in lista)
+            {
+                <tr data-id="@item.Id_Ahorro">
+
+                    <!-- ===================================== -->
+                    <!-- CLIENTE                              -->
+                    <!-- ===================================== -->
+
+                    <td>
+
+                        <div class="fw-semibold">
+                            @item.CuentaHabiente
+                        </div>
+
+                    </td>
+
+
+                    <!-- ===================================== -->
+                    <!-- CUENTA                               -->
+                    <!-- ===================================== -->
+
+                    <td>
+
+                        <span class="text-muted">
+                            @item.Cuenta
+                        </span>
+
+                    </td>
+
+
+                    <!-- ===================================== -->
+                    <!-- SALDO                                -->
+                    <!-- ===================================== -->
+
+                    <td class="text-end">
+
+                        @item.Saldo.ToString("C2")
+
+                    </td>
+
+
+                    <!-- ===================================== -->
+                    <!-- INTERÉS                               -->
+                    <!-- ===================================== -->
+
+                    <td class="text-end">
+
+                        <input disabled
+                               class="valor-capitalizar form-control form-control-sm text-end"
+                               value="@item.Interes_Aplicar.ToString("0.00")" />
+
+                    </td>
+
+
+                    <!-- ===================================== -->
+                    <!-- FORMA DE PAGO                         -->
+                    <!-- ===================================== -->
+
+                    <td>
+
+                        @item.FormaPago
+
+                    </td>
+
+
+                    <!-- ===================================== -->
+                    <!-- ISR                                  -->
+                    <!-- ===================================== -->
+
+                    <td class="text-center">
+
+                        @if (item.DebeRetenerISR)
+                        {
+                            <div class="d-inline-flex
+                                                flex-column
+                                                align-items-center
+                                                gap-1">
+
+                                <span class="badge rounded-pill bg-warning text-dark">
+
+                                    ⚠️ Retención ISR
+
+                                </span>
+
+                                <span class="fw-bold text-danger">
+
+                                    @item.PorcentajeISR.ToString("0.##")%
+                                    ·
+                                    @item.RetencionISR.ToString("C2")
+
+                                </span>
+
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="badge rounded-pill bg-success">
+
+                                ✓ Sin retención
+
+                            </span>
+                        }
+
+                    </td>
+
+
+                    <!-- ===================================== -->
+                    <!-- IDS OCULTOS                           -->
+                    <!-- ===================================== -->
+
+                    <td>
+
+                        <input type="hidden"
+                               disabled
+                               class="idcapitalizar"
+                               value="@item.Id_Ahorro" />
+
+                        <input type="hidden"
+                               disabled
+                               class="iddep"
+                               value="@item.Id_Deposito_Plazo" />
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

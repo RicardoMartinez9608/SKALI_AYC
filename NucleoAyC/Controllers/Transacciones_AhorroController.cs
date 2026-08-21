@@ -37,7 +37,12 @@ namespace NucleoAyC.Controllers
             : base(context, userManager, roleManager)
         {
         }
+        private const decimal LIMITE_RENTA = 25000m;
+        private const decimal PORCENTAJE_RENTA = 0.10m;
 
+        private const int TIPO_DEPOSITO = 1;
+        private const int TIPO_RETIRO = 3;
+        private const int TIPO_RETENCION_ISR = 4;
         /// <summary>
         /// depósito de cuentas contables
         /// </summary>
@@ -404,17 +409,30 @@ namespace NucleoAyC.Controllers
                     desde = await LapsoDias(false, id_ahorro, 100);
                 }
 
+                DateTime fechaCorte = new DateTime(2026, 4, 15);
+
                 var query = from t in _context.Transaccion_Ahorro.AsNoTracking()
                             where t.Id_Ahorro == id_ahorro
-                            && !t.Borrado_Logico
-                            && (desde == null || t.Fecha >= desde)
+                                && !t.Borrado_Logico
+                                && (desde == null || t.Fecha >= desde)
+
                             join tc in _context.Transaccion_Caja.AsNoTracking()
                                 on t.Id_Transaccion_Ahorro equals tc.Id_Transaccion_Ahorro into tcGroup
                             from tc in tcGroup.DefaultIfEmpty()
+
                             join c in _context.Caja.AsNoTracking()
                                 on tc.Id_Caja equals c.Id_Caja into cGroup
                             from c in cGroup.DefaultIfEmpty()
-                            orderby t.Fecha descending
+
+                            orderby
+                                t.Fecha > fechaCorte descending,
+                                t.Fecha > fechaCorte
+                                    ? t.Id_Transaccion_Ahorro
+                                    : 0 descending,
+                                t.Fecha <= fechaCorte
+                                    ? t.Fecha
+                                    : DateTime.MinValue descending
+
                             select new Transaccion_Ahorro_Vista
                             {
                                 Id = t.Id_Transaccion_Ahorro,
@@ -453,37 +471,87 @@ namespace NucleoAyC.Controllers
         /// <param name="ids"></param>
         /// <param name="id_ahorro"></param>
         /// <returns></returns>
-        [Authorize(Roles = "Jefe,Administrador", AuthenticationSchemes = "Bearer")]
+       // [Authorize(Roles = "Jefe,Administrador", AuthenticationSchemes = "Bearer")]
         [HttpPost]
-        public async Task<IActionResult> EjecutarCapitalizacion([FromBody] List<CapitalizacionDto> datos)
+        public async Task<IActionResult> EjecutarCapitalizacion(
+        [FromBody] List<CapitalizacionDto> datos)
         {
             using (var dbContextTransaction = _context.Database.BeginTransaction())
             {
                 try
                 {
-                    var transaccionesAhorro = new List<Transaccion_Ahorro>();
-                    var transaccionesCaja = new List<Transaccion_Caja>();
                     foreach (var item in datos)
-                    { 
+                    {
                         string no_comprobante = await Generar_No_Comprobante();
-                        if(item.IdAhorro > 0)
+
+                        if (item.IdAhorro > 0)
                         {
                             await GuardarSimple(
-                                          item.IdAhorro,
-                                          item.Valor,
-                                          1,
-                                          false,
-                                          true,
-                                          no_comprobante,
-                                          false,
-                                          false,
-                                          item.Fecha,    // <-- Fecha enviada desde el DTO
-                                          true,          // <-- Indica que queremos cambiar la fecha
-                                          true,
-                                          item.IdDepositoPlazo
-                                      );
+                                item.IdAhorro,
+                                item.Valor,
+                                TIPO_DEPOSITO,
+                                false,
+                                true,
+                                no_comprobante,
+                                false,
+                                false,
+                                item.Fecha,
+                                true,
+                                true,
+                                item.IdDepositoPlazo
+                            );
+                            await _context.SaveChangesAsync();
+
                         }
-                       
+                        if(item.EsDepositoPlazo && item.IdAhorro > 0)
+                        {
+                            var ahorro = await _context.Ahorro
+                              .FirstOrDefaultAsync(x =>
+                                  x.Id_Ahorro == item.IdAhorro);
+
+                            if (ahorro == null)
+                            {
+                                throw new Exception(
+                                    $"No se encontró el ahorro {item.IdAhorro}");
+                            }
+
+
+                            decimal saldoConsolidado =
+                                await ObtenerSaldoConsolidadoPersona(
+                                    ahorro.Id_Persona,
+                                    item.Fecha);
+
+                            bool debeRetener =
+                                         saldoConsolidado >= LIMITE_RENTA;
+
+                            decimal renta = 0m;
+
+                            if (debeRetener)
+                            {
+                                renta = Math.Round(
+                                    item.Valor * PORCENTAJE_RENTA,
+                                    2,
+                                    MidpointRounding.AwayFromZero);
+                            }
+                            if (item.EsDepositoPlazo && renta > 0)
+                            {
+                                await GuardarSimple(
+                                    item.IdAhorro,
+                                    renta,
+                                    TIPO_RETENCION_ISR,
+                                    true,           // retiro
+                                    false,          // no es interés
+                                    no_comprobante,
+                                    false,
+                                    false,
+                                    item.Fecha,
+                                    true,
+                                    false,          // no es capitalización
+                                    item.IdDepositoPlazo,
+                                    true            // esRetencionISR
+                                );
+                            }
+                        }
                         if (item.EsDepositoPlazo)
                         {
                             await RegistrarCapitalizacionDepositoPlazo(
@@ -494,21 +562,74 @@ namespace NucleoAyC.Controllers
                         }
                     }
 
-                    await _context.SaveChangesAsync(); // ✅ UNA SOLA VEZ
-                   
+                    await _context.SaveChangesAsync();
+
                     dbContextTransaction.Commit();
-                    return Ok("Todos los traslados se han ejecutado correctamente");
+
+                    return Ok(
+                        "Todos los traslados se han ejecutado correctamente");
                 }
                 catch (Exception ex)
                 {
-                    var innerException = ex.InnerException;
-                    Console.WriteLine(innerException?.Message); 
                     dbContextTransaction.Rollback();
-                    return BadRequest("Hubo problemas con uno o varios traslados");
+
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.InnerException?.Message);
+
+                    return BadRequest(
+                        "Hubo problemas con uno o varios traslados");
                 }
             }
         }
-        
+        private async Task<decimal> ObtenerSaldoAhorrosActivos(int idPersona)
+        {
+            decimal saldoTotal = 0m;
+
+            var ahorros = await _context.Ahorro
+                .Where(a => a.Id_Persona == idPersona)
+                .ToListAsync();
+
+            foreach (var ahorro in ahorros)
+            {
+                var ultimaTransaccion = await _context.Transaccion_Ahorro
+                    .Where(t => t.Id_Ahorro == ahorro.Id_Ahorro
+                             && !t.Borrado_Logico)
+                    .OrderByDescending(t => t.Fecha)
+                    .ThenByDescending(t => t.Id_Transaccion_Ahorro)
+                    .FirstOrDefaultAsync();
+
+                if (ultimaTransaccion != null &&
+                    ultimaTransaccion.Saldo > 0)
+                {
+                    saldoTotal += ultimaTransaccion.Saldo;
+                }
+            }
+
+            return saldoTotal;
+        }
+        private async Task<decimal> ObtenerSaldoDepositosPlazoActivos(
+          int idPersona,
+          DateTime fecha)
+        {
+            return await _context.Deposito_Plazo
+                .Where(d => d.Id_Persona == idPersona
+                         && d.Fecha_Vencimiento.Date >= fecha.Date)
+                .SumAsync(d => d.Monto);
+        }
+        private async Task<decimal> ObtenerSaldoConsolidadoPersona(
+        int idPersona,
+        DateTime fecha)
+        {
+            //decimal saldoAhorros =
+            //    await ObtenerSaldoAhorrosActivos(idPersona);
+
+            decimal saldoDepositosPlazo =
+                await ObtenerSaldoDepositosPlazoActivos(
+                    idPersona,
+                    fecha);
+
+            return /*saldoAhorros +*/ saldoDepositosPlazo;
+        }
         /// <summary>
         /// muestra la lista de los traslados pendientes de efectuar
         /// </summary>
@@ -820,35 +941,41 @@ namespace NucleoAyC.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ConsultarCapitalizacionDepositoPlazo(DateTime fecha)
+        public async Task<IActionResult> ConsultarCapitalizacionDepositoPlazo(
+        DateTime fecha)
         {
             try
             {
                 var fechaConsulta = fecha.Date;
 
-                // Obtener todas las transacciones
-                var transacciones = await _context.Transaccion_Deposito_Plazo
-                    .ToListAsync();
+                var transacciones =
+                    await _context.Transaccion_Deposito_Plazo
+                        .Where(t => !t.Borrado_Logico)
+                        .ToListAsync();
 
-                // Última transacción de cada depósito
-                var ultimasTransacciones = transacciones
-                    .GroupBy(t => t.Id_Deposito_Plazo)
-                    .Select(g => g
-                        .OrderByDescending(x => x.Fecha)
-                        .ThenByDescending(x => x.Id_Transaccion_Deposito_Plazo)
-                        .First())
-                    .ToList();
+                var ultimasTransacciones =
+                    transacciones
+                        .GroupBy(t => t.Id_Deposito_Plazo)
+                        .Select(g => g
+                            .OrderByDescending(x => x.Fecha)
+                            .ThenByDescending(
+                                x => x.Id_Transaccion_Deposito_Plazo)
+                            .First())
+                        .ToList();
 
-                var ultimasTransaccionesDict = ultimasTransacciones
-                    .ToDictionary(
+                var ultimasTransaccionesDict =
+                    ultimasTransacciones.ToDictionary(
                         x => x.Id_Deposito_Plazo,
                         x => x);
+
 
                 var depositos = await (
                     from dp in _context.Deposito_Plazo
                         .Include(x => x.Forma_Pago)
+
                     join p in _context.Personas
                         on dp.Id_Persona equals p.Id_Persona
+
                     select new
                     {
                         Deposito = dp,
@@ -856,75 +983,99 @@ namespace NucleoAyC.Controllers
                     }
                 ).ToListAsync();
 
-                var resultado = depositos
-                    .Where(x =>
+
+                var resultado = new List<Capitalizacion>();
+
+                foreach (var x in depositos)
+                {
+
+                    if (!ultimasTransaccionesDict.TryGetValue(
+                        x.Deposito.Id_Deposito_Plazo,
+                        out var ultimaTransaccion))
                     {
-                        if (!ultimasTransaccionesDict.TryGetValue(
+                        continue;
+                    }
+
+                    if (ultimaTransaccion.Saldo <= 0)
+                        continue;
+
+                    if (x.Deposito.Fecha_Vencimiento.Date < fechaConsulta)
+                        continue;
+
+                    var diasTranscurridos =
+                        (fechaConsulta -
+                         ultimaTransaccion.Fecha.Date).Days;
+
+                    if (diasTranscurridos != 30)
+                        continue;
+
+                    var interesMensual = Math.Round(
+                        (
+                            ultimaTransaccion.Saldo *
+                            (x.Deposito.Interes / 100m) /
+                            360m
+                        ) * 30m,
+                        2);
+
+                    var saldoConsolidado =
+                        await ObtenerSaldoConsolidadoPersona(
+                            x.Persona.Id_Persona,
+                            fechaConsulta);
+
+                    bool debeRetener =
+                        saldoConsolidado >= LIMITE_RENTA;
+
+                    decimal retencionISR = 0m;
+                    if (debeRetener)
+                    {
+                        retencionISR = Math.Round(
+                            interesMensual * PORCENTAJE_RENTA,
+                            2,
+                            MidpointRounding.AwayFromZero);
+                    }
+
+                    resultado.Add(new Capitalizacion
+                    {
+                        Id_Deposito_Plazo =
                             x.Deposito.Id_Deposito_Plazo,
-                            out var ultimaTransaccion))
-                        {
-                            return false;
-                        }
 
-                        // Debe tener saldo
-                        if (ultimaTransaccion.Saldo <= 0)
-                            return false;
+                        Id_Ahorro =
+                            x.Deposito.Id_Ahorro,
 
-                        // No vencido
-                        if (x.Deposito.Fecha_Vencimiento.Date < fechaConsulta)
-                            return false;
+                        Cuenta =
+                            x.Deposito.No_Ahorro,
 
-                        // Días desde la última transacción
-                        var diasTranscurridos =
-                            (fechaConsulta - ultimaTransaccion.Fecha.Date).Days;
+                        CuentaHabiente =
+                            $"{x.Persona.Nombres} {x.Persona.Apellidos}",
 
-                        // Toca capitalizar
-                        return diasTranscurridos == 30;
-                    })
-                    .Select(x =>
-                    {
-                        var ultimaTransaccion =
-                            ultimasTransaccionesDict[x.Deposito.Id_Deposito_Plazo];
+                        Saldo =
+                            x.Deposito.Monto,
 
-                        var interesMensual = Math.Round(
-                            (
-                                ultimaTransaccion.Saldo *
-                                (x.Deposito.Interes / 100m) /
-                                360m
-                            ) * 30m,
-                            2);
+                        UltimaCapitalizacion =
+                            ultimaTransaccion.Fecha.Date,
 
-                        return new Capitalizacion
-                        {
-                            Id_Deposito_Plazo =
-                                x.Deposito.Id_Deposito_Plazo,
+                        Interes_Aplicar =
+                            interesMensual,
 
-                            Id_Ahorro =
-                                x.Deposito.Id_Ahorro,
+                        Tasa_Interes =
+                            x.Deposito.Interes,
 
-                            Cuenta =
-                                x.Deposito.No_Ahorro,
+                        FormaPago =
+                            x.Deposito.Forma_Pago.Descripcion,
 
-                            CuentaHabiente =
-                                $"{x.Persona.Nombres} {x.Persona.Apellidos}",
+                        DebeRetenerISR =
+                            debeRetener,
 
-                            Saldo =
-                                ultimaTransaccion.Saldo,
+                        RetencionISR =
+                            retencionISR,
 
-                            UltimaCapitalizacion =
-                                ultimaTransaccion.Fecha.Date,
-
-                            Interes_Aplicar =
-                                interesMensual,
-                            Tasa_Interes = x.Deposito.Interes,
-
-                            FormaPago =
-                                x.Deposito.Forma_Pago.Descripcion
-                        };
-                    })
+                        PorcentajeISR =
+                            PORCENTAJE_RENTA * 100
+                    });
+                }
+                resultado = resultado
                     .OrderBy(x => x.Cuenta)
                     .ToList();
-
                 return Ok(resultado);
             }
             catch (Exception ex)

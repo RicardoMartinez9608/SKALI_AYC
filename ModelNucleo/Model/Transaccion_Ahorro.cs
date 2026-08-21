@@ -45,5 +45,6 @@ namespace ModelNucleo.Model
         public bool Modificado { get; set; }
         public int Id_Libreta { get; set; }
         public int No_Renglon { get; set; }
+        public bool esRetencionISR { get; set; }
     }
 }

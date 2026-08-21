@@ -16,5 +16,10 @@ namespace ModelNucleo.Model.ModelView
         public int DiasCapitalizables { get; set; }
         public string FormaPago { get; set; }
         public int Id_Deposito_Plazo { get; set; }
+        public bool DebeRetenerISR { get; set; }
+
+        public decimal RetencionISR { get; set; }
+
+        public decimal PorcentajeISR { get; set; }
     }
 }

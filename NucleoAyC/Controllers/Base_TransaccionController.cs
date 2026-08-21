@@ -1591,7 +1591,8 @@ namespace NucleoAyC.Controllers
             DateTime? fecha_cambiada = null,
             bool cambiar_fecha=false,
             bool esCapitalizacion = false,
-            int id_depositoPlazo = 0)
+            int id_depositoPlazo = 0,
+            bool esRetencionISR = false)
         {
             /*verificar el último saldo*/
             decimal saldo = 0.00M;
@@ -1611,7 +1612,7 @@ namespace NucleoAyC.Controllers
             {
                 var transaccionAnterior = _context.Transaccion_Ahorro
                     .Where(w => w.Id_Ahorro == id_ahorro && !w.Borrado_Logico)
-                   .OrderByDescending(d => d.Fecha)
+                   .OrderByDescending(d => d.Id_Transaccion_Ahorro)
                     .ThenByDescending(d => d.Id_Transaccion_Ahorro)
                     .FirstOrDefault();
 
@@ -1646,6 +1647,61 @@ namespace NucleoAyC.Controllers
                         _context.Update(ahorro);
                     }
 
+                }
+                else
+                {
+                    var ahorro = await _context.Ahorro.FindAsync(id_ahorro);
+                    if (ahorro != null)
+                    {
+                        ahorro.CapitalizacionAhorro = fecha;
+                        _context.Update(ahorro);
+                    }
+
+                }
+
+                return transaccion;
+            }
+            if (esRetencionISR)
+            {
+                var transaccionAnterior = _context.Transaccion_Ahorro
+                    .Where(w => w.Id_Ahorro == id_ahorro && !w.Borrado_Logico)
+                   .OrderByDescending(d => d.Id_Transaccion_Ahorro)
+                    .ThenByDescending(d => d.Id_Transaccion_Ahorro)
+                    .FirstOrDefault();
+
+                saldo = transaccionAnterior?.Saldo ?? 0.00M;
+
+                string Id_Usuario = _userManager.GetUserId(HttpContext.User);
+
+                // Crear transacción sin cálculo de intereses ni contabilidad
+                Transaccion_Ahorro transaccion = new Transaccion_Ahorro
+                {
+                    Id_Ahorro = id_ahorro,
+                    Id_Tipo_Operacion_Ahorro = 3,
+                    Saldo = retiro ? saldo - valor : saldo + valor,
+                    Valor = valor,
+                    Fecha = fecha,
+                    Creado_En = fecha,
+                    Creado_Por = Id_Usuario,
+                    Interes_Aplicado = 0,
+                    Interes_Acumulado = transaccionAnterior?.Interes_Acumulado ?? 0,
+                    Dias = 0,
+                    esRetencionISR = true
+                    
+                };
+
+                _context.Transaccion_Ahorro.Add(transaccion);
+
+                // Actualizar fecha de capitalización en Ahorro
+                if (id_depositoPlazo > 0)
+                {
+                    var ahorro = await _context.Deposito_Plazo.FindAsync(id_depositoPlazo);
+                    if (ahorro != null)
+                    {
+                        ahorro.Fecha_Ultima_Capitalizacion = fecha;
+                        _context.Update(ahorro);
+                    }
+
                     //await _context.SaveChangesAsync();
                     //return transaccion;
                 }
@@ -1667,7 +1723,7 @@ namespace NucleoAyC.Controllers
             var transacciones = _context.Transaccion_Ahorro
               .Include(d => d.Ahorro)
               .Where(w => w.Id_Ahorro == id_ahorro && !w.Borrado_Logico)
-              .OrderByDescending(d => d.Fecha)
+              .OrderByDescending(d => d.Id_Transaccion_Ahorro)
                .ThenByDescending(d => d.Id_Transaccion_Ahorro)
               .ToList();
             var transaccion_anterior = transacciones.FirstOrDefault();
@@ -1676,7 +1732,7 @@ namespace NucleoAyC.Controllers
 
                 saldo = _context.Transaccion_Ahorro
                         .Where(w => w.Id_Ahorro == id_ahorro && !w.Borrado_Logico)
-                        .OrderByDescending(d => d.Fecha)
+                        .OrderByDescending(d => d.Id_Transaccion_Ahorro)
                         .ThenByDescending(d => d.Id_Transaccion_Ahorro)
                         .Select(s => s.Saldo)
                         .FirstOrDefault();
@@ -1742,7 +1798,7 @@ namespace NucleoAyC.Controllers
                     .Where(t => t.Id_Ahorro == id_ahorro
                         && !t.Borrado_Logico
                         && t.Fecha.Date == fecha.Date)
-                    .OrderBy(t => t.Fecha)
+                    .OrderBy(t => t.Id_Transaccion_Ahorro)
                     .ThenBy(t => t.Id_Transaccion_Ahorro)
                     .ToList();
 
@@ -1755,7 +1811,7 @@ namespace NucleoAyC.Controllers
                     .Where(t => t.Id_Ahorro == id_ahorro
                         && !t.Borrado_Logico
                         && t.Fecha.Date < fecha.Date)
-                    .OrderByDescending(t => t.Fecha)
+                    .OrderByDescending(t => t.Id_Transaccion_Ahorro)
                     .ThenByDescending(t => t.Id_Transaccion_Ahorro)
                     .FirstOrDefault();
 

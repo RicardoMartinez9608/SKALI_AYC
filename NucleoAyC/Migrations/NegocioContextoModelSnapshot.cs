@@ -3588,6 +3588,9 @@ namespace NucleoAyC.Migrations
                     b.Property<decimal>("Valor")
                         .HasColumnType("decimal(65,30)");
 
+                    b.Property<bool>("esRetencionISR")
+                        .HasColumnType("tinyint(1)");
+
                     b.HasKey("Id_Transaccion_Ahorro");
 
                     b.HasIndex("Id_Ahorro");
