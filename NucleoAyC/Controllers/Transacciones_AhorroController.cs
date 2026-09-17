@@ -1011,7 +1011,7 @@ namespace NucleoAyC.Controllers
 
                     var interesMensual = Math.Round(
                         (
-                            ultimaTransaccion.Saldo *
+                            x.Deposito.Monto *
                             (x.Deposito.Interes / 100m) /
                             360m
                         ) * 30m,
