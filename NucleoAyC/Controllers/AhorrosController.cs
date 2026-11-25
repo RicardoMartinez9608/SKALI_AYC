@@ -478,7 +478,7 @@ namespace NucleoAyC.Controllers
                 var linea = await _context.Linea_Ahorro
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.Id_Linea_Ahorro == idLineaAhorro);
-
+                var fechaCorte = fecha.Date.AddDays(1);
                 if (linea == null)
                     return NotFound();
 
@@ -507,15 +507,49 @@ namespace NucleoAyC.Controllers
                         Dui = persona.Dui,
 
                         Saldo = _context.Transaccion_Ahorro
-                            .Where(t =>
-                                t.Id_Ahorro == ahorro.Id_Ahorro &&
-                                t.Fecha <= fecha)
-                            .OrderByDescending(t => t.Fecha)
-                            .ThenByDescending(t => t.Id_Transaccion_Ahorro)
-                            .Select(t => t.Saldo)
-                            .FirstOrDefault()
+                     .Where(t =>
+                         t.Id_Ahorro == ahorro.Id_Ahorro &&
+                         t.Fecha < fechaCorte)
+
+                     // Primero obtenemos la última fecha de transacción
+                     .Where(t =>
+                         t.Fecha ==
+                         _context.Transaccion_Ahorro
+                             .Where(x =>
+                                 x.Id_Ahorro == ahorro.Id_Ahorro &&
+                                 x.Fecha < fechaCorte)
+                             .Max(x => x.Fecha))
+
+                     // Si todas las transacciones de esa fecha
+                     // son migradas, tomamos el saldo menor.
+                     .All(t => t.Creado_Por == "Migra")
+
+                     ? _context.Transaccion_Ahorro
+                         .Where(t =>
+                             t.Id_Ahorro == ahorro.Id_Ahorro &&
+                             t.Fecha < fechaCorte &&
+                             t.Fecha ==
+                             _context.Transaccion_Ahorro
+                                 .Where(x =>
+                                     x.Id_Ahorro == ahorro.Id_Ahorro &&
+                                     x.Fecha < fechaCorte)
+                                 .Max(x => x.Fecha) &&
+                             t.Creado_Por == "Migra")
+                         .Min(t => t.Saldo)
+
+                     // Si no son todas migradas,
+                     // mantenemos EXACTAMENTE tu lógica original.
+                     : _context.Transaccion_Ahorro
+                         .Where(t =>
+                             t.Id_Ahorro == ahorro.Id_Ahorro &&
+                             t.Fecha < fechaCorte)
+                         .OrderByDescending(t => t.Fecha)
+                         .ThenByDescending(t => t.Id_Transaccion_Ahorro)
+                         .Select(t => t.Saldo)
+                         .FirstOrDefault()
                     })
                     .ToListAsync();
+
 
                 var reporte = new ReporteConsolidadoAhorroDTO
                 {

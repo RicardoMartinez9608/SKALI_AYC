@@ -72,6 +72,7 @@ namespace NucleoAyC.Controllers
             string PuntoVenta = "";
             string Departamento = "";
             string Municipio = "";
+            string Distrito = "";
 
             if (IdAgencia != 0)
             {
@@ -86,37 +87,42 @@ namespace NucleoAyC.Controllers
                             PuntoVenta = "P001";
                             Departamento = "02";
                             Municipio = "15";
+                            Distrito = "10";
                             break;
                         case "Ahuachapán (02)":
                             establecimiento = "S001";
                             PuntoVenta = "P002";
                             Departamento = "01";
                             Municipio = "14";
-
+                            Distrito = "01";
                             break;
                         case "Chalchuapa (03)":
                             establecimiento = "S002";
                             PuntoVenta = "P003";
                             Departamento = "02";
                             Municipio = "17";
+                            Distrito = "03";
                             break;
                         case "Santa Ana (04)":
                             establecimiento = "S003";
                             PuntoVenta = "P004";
                             Departamento = "02";
                             Municipio = "15";
+                            Distrito = "10";
                             break;
                         case "Sonsonate (05)":
                             establecimiento = "S004";
                             PuntoVenta = "P005";
                             Departamento = "03";
                             Municipio = "18";
+                            Distrito = "15";
                             break;
                         case "Santa Tecla (07)":
                             establecimiento = "S005";
                             PuntoVenta = "P006";
                             Departamento = "05";
                             Municipio = "28";
+                            Distrito = "09";
                             break;
 
                     }

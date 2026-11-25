@@ -29,9 +29,9 @@ public class CertificacionService
         });
         string result = "";
         //url desarrollo
-      //  HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create("https://certificador.infile.com.sv/api/v1/certificacion/test/documento/certificar");
+        //HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create("https://certificador.infile.com.sv/api/v2/certificacion/test/documento/certificar");
         //url produccion
-        HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create("https://certificador.infile.com.sv/api/v1/certificacion/prod/documento/certificar");
+        HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create("https://certificador.infile.com.sv/api/v2/certificacion/prod/documento/certificar");
         httpWebRequest.Method = "POST";
         httpWebRequest.Accept = "application/json";
         httpWebRequest.Headers.Add("usuario", "02032402111018");
@@ -48,7 +48,7 @@ public class CertificacionService
             {
                 streamWriter.Write(jsonRequest); 
             }
-
+            
             HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream()))
             {

@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ModelNucleo.CalculosYProceos;
 using ModelNucleo.Model;
 using NucleoAyC.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NucleoAyC.Controllers
 {
@@ -18,25 +19,28 @@ namespace NucleoAyC.Controllers
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     [ApiExplorerSettings(IgnoreApi = false, GroupName = "Linea_Credito")]
-    public class Linea_CreditoController : Controller
-    {
-        private readonly NegocioContexto _context;
-        private readonly UserManager<IdentityUser> _userManager;
-        /// <summary>
-        /// constructor de Linea_Credito con injección de base de datos
-        /// </summary>
-        /// <param name="context"></param>
-        public Linea_CreditoController(NegocioContexto context, UserManager<IdentityUser> userManager)
+ 
+        public class Linea_CreditoController : Base_TransaccionController
         {
-            _context = context;
-            _userManager = userManager;
-        }
+            /// <summary>
+            /// Constructor de Linea_Credito con inyección de base de datos
+            /// </summary>
+            /// <param name="context"></param>
+            /// <param name="userManager"></param>
+            /// <param name="roleManager"></param>
+            public Linea_CreditoController(
+                NegocioContexto context,
+                UserManager<IdentityUser> userManager,
+                RoleManager<IdentityRole> roleManager)
+                : base(context, userManager, roleManager)
+            {
+            }
 
-        /// <summary>
-        /// Get Retorna la lista de Líneas de créditos
-        /// </summary>
-        /// <returns>Lista línea de crédito</returns>
-        [Authorize(Roles = "Asesor, Asistente,Jefe,Gerente,Administrador", AuthenticationSchemes = "Bearer")]
+            /// <summary>
+            /// Get Retorna la lista de Líneas de créditos
+            /// </summary>
+            /// <returns>Lista línea de crédito</returns>
+            [Authorize(Roles = "Asesor, Asistente,Jefe,Gerente,Administrador", AuthenticationSchemes = "Bearer")]
         [HttpGet]
         public IEnumerable<Linea_Credito> LineasCredito()
         {
@@ -175,33 +179,92 @@ namespace NucleoAyC.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPut]
-        public async Task<IActionResult> Editar_Linea_Credito_Historial([FromBody] Linea_Credito_Historial linea)
+        public async Task<IActionResult> Editar_Linea_Credito_Historial(
+        [FromBody] Linea_Credito_Historial linea)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            try {
-                if (!await Verificar_Estado_Credito((int)linea.Id_Credito))
-                {
-                    if (!User.IsInRole("Administrador"))
-                        return BadRequest("Debe ser Administrador para poder modificar la configuración");
-                    _context.Entry(linea).State = EntityState.Modified;
-                    //await _context.SaveChangesAsync();
 
-                    Credito credito =await _context.Credito.SingleAsync(d=>d.Id_Credito==linea.Id_Credito);
-                    credito.Interes = linea.Interes;
-                    credito.Interes_Comision = linea.Interes_Comision;
+            try
+            {
+                if (!User.IsInRole("Administrador"))
+                    return BadRequest(
+                        "Debe ser Administrador para poder modificar la configuración");
 
-                    _context.Entry(credito).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
-                    await Bitacora("Linea_Credito", "Cambio Interes", credito.Id_Credito, false, true);
-                    return Ok("Se ha modifcado la Línea para el crédito dado");
-                }
-                else
-                    return BadRequest("No se puede modificar la Configuración de un crédito ya Liquidado");
+                Credito credito = await _context.Credito
+                    .SingleAsync(d => d.Id_Credito == linea.Id_Credito);
+
+                // Actualizar historial
+                _context.Entry(linea).State = EntityState.Modified;
+
+                // Actualizar tasas del crédito
+                credito.Interes = linea.Interes;
+                credito.Interes_Comision = linea.Interes_Comision;
+
+                // Recalcular cuota con la nueva tasa
+                decimal nuevaCuota = await RecalcularCuotaCredito(credito, linea);
+
+                credito.Cuota_Total = nuevaCuota;
+                credito.Valor_Cuota = nuevaCuota;
+
+                _context.Entry(credito).State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+
+                await Bitacora(
+                    "Linea_Credito",
+                    "Cambio Interes",
+                    credito.Id_Credito,
+                    false,
+                    true
+                );
+
+                return Ok(
+                    $"Se ha modificado la Línea y la nueva cuota es {credito.Cuota_Total}");
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return BadRequest(ex.StackTrace);
             }
+        }
+
+
+        private async Task<decimal> RecalcularCuotaCredito(
+         Credito credito,
+         Linea_Credito_Historial lch)
+        {
+            Periodo periodo = await _context.Periodo
+                .AsNoTracking()
+                .SingleAsync(d => d.Id_Periodo == credito.Id_Periodo);
+
+            Linea_Credito lc = await _context.Linea_Credito
+                .AsNoTracking()
+                .Include(f => f.Cobros_Credito)
+                .SingleAsync(t => t.Id_Linea == credito.Id_Linea);
+
+            decimal total = await _context.Cobro_Periodico_Historial
+                .AsNoTracking()
+                .Where(a =>
+                    a.Id_Linea_Credito_Historial ==
+                    lch.Id_Linea_Credito_Historial)
+                .SumAsync(d => (decimal?)d.Valor) ?? 0.00M;
+
+            var resultado = new CalculosYProcesoCredito(
+                lch.Interes_Comision,
+                credito.Monto_pago,
+                periodo,
+                IVA,
+                credito.Plazo,
+                lch.Interes,
+                DateTime.Now,
+                total,
+                lch.PlanAyC_Cobros_Periodico_Dinero,
+                0.00M,
+                dias_movible: 0,
+                generar_amortizacion: false
+            ).Resultado;
+
+            return resultado.CuotaTotal;
         }
         private async Task Bitacora(string Tabla_Operacion, string Proceso, int id_transaccion, bool es_credito, bool reversion_credito = false)
         {

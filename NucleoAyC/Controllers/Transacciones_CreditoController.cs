@@ -192,6 +192,7 @@ namespace NucleoAyC.Controllers
                 string PuntoVenta = "";
                 string Departamento = "";
                 string Municipio = "";
+                string Distrito = "";
                 if (transaccion.Interes > 0 || transaccion.Interes_Comision > 0 || transaccion.Recargo > 0)
                 {
                     if (credito?.Cartera != null)
@@ -209,12 +210,14 @@ namespace NucleoAyC.Controllers
                                     PuntoVenta = "P001";
                                     Departamento = "02";
                                     Municipio = "15";
+                                    Distrito = "10";
                                     break;
                                 case "Ahuachapán (02)":
                                     establecimiento = "S001";
                                     PuntoVenta = "P002";
                                     Departamento = "01";
                                     Municipio = "14";
+                                    Distrito = "01";
 
                                     break;
                                 case "Chalchuapa (03)":
@@ -222,24 +225,28 @@ namespace NucleoAyC.Controllers
                                     PuntoVenta = "P003";
                                     Departamento = "02";
                                     Municipio = "17";
+                                    Distrito = "03";
                                     break;
                                 case "Santa Ana (04)":
                                     establecimiento = "S003";
                                     PuntoVenta = "P004";
                                     Departamento = "02";
                                     Municipio = "15";
+                                    Distrito = "10";
                                     break;
                                 case "Sonsonate (05)":
                                     establecimiento = "S004";
                                     PuntoVenta = "P005";
                                     Departamento = "03";
                                     Municipio = "18";
+                                    Distrito = "15";
                                     break;
                                 case "Santa Tecla (07)":
                                     establecimiento = "S005";
                                     PuntoVenta = "P006";
                                     Departamento = "05";
                                     Municipio = "28";
+                                    Distrito = "09";
                                     break;
 
                             }
@@ -278,7 +285,7 @@ namespace NucleoAyC.Controllers
                             {
                                 tipo_documento = "13",
                                 numero_documento = credito.Persona.Dui.Trim(),
-                                correo = email,
+                                correo = email.Trim(),
                                 correos_cc = "backupcreditosayc@gmail.com",
                                 nombre = credito.Persona.NombreCompleto,
                                 telefono = credito.Persona.Telefono.Trim(),
@@ -286,7 +293,8 @@ namespace NucleoAyC.Controllers
                                 {
                                     departamento = Departamento,
                                     municipio = Municipio,
-                                    complemento = credito.Persona.Domicilio.Trim()
+                                    complemento = credito.Persona.Domicilio.Trim(),
+                                    distrito = Distrito
                                 }
                             },
                             items = new List<CertificacionRequest.Item>(),
@@ -376,7 +384,7 @@ namespace NucleoAyC.Controllers
             string PuntoVenta = "";
             string Departamento = "";
             string Municipio = "";
-
+            string Distrito = "";
             if (IdAgencia != 0)
             {
                 var agencia = _context.Agencia
@@ -390,37 +398,42 @@ namespace NucleoAyC.Controllers
                             PuntoVenta = "P001";
                             Departamento = "02";
                             Municipio = "15";
+                            Distrito = "10";
                             break;
                         case "Ahuachapán (02)":
                             establecimiento = "S001";
                             PuntoVenta = "P002";
                             Departamento = "01";
                             Municipio = "14";
-
+                            Distrito = "01";
                             break;
                         case "Chalchuapa (03)":
                             establecimiento = "S002";
                             PuntoVenta = "P003";
                             Departamento = "02";
                             Municipio = "17";
+                            Distrito = "03";
                             break;
                         case "Santa Ana (04)":
                             establecimiento = "S003";
                             PuntoVenta = "P004";
                             Departamento = "02";
                             Municipio = "15";
+                            Distrito = "10";
                             break;
                         case "Sonsonate (05)":
                             establecimiento = "S004";
                             PuntoVenta = "P005";
                             Departamento = "03";
                             Municipio = "18";
+                            Distrito = "15";
                             break;
                         case "Santa Tecla (07)":
                             establecimiento = "S005";
                             PuntoVenta = "P006";
                             Departamento = "05";
                             Municipio = "28";
+                            Distrito = "09";
                             break;
 
                     }
@@ -506,8 +519,8 @@ namespace NucleoAyC.Controllers
             string PuntoVenta = "";
             string Departamento = "";
             string Municipio = "";
-
-            if(IdAgencia != 0)
+            string Distrito = "";
+            if (IdAgencia != 0)
             {
                 var agencia = _context.Agencia
                            .FirstOrDefault(u => u.Id_Agencia == IdAgencia);
@@ -520,37 +533,42 @@ namespace NucleoAyC.Controllers
                             PuntoVenta = "P001";
                             Departamento = "02";
                             Municipio = "15";
+                            Distrito = "10";
                             break;
                         case "Ahuachapán (02)":
                             establecimiento = "S001";
                             PuntoVenta = "P002";
                             Departamento = "01";
                             Municipio = "14";
-
+                            Distrito = "01";
                             break;
                         case "Chalchuapa (03)":
                             establecimiento = "S002";
                             PuntoVenta = "P003";
                             Departamento = "02";
                             Municipio = "17";
+                            Distrito = "03";
                             break;
                         case "Santa Ana (04)":
                             establecimiento = "S003";
                             PuntoVenta = "P004";
                             Departamento = "02";
                             Municipio = "15";
+                            Distrito = "10";
                             break;
                         case "Sonsonate (05)":
                             establecimiento = "S004";
                             PuntoVenta = "P005";
                             Departamento = "03";
                             Municipio = "18";
+                            Distrito = "15";
                             break;
                         case "Santa Tecla (07)":
                             establecimiento = "S005";
                             PuntoVenta = "P006";
                             Departamento = "05";
                             Municipio = "28";
+                            Distrito = "09";
                             break;
 
                     }

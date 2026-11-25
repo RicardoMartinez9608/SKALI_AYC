@@ -39,6 +39,7 @@ public class CertificacionRequest
         public string departamento { get; set; }
         public string municipio { get; set; }
         public string complemento { get; set; }
+        public string distrito { get; set; }
     }
 
     public class Item
